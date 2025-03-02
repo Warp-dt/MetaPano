@@ -1,0 +1,4 @@
+python-dotenv
+discord
+discord-py-slash-command
+twitchio

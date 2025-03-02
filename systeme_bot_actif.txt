@@ -1,0 +1,69 @@
+Pour garder votre bot Discord actif en permanence et le gérer à distance, voici quelques méthodes pratiques :
+
+1. Utiliser screen pour des sessions persistantes
+
+Avec screen, vous pouvez lancer votre bot dans une session que vous pouvez détacher (fermer) sans arrêter le processus, puis vous reconnecter plus tard pour reprendre la session :
+Installer screen (si ce n’est pas déjà fait) :
+
+	sudo apt install screen
+
+Lancer le bot dans une session :
+
+	screen -S bot_session
+
+Démarrer le bot :
+
+	python3 main.py
+
+Détacher la session en appuyant sur Ctrl + A, puis D . Votre bot continuera de tourner.
+Revenir à la session en vous reconnectant plus tard :
+
+
+    	screen -r bot_session
+
+2. Utiliser systemd pour démarrer le bot en tant que service
+
+Pour un fonctionnement encore plus automatisé, vous pouvez configurer le bot pour qu’il tourne comme un service systemd, ce qui le relancera automatiquement si le système redémarre ou en cas d’arrêt inattendu.
+Créer un fichier de service pour le bot :
+
+	sudo nano /etc/systemd/system/roxxbot_session.service
+
+Ajouter la configuration suivante, en remplaçant /chemin/vers/main.py par le chemin vers votre fichier Python :
+
+  GNU nano 7.2                                    /etc/systemd/system/roxxbot_session.service *
+[Unit]
+Description=RoxxBot session
+After=network.target
+DefaultDependencies=no
+Before=shutdown.target reboot.target halt.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/warp/Documents/RoxxBot/main.py
+WorkingDirectory=/home/warp/Documents/RoxxBot
+Restart=always
+User=warp
+# Ajouts pour une meilleure gestion de l'arrêt
+TimeoutStopSec=5
+KillSignal=SIGTERM
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+
+Enregistrer et démarrer le service :
+
+	sudo systemctl daemon-reload
+	sudo systemctl start roxxbot_session.service
+	sudo systemctl enable roxxbot_session.service
+
+Gérer le service (démarrer, arrêter, ou redémarrer) depuis n’importe quel ordinateur connecté en SSH :
+
+    	sudo systemctl stop roxxbot_session.service
+    	sudo systemctl start roxxbot_session.service
+    	sudo systemctl restart roxxbot_session.service
+
+3. Utiliser Git pour gérer les modifications de code
+
+Pour pouvoir mettre à jour le bot facilement, vous pouvez stocker votre code sur un dépôt Git (local ou GitHub, GitLab, etc.). Depuis votre serveur, vous pourrez alors tirer (pull) les mises à jour et relancer le bot pour appliquer les modifications.
+
+Ces méthodes permettent d’exécuter votre bot en continu, tout en conservant la possibilité d'interagir avec lui à distance !
