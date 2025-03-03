@@ -32,7 +32,7 @@ erDiagram
         INT DB_id FK
     }
 
-    STUFF_CLASSE }|..|{ STUFF : has
     STUFF_ELEMENT }|..|{ STUFF : has
     STUFF_ELEMENT }|..|{ ELEMENT : relates
+    STUFF_CLASSE }|..|{ STUFF : has
     STUFF_CLASSE }|..|{ CLASSE : relates
