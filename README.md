@@ -19,13 +19,13 @@ erDiagram
         INT ElementID PK
         VARCHAR Nom
     }
-    CLASSE {
-        INT ClasseID PK
-        VARCHAR Nom
-    }
     STUFF_ELEMENT {
         INT ElementID FK
         INT DB_id FK
+    }
+    CLASSE {
+        INT ClasseID PK
+        VARCHAR Nom
     }
     STUFF_CLASSE {
         INT ClasseID FK
