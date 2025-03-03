@@ -3,7 +3,7 @@ A Discord bot created to offer build recommendations for the game Dofus Touch.
 
 The recommandations are stored in a simple database :   
 [DB diagram](https://dbdiagram.io/d/PanoDB-67c5d9b5263d6cf9a010af9b)
-
+<!-- 
 ```mermaid
 erDiagram
     STUFF {
@@ -35,4 +35,4 @@ erDiagram
     STUFF_ELEMENT }|..|{ STUFF : has
     STUFF_ELEMENT }|..|{ ELEMENT : relates
     STUFF_CLASSE }|..|{ STUFF : has
-    STUFF_CLASSE }|..|{ CLASSE : relates
+    STUFF_CLASSE }|..|{ CLASSE : relates -->
