@@ -15,12 +15,12 @@ erDiagram
         INT PO
         INT Invo
     }
-    CLASSE {
-        INT ClasseID PK
-        VARCHAR Nom
-    }
     ELEMENT {
         INT ElementID PK
+        VARCHAR Nom
+    }
+    CLASSE {
+        INT ClasseID PK
         VARCHAR Nom
     }
     STUFF_ELEMENT {
@@ -33,6 +33,6 @@ erDiagram
     }
 
     STUFF_ELEMENT }|..|{ STUFF : has
-    STUFF_ELEMENT }|..|{ ELEMENT : relates
     STUFF_CLASSE }|..|{ STUFF : has
+    STUFF_ELEMENT }|..|{ ELEMENT : relates
     STUFF_CLASSE }|..|{ CLASSE : relates
