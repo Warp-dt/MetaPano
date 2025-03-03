@@ -7,33 +7,32 @@ The recommandations are stored in a simple database :
 ```mermaid
 erDiagram
     STUFF {
-        INT DB_id PK
-        CHAR DB_surl
-        VARCHAR Nom
-        INT PA
-        INT PM
-        INT PO
-        INT Invo
+        DB_id INT PK
+        DB_surl CHAR
+        Nom VARCHAR
+        PA INT
+        PM INT
+        PO INT
+        Invo INT
     }
     ELEMENT {
-        INT ElementID PK
-        VARCHAR Nom
+        ElementID INT PK
+        Nom VARCHAR
     }
     STUFF_ELEMENT {
-        INT ElementID FK
-        INT DB_id FK
+        ElementID INT FK
+        DB_id INT FK
     }
     CLASSE {
-        INT ClasseID PK
-        VARCHAR Nom
+        ClasseID INT PK
+        Nom VARCHAR
     }
     STUFF_CLASSE {
-        INT ClasseID FK
-        INT DB_id FK
+        ClasseID INT FK
+        DB_id INT FK
     }
 
     STUFF_ELEMENT }|..|{ STUFF : has
     STUFF_ELEMENT }|..|{ ELEMENT : relates
-
     STUFF_CLASSE }|..|{ STUFF : has
     STUFF_CLASSE }|..|{ CLASSE : relates
