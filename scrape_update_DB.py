@@ -468,7 +468,7 @@ if __name__ == "__main__":
         i+=1
     
     print("Scraping Terminé")
-    print("------------------------------")
     # Appeler la fonction avec les données
+    print("Mise à jour PanoDB")
     result = upsert_stuff_data(stuff_liste)
     print(f"Résultat: {result['inserted']} insérés, {result['updated']} mis à jour, {result['deleted']} supprimés, {result['errors']} erreurs")
