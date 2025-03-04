@@ -254,17 +254,36 @@ def get_stuff_base_info(id):
 ################################################################
 # DB HANDLING
 ################################################################
-
 # Charger les variables d'environnement depuis le fichier .env
 load_dotenv()
 
-# Récupérer le mot de passe depuis les variables d'environnement
-db_password = os.getenv("DB_PASSWORD")
+# Récupérer l'environnement
+environment = os.getenv("ENVIRONMENT", "windows")  # Par défaut, considérer que c'est Windows
 
-# Configuration de la connexion
-db_user = "pc_wind"
-db_host = "192.168.1.193"
-db_name = "PanoDB"
+# Configuration selon l'environnement
+if environment == "windows":
+    db_user = "pc_wind"
+    db_password = os.getenv("DB_PASSWORD")
+    db_host = "192.168.1.193"  # IP du serveur MySQL
+    db_name = "PanoDB"
+elif environment == "server":
+    db_user = "localuser"  # Utilisateur sur le serveur
+    db_password = os.getenv("SERVER_DB_PASSWORD")
+    db_host = "localhost"  # MySQL est accessible localement sur le serveur
+    db_name = "PanoDB"
+else:
+    raise ValueError(f"Environnement inconnu : {environment}")
+
+# # Charger les variables d'environnement depuis le fichier .env
+# load_dotenv()
+
+# # Récupérer le mot de passe depuis les variables d'environnement
+# db_password = os.getenv("DB_PASSWORD")
+
+# # Configuration de la connexion
+# db_user = "pc_wind"
+# db_host = "192.168.1.193"
+# db_name = "PanoDB"
 
 # Créer l'URL de connexion
 connection_string = f"mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name}"
