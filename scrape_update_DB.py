@@ -444,10 +444,13 @@ if __name__ == "__main__":
     taille=20
     i=1
     stuff_liste=[]
+    print("Début du scraping")
     while taille==page_maxsize:
         resp=req.get(url_builder(page=i)).json()["rows"]
         taille=len(resp)
         for stuff in resp:
+            if len(stuff["allowed_classes"])==0:
+                stuff["allowed_classes"].append(16)
             temp_dict={
                 "DB_id": stuff['id'],
                 "DB_surl": get_stuff_base_info(stuff['id'])["DB_surl"],
@@ -465,6 +468,7 @@ if __name__ == "__main__":
         i+=1
     
     print("Scraping Terminé")
+    print("------------------------------")
     # Appeler la fonction avec les données
     result = upsert_stuff_data(stuff_liste)
     print(f"Résultat: {result['inserted']} insérés, {result['updated']} mis à jour, {result['deleted']} supprimés, {result['errors']} erreurs")

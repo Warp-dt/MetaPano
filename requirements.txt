@@ -2,3 +2,6 @@ python-dotenv
 discord
 discord-py-slash-command
 twitchio
+sqlalchemy
+pymysql
+requests
