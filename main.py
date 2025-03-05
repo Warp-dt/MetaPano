@@ -1,7 +1,7 @@
 from typing import Final
 import os
 import signal
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 # import discord
 from discord import Intents, Interaction, InteractionType, Embed
 from discord.ext import commands
@@ -11,7 +11,7 @@ import asyncio
 import sys
 
 # STEP 0: LOAD OUR TOKEN FROM SOMEWHERE SAFE
-# load_dotenv()
+load_dotenv()
 TOKEN: Final[str] = os.getenv('DISCORD_TOKEN')
 
 # STEP 1: BOT SETUP
