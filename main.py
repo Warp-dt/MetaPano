@@ -210,6 +210,14 @@ async def twitch(interaction: Interaction):
         color=0x6441a5  # Couleur twitch
     )
 
+    for emo in bot.emojis:
+        print(emo)
+    emojis = []
+    for i in bot.guilds:
+        for j in i.emojis:
+            emojis.append(j) 
+    print(emojis)
+
     embed.set_thumbnail(url=IMAGES_LINK["twitch"])  # URL d'une image pour l'illustration
     embed.add_field(name="Lien de la chaîne :",value=("https://www.twitch.tv/warp_is_fine"), inline=True)
     embed.add_field(name="Planning :", value=(f"""
