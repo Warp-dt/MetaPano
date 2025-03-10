@@ -216,7 +216,7 @@ async def twitch(interaction: Interaction):
     for i in bot.guilds:
         for j in i.emojis:
             emojis.append(j) 
-    print(emojis)
+    embed.add_field(name="test",value=str(emojis), inline=True)
 
     embed.set_thumbnail(url=IMAGES_LINK["twitch"])  # URL d'une image pour l'illustration
     embed.add_field(name="Lien de la chaîne :",value=("https://www.twitch.tv/warp_is_fine"), inline=True)
