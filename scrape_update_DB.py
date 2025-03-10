@@ -88,7 +88,7 @@ TRAD_DB_STATS={
     'pip': "non attribué",
     'rv': "non attribué",
 }   
-elt_filtre={
+ELT_FILTRE={
     "terre" : "ter"
     ,"feu" : "feu"
     ,"eau" : "eau"
@@ -112,28 +112,28 @@ elt_filtre={
     # ,'domelee' : 'dm'
     # ,'dosort' : 'ds'
 }
-raw_elt_to_id={
-    elt_filtre['terre']      : 1,
-    elt_filtre['feu']        : 2,
-    elt_filtre['eau']        : 3,
-    elt_filtre['air']        : 4,
-    elt_filtre['dopou']      : 5,
-    elt_filtre['cc']         : 6,
-    elt_filtre['initiative'] : 7,
-    elt_filtre['pp']         : 8,
-    elt_filtre['sagesse']    : 9,
-    elt_filtre['pods']       : 10,
-    elt_filtre['pvp']        : 11,
-    elt_filtre['pvm']        : 12,
-    elt_filtre['retrait pa'] : 13,
-    elt_filtre['retrait pm'] : 14,
-    elt_filtre['esquive pa'] : 15,
-    elt_filtre['esquive pm'] : 16,
-    elt_filtre['repou']      : 17,
-    elt_filtre['recri']      : 18,
-    elt_filtre['tank']       : 19
+RAW_ELT_TO_ID={
+    ELT_FILTRE['terre']      : 1,
+    ELT_FILTRE['feu']        : 2,
+    ELT_FILTRE['eau']        : 3,
+    ELT_FILTRE['air']        : 4,
+    ELT_FILTRE['dopou']      : 5,
+    ELT_FILTRE['cc']         : 6,
+    ELT_FILTRE['initiative'] : 7,
+    ELT_FILTRE['pp']         : 8,
+    ELT_FILTRE['sagesse']    : 9,
+    ELT_FILTRE['pods']       : 10,
+    ELT_FILTRE['pvp']        : 11,
+    ELT_FILTRE['pvm']        : 12,
+    ELT_FILTRE['retrait pa'] : 13,
+    ELT_FILTRE['retrait pm'] : 14,
+    ELT_FILTRE['esquive pa'] : 15,
+    ELT_FILTRE['esquive pm'] : 16,
+    ELT_FILTRE['repou']      : 17,
+    ELT_FILTRE['recri']      : 18,
+    ELT_FILTRE['tank']       : 19
 }
-classes_filtre={
+CLASSES_FILTRE={
     "tout" : "A"
     ,"feca" : "1"
     ,"osamodas" : "2"
@@ -166,7 +166,7 @@ def url_builder(element="rien",classes="rien",page="1",user="996244-metapano"):
                 filtre+="-"
             else:
                 first=False
-            filtre+=elt_filtre[elt]
+            filtre+=ELT_FILTRE[elt]
     
     if type(classes)==list:
         filtre+="&classes="
@@ -176,7 +176,7 @@ def url_builder(element="rien",classes="rien",page="1",user="996244-metapano"):
                 filtre+="-"
             else:
                 first2=False
-            filtre+=classes_filtre[cla]
+            filtre+=CLASSES_FILTRE[cla]
     
     
     return base+page_base+str(page)+membre+filtre
@@ -437,7 +437,6 @@ def upsert_stuff_data(stuff_list):
     }
 
 
-# Exemple d'utilisation
 if __name__ == "__main__":
 
     page_maxsize=20
@@ -461,7 +460,7 @@ if __name__ == "__main__":
                 "Invo": get_stuff_base_info(stuff['id'])["Invo"],
                 "Lvl" : get_stuff_base_info(stuff['id'])["Lvl"],
                 "classes": stuff["allowed_classes"],
-                "elements": [ raw_elt_to_id[elt_raw] for elt_raw in stuff["tags"]]
+                "elements": [ RAW_ELT_TO_ID[elt_raw] for elt_raw in stuff["tags"]]
             }
             stuff_liste.append(temp_dict)
         print("page "+str(i)+" finie")
