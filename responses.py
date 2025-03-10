@@ -213,8 +213,6 @@ Pour recevoir des recommandations de stuff il faut utiliser la commande `{prefix
 Exemple de requete valide : `{prefixe}stuff air+eau`
 - OPTIONNEL **classe** : une des classes du jeu écrite avec le nom complet, pour recevoir des stuff spécifiques à la classe donnée s'il y en a dans la bibliothèque.
 Ce qui nous fait une requete de la forme : `{prefixe}stuff eau+feu osamodas`
-
-<:terre:1348793514867294309>
 """
 #     elif command.group('arg1')=="calcul": #/wbhelp calcul
 #         resp= f"""
