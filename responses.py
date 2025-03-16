@@ -36,7 +36,7 @@ COLORS["terre"]="815633"
 COLORS["feu"]="d13800"
 COLORS["eau"]="398a89"
 COLORS["air"]="2b6f2d"
-COLORS["dopou"]="6f5794"
+COLORS["dopou"]="fa8400"
 COLORS["multi"]="f3cf0b"
 COLORS["vide"]="773d02"
 
