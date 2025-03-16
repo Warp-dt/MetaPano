@@ -47,7 +47,7 @@ connection_string = f"mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name
 
 def stuff_query(criteres : dict):
     elt_exclusifs=['terre', 'feu', 'eau', 'air', 'dopou']
-    elt_nonexclusifs=['cc', 'initiative', 'pp', 'sagesse', 'pods', 'pvp', 'pvm', 'retrait pa', 'retrait pm', 'esquive pa', 'esquive pm', 'repou', 'recri', 'tank']
+    elt_nonexclusifs=['cc', 'initiative', 'pp', 'sagesse', 'pods', 'pvp', 'pvm', 'retrait pa', 'retrait pm', 'esquive pa', 'esquive pm', 'repou', 'recri', 'tank','soin']
 
     #Query building
     select=f"""SELECT 

@@ -108,6 +108,7 @@ elt_filtre={
     ,'repou' :'rp'
     ,'recri' : 'rc'
     ,'tank' : 'tank'
+    ,'soin' : 'so'
     # ,'dodist' : 'dd'
     # ,'domelee' : 'dm'
     # ,'dosort' : 'ds'
@@ -131,7 +132,8 @@ raw_elt_to_id={
     elt_filtre['esquive pm'] : 16,
     elt_filtre['repou']      : 17,
     elt_filtre['recri']      : 18,
-    elt_filtre['tank']       : 19
+    elt_filtre['tank']       : 19,
+    elt_filtre['soin']       : 20
 }
 classes_filtre={
     "tout" : "A"

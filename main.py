@@ -180,7 +180,7 @@ async def on_disconnect():
 # STEP 3: SLASH COMMAND IMPLEMENTATION
 
 CRITERES=["Élément","Classe","PA","PM","PO","Invo","Lvl"]
-ELEMENTS_DB=['air','dopou', 'eau','feu','terre','cc','initiative','retrait pa', 'retrait pm', 'esquive pa', 'esquive pm', 'repou', 'recri', 'tank', 'pp', 'sagesse','pods','pvp', 'pvm']
+ELEMENTS_DB=['air','dopou', 'eau','feu','terre','cc','initiative','soin','retrait pa', 'retrait pm', 'esquive pa', 'esquive pm', 'repou', 'recri', 'tank', 'pp', 'sagesse','pods','pvp', 'pvm']
 LVL_TRANCHES=["200","199","198-195"]+[str(195-k*5-1)+'-'+str(190-k*5) for k in range(21)]+["<90"]
 
 
@@ -550,21 +550,12 @@ class CriteresSelect(discord.ui.Select):
             embed=next_critere_embed(sorted_criteres_restants), 
             view=self.view,
             ephemeral=True)
-    
-# CRITERES=["Élément","Classe","Lvl","PA","PM","PO","Invo"]
-# ELEMENTS_DB=['terre', 'feu', 'eau', 'air', 'dopou', 'cc', 'initiative', 'pp', 'sagesse', 'pods', 'pvp', 'pvm', 'retrait pa', 'retrait pm', 'esquive pa', 'esquive pm', 'repou', 'recri', 'tank']
-# [{'DB_id': 2885015, 'DB_surl': 'C6WV', 'Nom': 'mazin pnose ementaire', 'PA': 12, 'PM': 5, 'PO': 5, 'Invo': 5, 'Lvl': 200, 'Classe': 'osamodas,sadida', 'Elements': 'eau,feu'}]
+
 def resultat_embed(criteres : dict,assouplissement=None):
     if assouplissement is None:
         assouplissement = []
 
     stuff_list=find_stuff(criteres)
-
-    #gestion de l'absence de stuff trouvés
-    # la classe n'a pas cet élément
-    # élément n'a pas de stuff correspondants, que faire? éléments non primordiaux je suppose
-    # cas combo d'élément n'a pas de stuff -> réduire aux éléments primordiaux
-    # cas critères trop restrictifs pour l'élément -> enlever les critères dans l'ordre invo, po, puis si demande 12/6 proposer 11/6 ou 12/5 avec distinction
 
     if len(stuff_list)>0:
         # lors du renvoi de tous les stuff d'une classe, séparer par éléments primordiaux et mettre indication des éléments secondaires
@@ -594,7 +585,6 @@ def resultat_embed(criteres : dict,assouplissement=None):
         #field criteres
         content_criteres=''
         for crit in criteres.keys():
-            #{'Élément': ['terre', 'feu', 'eau'], 'Classe': 'xelor', 'Lvl': ['200', '198-195', '199'], 'PA': '11', 'PM': '5', 'PO': '1', 'Invo': '1'}
             if crit=="Élément":
                 content_criteres+=f"- {crit} : "
                 for c in criteres[crit]:
@@ -628,7 +618,6 @@ def resultat_embed(criteres : dict,assouplissement=None):
                     content_criteres+="\n"
                 else :
                     content_criteres+=f"- {c_assou}\n"
-            # embed.add_field(name="Attention",value=content_assouplis)
         embed.add_field(name="Critères", value=content_criteres, inline=True)
 
         #field(s) stuffs    
@@ -643,7 +632,6 @@ def resultat_embed(criteres : dict,assouplissement=None):
                     content_dict[elt]=f"- [**{stuff['Nom']}**](https://d-bk.net/fr/t/{stuff['DB_surl']})\n"
 
             for elt_princi in content_dict:
-                # print("elt_princi",elt_princi)
                 # print("elt_princi",elt_princi)
                 if ' ' in elt_princi:
                     emoji_elt=''.join([f'<:{e.replace(" ","")}:{bot.application_emojis[e.replace(" ","")]}>' for e in elt_princi.split(' ')])
@@ -660,7 +648,6 @@ def resultat_embed(criteres : dict,assouplissement=None):
         return embed
     
     else: #on a pas trouvé de stuff, on va donc assouplir les critères pour essayer de trouver quelque chose de proche
-        # CRITERES=["Élément","Classe","Lvl","PA","PM","PO","Invo"]
         criteres_altérés=criteres.copy()
         if "PO" in criteres:
             # print("PO")
