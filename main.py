@@ -656,6 +656,7 @@ def resultat_embed(criteres : dict,assouplissement=None):
             for stuff in stuff_list:
                 content_dblink+=f"- [**{stuff['Nom']}**](https://d-bk.net/fr/t/{stuff['DB_surl']})\n"
             embed.add_field(name="Liens dofusbook", value=content_dblink, inline=True)
+        embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
         return embed
     
     else: #on a pas trouvé de stuff, on va donc assouplir les critères pour essayer de trouver quelque chose de proche
