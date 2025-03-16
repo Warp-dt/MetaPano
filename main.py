@@ -879,21 +879,6 @@ Sur ma chaîne youtube je poste la majorité des rediff des matchs que je stream
 
 #################################################################################### emojis
 
-# @bot.event
-# async def on_ready():
-#     print(f'Bot connecté en tant que {bot.user}')
-    
-#     # Initialiser une session HTTP si elle n'existe pas déjà
-#     if not hasattr(bot, 'http_session'):
-#         bot.http_session = aiohttp.ClientSession()
-    
-#     # Récupérer les informations de l'application
-#     application = await bot.application_info()
-#     print(f"Application ID: {application.id}")
-    
-#     # Récupérer les emojis d'application via l'API HTTP
-#     await fetch_application_emojis(application.id)
-
 async def fetch_application_emojis(application_id):
     # L'URL de l'API pour les emojis d'application
     url = f"https://discord.com/api/v10/applications/{application_id}/emojis"
@@ -926,21 +911,21 @@ async def fetch_application_emojis(application_id):
         print(f"Erreur lors de la requête: {e}")
         return None
 
-@bot.tree.command()
-async def app_emojis(interaction: Interaction):
-    if hasattr(bot, 'application_emojis') and bot.application_emojis:
-        # Formatter et afficher les emojis
-        emoji_info = "\n".join([f"Nom: {emoji}, ID: {bot.application_emojis[emoji]}, <:{emoji}:{bot.application_emojis[emoji]}>" for emoji in bot.application_emojis])
-        await interaction.response.send_message(f"Emojis de l'application:\n{emoji_info[:1900]}")
+# @bot.tree.command()
+# async def app_emojis(interaction: Interaction):
+#     if hasattr(bot, 'application_emojis') and bot.application_emojis:
+#         # Formatter et afficher les emojis
+#         emoji_info = "\n".join([f"Nom: {emoji}, ID: {bot.application_emojis[emoji]}, <:{emoji}:{bot.application_emojis[emoji]}>" for emoji in bot.application_emojis])
+#         await interaction.response.send_message(f"Emojis de l'application:\n{emoji_info[:1900]}")
         
-        # # Exemple d'utilisation d'un emoji si disponible
-        # if bot.application_emojis:
-        #     emoji = bot.application_emojis[0]
-        #     emoji_id = emoji['id']
-        #     emoji_name = emoji['name']
-        #     await interaction.response.send_message(f"Exemple d'emoji: <:{emoji_name}:{emoji_id}>")
-    else:
-        await interaction.response.send_message("Aucun emoji d'application trouvé ou non encore chargé.")
+#         # # Exemple d'utilisation d'un emoji si disponible
+#         # if bot.application_emojis:
+#         #     emoji = bot.application_emojis[0]
+#         #     emoji_id = emoji['id']
+#         #     emoji_name = emoji['name']
+#         #     await interaction.response.send_message(f"Exemple d'emoji: <:{emoji_name}:{emoji_id}>")
+#     else:
+#         await interaction.response.send_message("Aucun emoji d'application trouvé ou non encore chargé.")
 
 # @bot.tree.command()
 # async def reload_emojis(interaction: Interaction):
