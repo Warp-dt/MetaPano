@@ -244,6 +244,7 @@ def help_response(command,plateforme="discord"):
 `{prefixe}stuff` : 
 - Sans arguments derrière la commande le bot t'envoie une interface à travers laquelle tu donne tes critères pour le stuff que tu veux.
 - Si tu connais déjà le fonctionnement du bot tu peux directement spécifier tes critères dans la commande en remplissant les arguments pour gagner du temps. Exemple : `/stuff element:terre eau classe:enutrof`
+- Liste des éléments valides : air, eau, feu, terre, dopou, cc, initiative, soin, retrait pa, retrait pm, esquive pa, esquive pm, repou, recri, tank, pp, sagesse, pods, pvp, pvm
 """    
     elif command=="twitch": #/wbhelp twitch
         resp= f"""
