@@ -38,16 +38,16 @@ COLORS["eau"]="398a89"
 COLORS["air"]="2b6f2d"
 COLORS["dopou"]="6f5794"
 COLORS["multi"]="f3cf0b"
+COLORS["vide"]="773d02"
 
 ELEMENTS=['terre', 'feu', 'eau', 'air', 'dopou', 'feu+terre', 'eau+terre', 
           'air+terre', 'dopou+terre', 'eau+feu', 'air+feu', 'dopou+feu', 
           'air+eau', 'dopou+eau', 'air+dopou', 'air+eau+terre', 'air+eau+feu', 
           'air+feu+terre', 'eau+feu+terre', 'air+dopou+eau', 'air+dopou+terre', 
           'dopou+feu+terre', 'air+dopou+feu', 'dopou+eau+feu', 'dopou+eau+terre', 
-          'multi']
-CLASSES=['xelor', 'enutrof', 'eniripsa', 'osamodas', 'zobal', 'sadida',
-       'steamer', 'sacrieur', 'iop', 'pandawa', 'ecaflip', 'cra', 'feca',
-       'sram', 'roublard','vide']
+          'multi',"vide"]
+CLASSES=['cra', 'ecaflip', 'eniripsa', 'enutrof', 'feca', 'iop', 'osamodas', 'pandawa',
+         'roublard','sacrieur', 'sadida', 'sram', 'steamer', 'xelor','zobal','vide']
 #dans elements et classes je rajoute vide et faux pour prendre en compte les cas où on ne remplis pas l'argument de l'un des deux, ça peut être normal
 
 STUFFS=dict()
@@ -124,7 +124,29 @@ IMAGES_LINK["dopou+feu+terre"]= "https://drive.google.com/uc?id="+"1VFuero8gQbfT
 IMAGES_LINK["air+dopou+feu"]=   "https://drive.google.com/uc?id="+"1H0KF6bFlOxMDPAlb0PxEc6tyTWTuYb9S"#https://drive.google.com/file/d/1H0KF6bFlOxMDPAlb0PxEc6tyTWTuYb9S/view?usp=sharing
 IMAGES_LINK["dopou+eau+feu"]=   "https://drive.google.com/uc?id="+"1EfMJiv-ltOpKcR1mZ0b1b_tpCtCQO74u"#https://drive.google.com/file/d/1EfMJiv-ltOpKcR1mZ0b1b_tpCtCQO74u/view?usp=sharing
 IMAGES_LINK["dopou+eau+terre"]= "https://drive.google.com/uc?id="+"1pDqCVYu4HXpfcxlLXslC2EpKeuH3epCO"#https://drive.google.com/file/d/1pDqCVYu4HXpfcxlLXslC2EpKeuH3epCO/view?usp=sharing
+IMAGES_LINK["air+eau+feu+terre"]="https://drive.google.com/uc?id="+"1sFla0c4Ze-AkuTM_ubTYjLzviTyu-c2f"#https://drive.google.com/file/d/1sFla0c4Ze-AkuTM_ubTYjLzviTyu-c2f/view?usp=sharing
 IMAGES_LINK["multi"]=           "https://drive.google.com/uc?id="+"1sFla0c4Ze-AkuTM_ubTYjLzviTyu-c2f"#https://drive.google.com/file/d/1sFla0c4Ze-AkuTM_ubTYjLzviTyu-c2f/view?usp=sharing
+IMAGES_LINK["vide"]=IMAGES_LINK["multi"]
+IMAGES_LINK["livre"]=           "https://drive.google.com/uc?id="+"1dgPyJFURlrr79gsMyoWTPFo8NntDkXob"#https://drive.google.com/file/d/1dgPyJFURlrr79gsMyoWTPFo8NntDkXob/view?usp=sharing
+IMAGES_LINK["harry"]=           "https://drive.google.com/uc?id="+"1vm8hxVat2uv0zMs7lsa2dF31Fkb_AkFw"#https://drive.google.com/file/d/1vm8hxVat2uv0zMs7lsa2dF31Fkb_AkFw/view?usp=sharing
+IMAGES_LINK["youtube"]=           "https://drive.google.com/uc?id="+"17LoeB0RmVWyD4EL3kX8toXzIISW-jlu6"#https://drive.google.com/file/d/17LoeB0RmVWyD4EL3kX8toXzIISW-jlu6/view?usp=sharing
+
+IMAGES_LINK["cra"]=         "https://drive.google.com/uc?id="+"1W0yIPA_r-iX7sHlOUQMyL0CCENAUavzD"# https://drive.google.com/file/d/1W0yIPA_r-iX7sHlOUQMyL0CCENAUavzD/view?usp=sharing
+IMAGES_LINK["ecaflip"]=     "https://drive.google.com/uc?id="+"14IWUtmmdPPnIcOwV_IiBisIcGtqr4bNH"#https://drive.google.com/file/d/14IWUtmmdPPnIcOwV_IiBisIcGtqr4bNH/view?usp=sharing
+IMAGES_LINK["eniripsa"]=    "https://drive.google.com/uc?id="+"1gmVI9bqu3g67pQbGkOVhDnt0oJlOExH2"#https://drive.google.com/file/d/1gmVI9bqu3g67pQbGkOVhDnt0oJlOExH2/view?usp=sharing
+IMAGES_LINK["enutrof"]=     "https://drive.google.com/uc?id="+"1g3Wk0bwnbYuuCklmWgWWA_j2JW7vC0uO"#https://drive.google.com/file/d/1g3Wk0bwnbYuuCklmWgWWA_j2JW7vC0uO/view?usp=sharing
+IMAGES_LINK["feca"]=        "https://drive.google.com/uc?id="+"19wy0EztiLpfoX8m05MgmWFneqlGUDStq"#https://drive.google.com/file/d/19wy0EztiLpfoX8m05MgmWFneqlGUDStq/view?usp=sharing
+IMAGES_LINK["iop"]=         "https://drive.google.com/uc?id="+"14zqpUXaa6Vvzk-IynOTd27FaG_iocxj-"#https://drive.google.com/file/d/14zqpUXaa6Vvzk-IynOTd27FaG_iocxj-/view?usp=sharing
+IMAGES_LINK["osamodas"]=    "https://drive.google.com/uc?id="+"15Jumw7bmFqPE6_ED-6lvsx12rD0nOgFa"#https://drive.google.com/file/d/15Jumw7bmFqPE6_ED-6lvsx12rD0nOgFa/view?usp=sharing
+IMAGES_LINK["pandawa"]=     "https://drive.google.com/uc?id="+"1Q3ZtJ3DKJP1yecaKgzNRQ-T1b4RS8VuA"#https://drive.google.com/file/d/1Q3ZtJ3DKJP1yecaKgzNRQ-T1b4RS8VuA/view?usp=sharing
+IMAGES_LINK["roublard"]=    "https://drive.google.com/uc?id="+"11yfOyZHbR-Ex0mU1jBx4Hq2RiMvjeN9B"#https://drive.google.com/file/d/11yfOyZHbR-Ex0mU1jBx4Hq2RiMvjeN9B/view?usp=sharing
+IMAGES_LINK["sacrieur"]=    "https://drive.google.com/uc?id="+"1ItDn6e0ATFxHFfub0FVQ3wBYi2m03mag"#https://drive.google.com/file/d/1ItDn6e0ATFxHFfub0FVQ3wBYi2m03mag/view?usp=sharing
+IMAGES_LINK["sadida"]=      "https://drive.google.com/uc?id="+"1RdbCi1_lNeZFLcJD4eNnHJPY1kIu96uh"#https://drive.google.com/file/d/1RdbCi1_lNeZFLcJD4eNnHJPY1kIu96uh/view?usp=sharing
+IMAGES_LINK["sram"]=        "https://drive.google.com/uc?id="+"1TLoJ1Dg-Y31aIrPDj8vg1A6H-hzSr-DP"#https://drive.google.com/file/d/1TLoJ1Dg-Y31aIrPDj8vg1A6H-hzSr-DP/view?usp=sharing
+IMAGES_LINK["steamer"]=     "https://drive.google.com/uc?id="+"1IV_-lIEsKEvfmOVOpdTelHAAYBCgWe6h"#https://drive.google.com/file/d/1IV_-lIEsKEvfmOVOpdTelHAAYBCgWe6h/view?usp=sharing
+IMAGES_LINK["xelor"]=       "https://drive.google.com/uc?id="+"1p_DCP4it8tL7EEradWE7B0e3bCjPIl21"#https://drive.google.com/file/d/1p_DCP4it8tL7EEradWE7B0e3bCjPIl21/view?usp=sharing
+IMAGES_LINK["zobal"]=       "https://drive.google.com/uc?id="+"1Feh1asb3iKvVvB5ABcrAiyDz35VTkiUO"#https://drive.google.com/file/d/1Feh1asb3iKvVvB5ABcrAiyDz35VTkiUO/view?usp=sharing
+
 #####################
 # MAIN RESPONSE
 #####################
@@ -181,6 +203,17 @@ IMAGES_LINK["multi"]=           "https://drive.google.com/uc?id="+"1sFla0c4Ze-Ak
 #####################
 # FONCTIONS UTILES
 #####################
+ELEMENTS_PRINCIPAUX=['air','dopou','eau', 'feu','terre']
+
+def no_secondary_elt(elt_list): #renvoie true si la liste est composée uniquement d'éléments principaux
+    for e in elt_list:
+        if not e in ELEMENTS_PRINCIPAUX:
+            return False
+    return True
+
+def filter_sort_main_elts(elt_list):
+    filt_sort=[e for e in ELEMENTS_PRINCIPAUX if e in elt_list]
+    return filt_sort
 
 #prend une liste d'éléments et la met sous la forme elt1+elt2+elt3...
 def from_elts_to_multi(elt_list):
@@ -208,28 +241,25 @@ def help_response(command,plateforme="discord"):
 
     if command=="stuff": #/wbhelp stuff
         resp= f"""
-Pour recevoir des recommandations de stuff il faut utiliser la commande `{prefixe}stuff élément classe`
-- **élément** : terre/feu/eau/air/dopou/multi ou toute combinaison d'éléments différents (excepté multi) séparés d'un '+', ex: élément+élément+... avec 3 éléments maximum
-Exemple de requete valide : `{prefixe}stuff air+eau`
-- OPTIONNEL **classe** : une des classes du jeu écrite avec le nom complet, pour recevoir des stuff spécifiques à la classe donnée s'il y en a dans la bibliothèque.
-Ce qui nous fait une requete de la forme : `{prefixe}stuff eau+feu osamodas`
-"""
-#     elif command.group('arg1')=="calcul": #/wbhelp calcul
-#         resp= f"""
-# TODO : pas de fonction donc pas d'explication pour le moment
-# """
+`{prefixe}stuff` : 
+- Sans arguments derrière la commande le bot t'envoie une interface à travers laquelle tu donne tes critères pour le stuff que tu veux.
+- Si tu connais déjà le fonctionnement du bot tu peux directement spécifier tes critères dans la commande en remplissant les arguments pour gagner du temps. Exemple : `/stuff element:terre eau classe:enutrof`
+"""    
     elif command=="twitch": #/wbhelp twitch
         resp= f"""
-`{prefixe}twitch` Répond avec les infos sur les prochains stream de prévus (si il n'y a pas de tournois de prévus probablement qu'il n'y aura pas de stream).
+`{prefixe}twitch` Renvoie les informations relative à la chaîne Twitch.
+"""
+    elif command=="youtube": #/wbhelp twitch
+        resp= f"""
+`{prefixe}youtube` Renvoie les informations relative à la chaîne Youtube.
 """
     else: #/wbhelp
         resp= f"""
-Il y a deux commandes :
-- Stuff  : pour recevoir des recommandations de stuff. `{prefixe}wbhelp stuff` pour plus de détails.
-- Twitch : pour avoir des infos sur les prochains stream de warp. Pas d'argument à rajouter, `{prefixe}twitch` vous renverra les informations nécessaires.
+Il y a trois commandes :
+- `{prefixe}stuff`  : pour recevoir des recommandations de stuff. `{prefixe}help stuff` pour plus de détails.
+- `{prefixe}twitch` : Renvoie les informations relative à la chaîne Twitch.
+- `{prefixe}youtube` : Renvoie les informations relative à la chaîne Youtube.
 """
-# - Calcul : pour avoir des estimations de dommage d'invocations ou dopou . `/wbhelp calcul` pour plus de détails.
-# - calcul : pour la formulation des calculs de dommage d'invocations ou dopou
     return resp
         
 def stuff_response(element,classe,plateforme="discord"):
@@ -303,32 +333,49 @@ Je n'ai pas de stuff dans ma bibliothèque qui corresponde au combo {elt.replace
     else: #avec une classe précisée
         error=0
         resp='pas trouvé'
-        if classe in STUFFS.keys():
-            if elt in STUFFS[classe].keys():
+        if elt=="vide": #sans élément précisé
+            if classe in STUFFS.keys(): #si on a au moins un stuff spécifique à la classe
                 resp=f"""
 Pour l'élément {elt.replace("+","/")} de la classe {classe} je te recommande :\n"""
-                for mode in STUFFS[classe][elt].keys():
-                    if len(STUFFS[classe][elt][mode])>0:
-                        resp+=f"- {mode} : {STUFFS[classe][elt][mode][0]}\n"
+                for c_elt in STUFFS[classe].keys():
+                    for mode in STUFFS[classe][c_elt].keys():
+                        if len(STUFFS[classe][c_elt][mode])>0:
+                            resp+=f"- {c_elt.replace('+','/')} | {mode} : {STUFFS[classe][c_elt][mode][0]}\n"
                 # resp+="N'hésite pas à tag Warp pour plus de détails sur ces stuffs."
-                
-        if resp=='pas trouvé':
-            resp=f"""
-Je n'ai pas de stuff {elt.replace("+","/")} spécifiques pour la classe {classe}, tu trouveras probablement ton bonheur dans les stuffs classiques de l'élément:\n"""
-            for mode in STUFFS[elt].keys():
-                if len(STUFFS[elt][mode])>0:
-                    resp+=f"- {mode} : {STUFFS[elt][mode][0]}\n"
-            # resp+="N'hésite pas à tag Warp pour plus de détails sur ces stuffs."
-        return resp,error
+                    
+            if resp=='pas trouvé':
+                resp=f"""
+    Je n'ai pas de stuff {elt.replace("+","/")} spécifiques pour la classe {classe}, tu trouveras probablement ton bonheur dans les stuffs classiques de l'élément:\n"""
+                for mode in STUFFS[elt].keys():
+                    if len(STUFFS[elt][mode])>0:
+                        resp+=f"- {mode} : {STUFFS[elt][mode][0]}\n"
+                # resp+="N'hésite pas à tag Warp pour plus de détails sur ces stuffs."
+            return resp,error
+        else: #avec un élément
+            if classe in STUFFS.keys():
+                if elt in STUFFS[classe].keys():
+                    resp=f"""
+    Pour l'élément {elt.replace("+","/")} de la classe {classe} je te recommande :\n"""
+                    for mode in STUFFS[classe][elt].keys():
+                        if len(STUFFS[classe][elt][mode])>0:
+                            resp+=f"- {mode} : {STUFFS[classe][elt][mode][0]}\n"
+                    # resp+="N'hésite pas à tag Warp pour plus de détails sur ces stuffs."
+                    
+            if resp=='pas trouvé':
+                resp=f"""
+    Je n'ai pas de stuff {elt.replace("+","/")} spécifiques pour la classe {classe}, tu trouveras probablement ton bonheur dans les stuffs classiques de l'élément:\n"""
+                for mode in STUFFS[elt].keys():
+                    if len(STUFFS[elt][mode])>0:
+                        resp+=f"- {mode} : {STUFFS[elt][mode][0]}\n"
+                # resp+="N'hésite pas à tag Warp pour plus de détails sur ces stuffs."
+            return resp,error
     error=4
     resp="Vraisemblablement il y a une erreur dans le code : tu ne devrais pas arriver ici, tag Warp pour qu'il répare le bug stp <3"
     return resp,error
 
 def color_mix(elements):
-    try:
-        colors_list=[COLORS[k]for k in lecture_elt(elements).split('+')]
-    except: #erreur dans les éléments
-        return int("000000",16)
+    colors_list=[COLORS[k]for k in COLORS.keys() if k in elements]
+    
     tot_weight = len(colors_list)
     red = int(sum([int(k[:2], 16) for k in colors_list])/tot_weight)
     green = int(sum([int(k[2:4], 16) for k in colors_list])/tot_weight)
