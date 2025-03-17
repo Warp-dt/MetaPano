@@ -48,7 +48,7 @@ connection_string = f"mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name
 def stuff_query(criteres : dict):
     elt_exclusifs=['terre', 'feu', 'eau', 'air', 'dopou']
     elt_nonexclusifs=['cc', 'initiative', 'pp', 'sagesse', 'pods', 'pvp', 'pvm', 'retrait pa', 'retrait pm', 'esquive pa', 'esquive pm', 'repou', 'recri', 'tank','soin']
-
+    # print(criteres)
     #Query building
     select=f"""SELECT 
     s.DB_id
@@ -118,8 +118,8 @@ sum(CASE WHEN c.Nom = '{criteres["Classe"]}'
         
         if len(criteres["Élément"])==1 and criteres["Élément"][0]=="dopou":
             if first_having:
-                    having+="HAVING\n"
-                    first_having=False
+                having+="HAVING\n"
+                first_having=False
             else:
                 having+="AND\n"
             having+="""sum(CASE WHEN e.Nom = 'dopou' THEN 1 ELSE 0 END) >0\n"""
@@ -134,7 +134,7 @@ sum(CASE WHEN c.Nom = '{criteres["Classe"]}'
                 having+=f"""sum(CASE WHEN e.Nom = '{str(elt)}' THEN 1 ELSE 0 END) >0\n"""
 
             exclusifs_non_inclus=[x for x in elt_exclusifs if x not in criteres["Élément"]]
-            if len(exclusifs_non_inclus)>0:
+            if len(exclusifs_non_inclus)>0 and len(exclusifs_non_inclus)<5:
                 having+=f"""AND
 -- check que le stuff n'ai pas un autre élément exclusif (=terre,feu,eau,air,dopou)
 sum(CASE WHEN e.Nom IN ({str(exclusifs_non_inclus).replace("[",'').replace("]",'')}) THEN 1 ELSE 0 END) = 0\n"""
@@ -151,8 +151,13 @@ def find_stuff(criteres : dict):
 
     # print(query)
 
-    with engine.connect() as conn:        
-        result = conn.execute(text(query)).fetchall()
+    with engine.connect() as conn:
+        try:        
+            result = conn.execute(text(query)).fetchall()
+        except:
+            conn.close()
+            engine.dispose()
+            return []
         conn.close()
     engine.dispose()
     return [dict(r._mapping) for r in result]

@@ -10,7 +10,7 @@ import asyncio
 import sys
 import aiohttp
 
-from responses import help_response,color_mix,IMAGES_LINK,image_response,CLASSES, filter_sort_main_elts,ELEMENTS_PRINCIPAUX, no_secondary_elt
+from responses import help_response,color_mix,IMAGES_LINK,image_response,CLASSES, filter_sort_main_elts,ELEMENTS_PRINCIPAUX, no_secondary_elt,no_main_elt
 from PanoDB_link import find_stuff
 
 
@@ -643,6 +643,9 @@ def resultat_embed(criteres : dict,assouplissement=None):
             content_dblink=''
             for stuff in stuff_list:
                 content_dblink+=f"- [**{stuff['Nom']}**](https://d-bk.net/fr/t/{stuff['DB_surl']})\n"
+                if len(content_dblink)>800:
+                    content_dblink+="D'autres stuffs existent mais je n'ai pas assez de place ici pour tous les lister, précise ta recherche."
+                    break
             embed.add_field(name="Liens dofusbook", value=content_dblink, inline=True)
         embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
         return embed
@@ -657,7 +660,7 @@ def resultat_embed(criteres : dict,assouplissement=None):
             # print("Invo")
             criteres_altérés.pop('Invo')
             assouplissement.insert(0,('Invo',criteres["Invo"]))
-        elif "Élément" in criteres and not no_secondary_elt(criteres["Élément"]): #si on a filtré sur les éléments et si il y a un élément non principal dans la liste, j'avoue la formulation est bizarre mais ça marche tkt
+        elif "Élément" in criteres and not no_secondary_elt(criteres["Élément"]) and not no_main_elt(criteres["Élément"]): #si on a filtré sur les éléments et si il y a un élément non principal dans la liste, j'avoue la formulation est bizarre mais ça marche tkt
             criteres_altérés["Élément"]=filter_sort_main_elts(criteres_altérés["Élément"])
             assouplissement.insert(0,("Élément",criteres["Élément"]))
             # print("Élément")
@@ -788,8 +791,9 @@ async def stuff(interaction: Interaction,
         
         if len(elt_error)==0: #si il n'y a pas eu d'erreur
             # print("crit", criteres)
+            resp=resultat_embed(criteres)
             await interaction.response.send_message(
-                embed=resultat_embed(criteres), 
+                embed=resp, 
                 ephemeral=False)
         else: #erreur dans les éléménts
             embed = Embed(
@@ -799,8 +803,8 @@ async def stuff(interaction: Interaction,
             embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL d'une image pour l'illustration
             err_resp=""
             for err in elt_error:
-                err_resp+=f"\nElement `{err}` non reconnu.\n"
-            err_resp+="""Liste des éléments valides :
+                err_resp+=f"Element `{err}` non reconnu.\n"
+            err_resp+="""\nListe des éléments valides :
 - air, eau, feu, terre, dopou, cc, initiative, soin, retrait pa, retrait pm, esquive pa, esquive pm, repou, recri, tank, pp, sagesse, pods, pvp, pvm
 Et toute combinaison de ces éléments."""
             # print("err_resp",err_resp)

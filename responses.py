@@ -39,6 +39,18 @@ COLORS["air"]="2b6f2d"
 COLORS["dopou"]="fa8400"
 COLORS["multi"]="f3cf0b"
 COLORS["vide"]="773d02"
+COLORS["soin"]="ff59e0"
+COLORS["cc"]="EE2C20"
+COLORS["initiative"]="982DB3"
+COLORS["pp"]="229CE1"
+COLORS["sagesse"]="8162FF"
+COLORS["pods"]="A46D41"
+COLORS["repou"]="FC4903"
+COLORS["recri"]="FF4233"
+COLORS["retrait pa"]="30F8FC"
+COLORS["retrait pm"]="83AF3D"
+COLORS["esquive pa"]="30F8FC"
+COLORS["esquive pm"]="83AF3D"
 
 ELEMENTS=['terre', 'feu', 'eau', 'air', 'dopou', 'feu+terre', 'eau+terre', 
           'air+terre', 'dopou+terre', 'eau+feu', 'air+feu', 'dopou+feu', 
@@ -212,6 +224,12 @@ def no_secondary_elt(elt_list): #renvoie true si la liste est composée uniqueme
             return False
     return True
 
+def no_main_elt(elt_list): #renvoie true si la liste est composée uniquement d'éléments secondaires
+    for e in elt_list:
+        if e in ELEMENTS_PRINCIPAUX:
+            return False
+    return True
+
 def filter_sort_main_elts(elt_list):
     filt_sort=[e for e in ELEMENTS_PRINCIPAUX if e in elt_list]
     return filt_sort
@@ -376,8 +394,10 @@ Pour l'élément {elt.replace("+","/")} de la classe {classe} je te recommande :
     return resp,error
 
 def color_mix(elements):
-    colors_list=[COLORS[k]for k in COLORS.keys() if k in elements]
     
+    colors_list=[COLORS[k]for k in COLORS.keys() if k in elements]
+    if len(colors_list)==0:
+        return 0x000000
     tot_weight = len(colors_list)
     red = int(sum([int(k[:2], 16) for k in colors_list])/tot_weight)
     green = int(sum([int(k[2:4], 16) for k in colors_list])/tot_weight)
