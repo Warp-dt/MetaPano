@@ -865,7 +865,7 @@ Sur ma chaîne youtube je poste la majorité des rediff des matchs que je stream
     await interaction.response.send_message(embed=embed)
 
 # Dofusbook command
-@bot.tree.command(name="dofusbook", description="Le lien de la bibliothèque de stuff sur dofusbook/")
+@bot.tree.command(name="dofusbook", description="Le lien de la bibliothèque de stuff sur dofusbook")
 async def twitch(interaction: Interaction):
     embed = Embed(
         title=f"Dofusbook",
@@ -942,30 +942,6 @@ async def fetch_application_emojis(application_id):
 async def on_shutdown():
     if hasattr(bot, 'http_session'):
         await bot.http_session.close()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
