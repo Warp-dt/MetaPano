@@ -800,7 +800,9 @@ async def stuff(interaction: Interaction,
             err_resp=""
             for err in elt_error:
                 err_resp+=f"Element `{err}` non reconnu.\n"
-            err_resp+="- Liste des éléments valides : air, eau, feu, terre, dopou, cc, initiative, soin, retrait pa, retrait pm, esquive pa, esquive pm, repou, recri, tank, pp, sagesse, pods, pvp, pvm"
+            err_resp+="""Liste des éléments valides :
+- air, eau, feu, terre, dopou, cc, initiative, soin, retrait pa, retrait pm, esquive pa, esquive pm, repou, recri, tank, pp, sagesse, pods, pvp, pvm
+Et toute combinaison de ces éléments."""
             # print("err_resp",err_resp)
             embed.add_field(name='Liste des erreurs :', value=err_resp)
             await interaction.response.send_message(
