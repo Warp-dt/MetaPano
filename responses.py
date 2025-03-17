@@ -130,6 +130,7 @@ IMAGES_LINK["vide"]=IMAGES_LINK["multi"]
 IMAGES_LINK["livre"]=           "https://drive.google.com/uc?id="+"1dgPyJFURlrr79gsMyoWTPFo8NntDkXob"#https://drive.google.com/file/d/1dgPyJFURlrr79gsMyoWTPFo8NntDkXob/view?usp=sharing
 IMAGES_LINK["harry"]=           "https://drive.google.com/uc?id="+"1vm8hxVat2uv0zMs7lsa2dF31Fkb_AkFw"#https://drive.google.com/file/d/1vm8hxVat2uv0zMs7lsa2dF31Fkb_AkFw/view?usp=sharing
 IMAGES_LINK["youtube"]=           "https://drive.google.com/uc?id="+"17LoeB0RmVWyD4EL3kX8toXzIISW-jlu6"#https://drive.google.com/file/d/17LoeB0RmVWyD4EL3kX8toXzIISW-jlu6/view?usp=sharing
+IMAGES_LINK["dofusbook"]=       "https://drive.google.com/uc?id="+"1yDRYdRmBz5zxIfZTWbqzC4W4oDLTvVai"#https://drive.google.com/file/d/1yDRYdRmBz5zxIfZTWbqzC4W4oDLTvVai/view?usp=sharing
 
 IMAGES_LINK["cra"]=         "https://drive.google.com/uc?id="+"1W0yIPA_r-iX7sHlOUQMyL0CCENAUavzD"# https://drive.google.com/file/d/1W0yIPA_r-iX7sHlOUQMyL0CCENAUavzD/view?usp=sharing
 IMAGES_LINK["ecaflip"]=     "https://drive.google.com/uc?id="+"14IWUtmmdPPnIcOwV_IiBisIcGtqr4bNH"#https://drive.google.com/file/d/14IWUtmmdPPnIcOwV_IiBisIcGtqr4bNH/view?usp=sharing

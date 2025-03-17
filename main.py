@@ -851,13 +851,6 @@ async def twitch(interaction: Interaction):
         title=f"Youtube",
         color=0xFF0000 # Couleur twitch
     )
-    for emo in bot.emojis:
-        print(emo)
-    emojis = []
-    for i in bot.guilds:
-        for j in i.emojis:
-            emojis.append(j) 
-    print(emojis)
     embed.set_thumbnail(url=IMAGES_LINK["youtube"])  # URL d'une image pour l'illustration
     embed.add_field(name="Lien de la chaîne :",value=("[**Warp-dt**](https://www.youtube.com/channel/UCVMa-curO2R2fJNQALwB2tQ)"), inline=False)
     embed.add_field(name="Contenu :", value=(f"""
@@ -865,6 +858,19 @@ Sur ma chaîne youtube je poste la majorité des rediff des matchs que je stream
     embed.set_footer(text="N'hésite pas à t'abonner pour être au courant quand je sors une nouvelle vidéo.")
     await interaction.response.send_message(embed=embed)
 
+# Dofusbook command
+@bot.tree.command(name="dofusbook", description="Le lien de la bibliothèque de stuff sur dofusbook/")
+async def twitch(interaction: Interaction):
+    embed = Embed(
+        title=f"Dofusbook",
+        color=0x1b3a57 # Couleur twitch
+    )
+    embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
+    embed.add_field(name="Bibliothèque de stuffs :",value=("[**MetaPano**](https://d-bk.net/fr/tl/4BAS)"), inline=False)
+    embed.add_field(name="Contenu :", value=(f"""
+Tous les stuffs que le bot va recommander sont présents dans ce compte dofusbook, c'est en quelques sorte la base de connaissance du bot ce compte là."""), inline=False)
+    embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+    await interaction.response.send_message(embed=embed)
 
 #################################################################################### emojis
 
