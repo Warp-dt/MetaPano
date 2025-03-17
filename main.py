@@ -799,7 +799,7 @@ async def stuff(interaction: Interaction,
             embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL d'une image pour l'illustration
             err_resp=""
             for err in elt_error:
-                err_resp+=f"Element `{err}` non reconnu.\n"
+                err_resp+=f"\nElement `{err}` non reconnu.\n"
             err_resp+="""Liste des éléments valides :
 - air, eau, feu, terre, dopou, cc, initiative, soin, retrait pa, retrait pm, esquive pa, esquive pm, repou, recri, tank, pp, sagesse, pods, pvp, pvm
 Et toute combinaison de ces éléments."""
