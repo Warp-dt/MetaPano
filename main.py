@@ -1,5 +1,6 @@
 from typing import Final
 import os
+import re
 import signal
 from dotenv import load_dotenv
 import discord
@@ -24,9 +25,38 @@ intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 # STEP 2: HANDLING THE STARTUP FOR OUR BOT
+
+def parse_log(log_message):
+    pattern = r"(?P<user>[\w.]+) used /(?P<command>\w+)(?: with args: (?P<args>.*?))? in server (?P<server>.*?) channel (?P<channel>.*?)$"
+    match = re.match(pattern, log_message)
+
+    if not match:
+        return None
+
+    user = match.group("user")
+    command = match.group("command")
+    args_raw = match.group("args")
+    server = match.group("server")
+    channel = match.group("channel")
+
+    # Parse arguments
+    args = {}
+    if args_raw:
+        args_pattern = r"(\w+): (.+?)(?= \| |$)"
+        args = {m.group(1): m.group(2) for m in re.finditer(args_pattern, args_raw)}
+
+    return {
+        "USER": user,
+        "COMMAND": command,
+        "ARGS": args,
+        "SERVERNAME": server,
+        "CHANNELNAME": channel
+    }
+
+
 @bot.event
 async def on_ready() -> None:
-    rint(f'{bot.user} is now running!')
+    print(f'{bot.user} is now running!')
 
     commands_channel=bot.get_channel(1335368709157421056)
 
