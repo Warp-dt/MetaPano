@@ -26,13 +26,139 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 # STEP 2: HANDLING THE STARTUP FOR OUR BOT
 @bot.event
 async def on_ready() -> None:
-    print(f'{bot.user} is now running!')
-    # Sync the slash commands once the bot is ready
+    rint(f'{bot.user} is now running!')
+
+    commands_channel=bot.get_channel(1335368709157421056)
+
+    #dashboard
+    commands_messages = [message async for message in commands_channel.history(limit=None) if message.author.id==1288167324586872842] #tous les messages de metapano
+    dashboard_channel=bot.get_channel(1352443097337827378)
+    usage_commandes={
+        "stuff" : 0
+        ,"help" : 0
+        ,"twitch" : 0
+        ,"youtube" : 0
+        ,"dofusbook" : 0
+    }
+    usage_classes={c : 0 for c in CLASSES}
+    usage_elements=dict()
+    usage_users=dict()
+    usage_servers=dict()
+    usage_channels=dict()
+
     try:
-        await bot.tree.sync()
-        print("Slash commands have been synced successfully!")
+        for i in commands_messages:
+            log_parsed=parse_log(i.content)
+            if log_parsed:
+                if log_parsed["USER"]!="warp_is_fine":
+                    if log_parsed["COMMAND"] in usage_commandes.keys():
+                        usage_commandes[log_parsed["COMMAND"]]+=1
+                    else:
+                        usage_commandes[log_parsed["COMMAND"]]=1
+                    if log_parsed["USER"] in usage_users.keys():
+                        usage_users[log_parsed["USER"]]+=1
+                    else:
+                        usage_users[log_parsed["USER"]]=1
+                    if log_parsed["SERVERNAME"] in usage_servers.keys():
+                        usage_servers[log_parsed["SERVERNAME"]]+=1
+                    else:
+                        usage_servers[log_parsed["SERVERNAME"]]=1
+                    if log_parsed["CHANNELNAME"] in usage_channels.keys():
+                        usage_channels[log_parsed["CHANNELNAME"]]+=1
+                    else:
+                        usage_channels[log_parsed["CHANNELNAME"]]=1
+                    if 'classe' in log_parsed["ARGS"].keys():
+                        if log_parsed["ARGS"]["classe"].strip().lower() in usage_classes.keys():
+                            usage_classes[log_parsed["ARGS"]["classe"].strip().lower()]+=1
+                        else:
+                            usage_classes[log_parsed["ARGS"]["classe"].strip().lower()]=1
+                    if 'element' in log_parsed["ARGS"].keys():
+                        if log_parsed["ARGS"]["element"].strip().lower().replace("+"," ").replace("/"," ") in usage_elements.keys():
+                            usage_elements[log_parsed["ARGS"]["element"].strip().lower().replace("+"," ").replace("/"," ")]+=1
+                        else:
+                            usage_elements[log_parsed["ARGS"]["element"].strip().lower().replace("+"," ").replace("/"," ")]=1
+        print("Logs are parsed and the dashboard is updated")     
     except Exception as e:
-        print(f"Failed to sync commands: {e}")
+        print(f"Failed to parse and  commands log, error : {e}")
+
+
+    try:
+        s_usage_commandes=dict(sorted(usage_commandes.items(), key=lambda item: item[1],reverse=True))
+        s_usage_users=dict(sorted(usage_users.items(), key=lambda item: item[1],reverse=True))
+        s_usage_classes=dict(sorted(usage_classes.items(), key=lambda item: item[1],reverse=True))
+        s_usage_servers=dict(sorted(usage_servers.items(), key=lambda item: item[1],reverse=True))
+        s_usage_channels=dict(sorted(usage_channels.items(), key=lambda item: item[1],reverse=True))
+        s_usage_elements=dict(sorted(usage_elements.items(), key=lambda item: item[1],reverse=True))
+
+        mc=0 #messages counter
+        dashboard=[]
+        
+        dashboard.append('__**COMMANDES:**__\n')
+        for cmd in s_usage_commandes:
+            line=f'- {cmd} : {s_usage_commandes[cmd]}\n'
+            if len(dashboard[mc])+len(line)<1990:
+                dashboard[mc]+=line
+            else:
+                dashboard.append(line)
+                mc+=1
+        dashboard[mc]+='\n'
+
+        dashboard[mc]+='__**USERS:**__\n'
+        for cmd in s_usage_users:
+            line=f'- {cmd} : {s_usage_users[cmd]}\n'
+            if len(dashboard[mc])+len(line)<1990:
+                dashboard[mc]+=line
+            else:
+                dashboard.append(line)
+                mc+=1
+        dashboard[mc]+='\n'
+
+        dashboard[mc]+='__**CLASSES:**__\n'
+        for cmd in s_usage_classes:
+            line=f'- {cmd} : {s_usage_classes[cmd]}\n'
+            if len(dashboard[mc])+len(line)<1990:
+                dashboard[mc]+=line
+            else:
+                dashboard.append(line)
+                mc+=1
+        dashboard[mc]+='\n'
+
+        dashboard[mc]+='__**ELEMENTS:**__\n'
+        for cmd in s_usage_elements:
+            line=f'- {cmd} : {s_usage_elements[cmd]}\n'
+            if len(dashboard[mc])+len(line)<1990:
+                dashboard[mc]+=line
+            else:
+                dashboard.append(line)
+                mc+=1
+        dashboard[mc]+='\n'
+
+        dashboard[mc]+='__**SERVERS:**__\n'
+        for cmd in s_usage_servers:
+            line=f'- {cmd} : {s_usage_servers[cmd]}\n'
+            if len(dashboard[mc])+len(line)<1990:
+                dashboard[mc]+=line
+            else:
+                dashboard.append(line)
+                mc+=1
+        dashboard[mc]+='\n'
+
+        dashboard[mc]+='__**CHANNELS:**__\n'
+        for cmd in s_usage_channels:
+            line=f'- {cmd} : {s_usage_channels[cmd]}\n'
+            if len(dashboard[mc])+len(line)<1990:
+                dashboard[mc]+=line
+            else:
+                dashboard.append(line)
+                mc+=1
+        dashboard[mc]+='\n'
+
+        for dash_msg in dashboard:
+            await dashboard_channel.send(dash_msg)
+        
+        print('Dashboard message posted!')
+    except Exception as e:
+        print(f"Failed to post dashboard message, error : {e}")
 
     ### récupération des emoji
     # Initialiser une session HTTP si elle n'existe pas déjà
@@ -63,6 +189,13 @@ async def on_ready() -> None:
             
         except Exception as e:
             print(f"Failed to send activation message: {e}")
+    
+    # Sync the slash commands once the bot is ready
+    try:
+        await bot.tree.sync()
+        print("Slash commands have been synced successfully!")
+    except Exception as e:
+        print(f"Failed to sync commands: {e}")
 
 # Commands logging
 @bot.event
