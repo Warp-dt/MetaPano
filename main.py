@@ -183,6 +183,17 @@ async def on_ready() -> None:
                 mc+=1
         dashboard[mc]+='\n'
 
+        resume=f"""__**RÉSUMÉ:**__
+- nombre de commandes utilisées : {sum(usage_commandes.values())}
+- nombre d'utilisateurs uniques : {len(usage_users.keys())-1}
+- nombre de serveurs : {len(usage_servers.keys())}
+"""     
+        if len(dashboard[mc])+len(resume)<1990:
+            dashboard[mc]+=resume
+        else:
+            dashboard.append(resume)
+            mc+=1
+        
         for dash_msg in dashboard:
             await dashboard_channel.send(dash_msg)
         
@@ -199,22 +210,11 @@ async def on_ready() -> None:
     # Récupérer les emojis d'application via l'API HTTP
     await fetch_application_emojis(application.id)
     
-    ### display des serveurs sur lequel le bot est installé
+    # activation message
     channel = bot.get_channel(1308510294506606623)
     if channel is not None:
         try:
             await channel.send("Hello World!")
-            # liste des serveurs dans lesquels le bot est présent
-            for guild in bot.guilds:
-                print(f"Server: {guild.name} | Members count: {guild.member_count}")
-                # print(guild.icon)
-                # print(guild.owner)
-                # print(guild.banner)
-                # print(guild.members)
-                # print(guild.preferred_locale)
-                # for member in guild.members:
-                #     print(member) # prints all members names one by one
-                print('_________')
             print("Activation message sent successfully.")
             
         except Exception as e:
@@ -1008,7 +1008,9 @@ async def twitch(interaction: Interaction):
     embed.add_field(name="Planning :", value=(f"""
 Je stream la majorité des tournois pvp sur dofus touch, sauf quand je participe bien sur !
 Au programme :
-- Pas de tournois en ce moment mais quasi tous les soirs je stream des 3v3 kamas!
+- 25/26/27 avril : Tournois Tiliwan 2 (je stream)
+- 2/3/4 mai : Tournois Tiliwan 1 (je stream)
+- 9/10/11 avril : Tournois Herdegrize (je participe)/Oshimo/Terra Cogita
 """), inline=False)
     embed.set_footer(text="N'hésite pas à follow pour être au courant quand je lance un stream.")
     await interaction.response.send_message(embed=embed)
