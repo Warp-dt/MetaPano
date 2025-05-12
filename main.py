@@ -992,7 +992,7 @@ async def help(interaction: Interaction, commande: str ='vide'):
     )
 
     embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL d'une image pour l'illustration
-    embed.add_field(name="Comment utiliser WarpBot?", value=(resp), inline=False)
+    embed.add_field(name="Comment utiliser MetaPano?", value=(resp), inline=False)
     await interaction.response.send_message(embed=embed)
 
 # twitch command
@@ -1008,9 +1008,7 @@ async def twitch(interaction: Interaction):
     embed.add_field(name="Planning :", value=(f"""
 Je stream la majorité des tournois pvp sur dofus touch, sauf quand je participe bien sur !
 Au programme :
-- 25/26/27 avril : Tournois Tiliwan 2 (je stream)
-- 2/3/4 mai : Tournois Tiliwan 1 (je stream)
-- 9/10/11 avril : Tournois Herdegrize (je participe)/Oshimo/Terra Cogita
+- pas de tournois prévus pour le moment
 """), inline=False)
     embed.set_footer(text="N'hésite pas à follow pour être au courant quand je lance un stream.")
     await interaction.response.send_message(embed=embed)
