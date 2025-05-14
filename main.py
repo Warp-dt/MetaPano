@@ -731,17 +731,18 @@ def resultat_embed(criteres : dict,assouplissement=None):
             color=color_mix(["vide"])
             if "Classe" in criteres.keys():
                 titre=f'Stuffs {criteres["Classe"]}'
+            else:
+                titre='Stuffs'
         embed = Embed(
             title=titre,
             color=color #0x773d02#607d83
         )
-        try:
+        if "Élément" in criteres:
             illustration=IMAGES_LINK['+'.join(filter_sort_main_elts(criteres["Élément"]))]
-        except:
-            try:
-                illustration=IMAGES_LINK[criteres["Classe"]]
-            except:
-                illustration=IMAGES_LINK["harry"]
+        elif "Classe" in criteres:
+            illustration=IMAGES_LINK[criteres["Classe"]]
+        else:
+            illustration=IMAGES_LINK["harry"]
         
         embed.set_thumbnail(url=illustration)  # URL d'une image pour l'illustration
 
@@ -853,13 +854,17 @@ def resultat_embed(criteres : dict,assouplissement=None):
                 title="Oups",
                 color=color#0xff0000 #0x773d02#607d83
             )
-            try:
+            if "Élément" in criteres:
                 illustration=IMAGES_LINK['+'.join(filter_sort_main_elts(criteres["Élément"]))]
-            except:
+            else:
                 illustration=IMAGES_LINK["error"]
             embed.set_thumbnail(url=IMAGES_LINK["error"]) 
-            embed.add_field(name=f'Élément {" ".join(criteres["Élément"])} vide',value="Je n'ai pas de stuff dans ma base pour cet élément ou cette combinaison d'éléments.")
-            embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")    
+            if "Élément" in criteres:
+                embed.add_field(name=f'Élément {" ".join(criteres["Élément"])} vide',value="Je n'ai pas de stuff dans ma base pour cet élément ou cette combinaison d'éléments.")
+            else:
+                embed.add_field(name="Recherche vide", value="Je n'ai pas de stuff dans ma base pour cette recherche.")
+            
+            embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
             return embed
         
         # print(criteres_altérés,assouplissement)
