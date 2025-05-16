@@ -1,5 +1,6 @@
 .env
 warpbot_maj.bat - Raccourci
+custom_biblio.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
