@@ -1306,7 +1306,7 @@ async def bibliotheques(interaction: Interaction): #affiche un embed avec la bib
             if channel == "default":
                 bibli_default=f"[{nom_biblio}]({'https://touch.dofusbook.net/fr/membre/'+biblio_id+'-db/equipements'})"
             else:
-                bibli_canal+=f"- {channel} : [{nom_biblio}]({'https://touch.dofusbook.net/fr/membre/'+biblio_id+'-db/equipements'})\n"
+                bibli_canal+=f"- {channel} : [{nom_biblio}]({'https://touch.dofusbook.net/fr/membre/'+biblio_id+'-db/equipements'})  | importée : {CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild][channel][0]]["imported"]}\n"
         if bibli_canal=="":
             bibli_canal="Aucun canal n'utilise de bibliothèque différente de celle par défaut."
         embed = Embed(
