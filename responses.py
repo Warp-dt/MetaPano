@@ -1,33 +1,3 @@
-
-from random import choice, randint
-import re
-
-
-# idées de dialogues possibles avec le bot:
-'''
-* WarpBot stuff element classe
-    - element : terre/feu/eau/air/dopou
-    - classe : logique poto
-pourquoi pas rajouter une manière de spécifier docri/12pa 6pm/etc
-l'idée est de renvoyer un message avec la présentation des stuff classiques ou spécifiques à chaque classe selon ce que la personne a mis comme info
-
-* WarpBot calcul invo dofusbook
-    - invo : dragonnet/momie/bouftou/craqueleur/sanglier/tofu
-    - dofusbook : lien d'un stuff dofusbook (ex : https://d-bk.net/fr/t/9nwN )
-l'idée est d'envoyer le calcul des dégats des sorts de l'invo en question par le stuff en question
-
-* WarpBot twitch
-donne les infos sur les prochains stream que je vais faire
-'''
-
-
-'''
-idée présentation stuffs : dict avec tous les elements/modes + toutes les classes
-chaque element du dict c'est un dict
-quand une classe ne contient pas l'element on dit "j'ai pas de scpécifique mais voici les bases de cet element"
-bi elem écris de la maniere suivante "terre+feu" mais rangés par ordre alphabétique, histoire de pouvoir créer facilement la string 
-'''
-
 #####################
 # VARIABLES
 #####################

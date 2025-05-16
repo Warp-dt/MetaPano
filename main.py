@@ -1,6 +1,7 @@
 from typing import Final
 import os
 import re
+import requests as req
 import signal
 from dotenv import load_dotenv
 import discord
@@ -13,7 +14,18 @@ import aiohttp
 
 from responses import help_response,color_mix,IMAGES_LINK,image_response,CLASSES, filter_sort_main_elts,ELEMENTS_PRINCIPAUX, no_secondary_elt,no_main_elt
 from PanoDB_link import find_stuff
+import json
 
+# Load the JSON file into memory
+CUSTOM_BIBLIO = {}
+try:
+    with open("custom_biblio.json", "r", encoding="utf-8") as file:
+        CUSTOM_BIBLIO = json.load(file)
+    print("custom_biblio.json loaded successfully!")
+except FileNotFoundError:
+    print("custom_biblio.json not found. Please ensure the file exists in the working directory.")
+except json.JSONDecodeError as e:
+    print(f"Error decoding custom_biblio.json: {e}")
 
 # STEP 0: LOAD OUR TOKEN FROM SOMEWHERE SAFE
 load_dotenv()
@@ -366,9 +378,12 @@ class LvlSelect(discord.ui.Select):
     async def callback(self, interaction: discord.Interaction):
         self.criteres_val["Lvl"]=self.values
         self.view.clear_items()
+        channel = interaction.channel.name if interaction.channel else "DM"
+        guild = interaction.guild.name if interaction.guild else "DM"
+
         await interaction.response.defer()
         await interaction.followup.send(
-            embed=resultat_embed(self.criteres_val),  
+            embed=resultat_embed(self.criteres_val,biblio=custom_bibli(channel,guild)),
             view=self.view,
             ephemeral=False)
 
@@ -402,9 +417,12 @@ class InvoSelect(discord.ui.Select):
                 view=self.view,
                 ephemeral=True)
         else:
+            channel = interaction.channel.name if interaction.channel else "DM"
+            guild = interaction.guild.name if interaction.guild else "DM"
+
             await interaction.response.defer()
             await interaction.followup.send(
-                embed=resultat_embed(self.criteres_val),  
+                embed=resultat_embed(self.criteres_val,biblio=custom_bibli(channel,guild)),    
                 view=self.view,
                 ephemeral=False)
 
@@ -440,9 +458,12 @@ class POSelect(discord.ui.Select):
                 view=self.view,
                 ephemeral=True)
         else:
+            channel = interaction.channel.name if interaction.channel else "DM"
+            guild = interaction.guild.name if interaction.guild else "DM"
+
             await interaction.response.defer()
             await interaction.followup.send(
-                embed=resultat_embed(self.criteres_val),  
+                embed=resultat_embed(self.criteres_val,biblio=custom_bibli(channel,guild)),   
                 view=self.view,
                 ephemeral=False)
             
@@ -471,9 +492,12 @@ class PM6Button(discord.ui.Button):
                 view=self.view,
                 ephemeral=True)
         else:
+            channel = interaction.channel.name if interaction.channel else "DM"
+            guild = interaction.guild.name if interaction.guild else "DM"
+
             await interaction.response.defer()
             await interaction.followup.send(
-                embed=resultat_embed(self.criteres_val),  
+                embed=resultat_embed(self.criteres_val,biblio=custom_bibli(channel,guild)),  
                 view=self.view,
                 ephemeral=False)
             
@@ -502,9 +526,12 @@ class PM5Button(discord.ui.Button):
                 view=self.view,
                 ephemeral=True)
         else:
+            channel = interaction.channel.name if interaction.channel else "DM"
+            guild = interaction.guild.name if interaction.guild else "DM"
+
             await interaction.response.defer()
             await interaction.followup.send(
-                embed=resultat_embed(self.criteres_val),  
+                embed=resultat_embed(self.criteres_val,biblio=custom_bibli(channel,guild)),  
                 view=self.view,
                 ephemeral=False)
         
@@ -536,9 +563,12 @@ class PA11Button(discord.ui.Button):
                 view=self.view,
                 ephemeral=True)
         else:
+            channel = interaction.channel.name if interaction.channel else "DM"
+            guild = interaction.guild.name if interaction.guild else "DM"
+
             await interaction.response.defer()
             await interaction.followup.send(
-                embed=resultat_embed(self.criteres_val),  
+                embed=resultat_embed(self.criteres_val,biblio=custom_bibli(channel,guild)),   
                 view=self.view,
                 ephemeral=False)
             
@@ -571,9 +601,12 @@ class PA12Button(discord.ui.Button):
                 view=self.view,
                 ephemeral=True)
         else:
+            channel = interaction.channel.name if interaction.channel else "DM"
+            guild = interaction.guild.name if interaction.guild else "DM"
+
             await interaction.response.defer()
             await interaction.followup.send(
-                embed=resultat_embed(self.criteres_val),  
+                embed=resultat_embed(self.criteres_val,biblio=custom_bibli(channel,guild)),   
                 view=self.view,
                 ephemeral=False)
 
@@ -617,9 +650,12 @@ class ClasseSelect(discord.ui.Select):
                 view=self.view,
                 ephemeral=True)
         else:
+            channel = interaction.channel.name if interaction.channel else "DM"
+            guild = interaction.guild.name if interaction.guild else "DM"
+
             await interaction.response.defer()
             await interaction.followup.send(
-                embed=resultat_embed(self.criteres_val),  
+                embed=resultat_embed(self.criteres_val,biblio=custom_bibli(channel,guild)),    
                 view=self.view,
                 ephemeral=False)
 
@@ -666,9 +702,12 @@ class ElementSelect(discord.ui.Select):
                 view=self.view,
                 ephemeral=True)
         else:
+            channel = interaction.channel.name if interaction.channel else "DM"
+            guild = interaction.guild.name if interaction.guild else "DM"
+
             await interaction.response.defer()
             await interaction.followup.send(
-                embed=resultat_embed(self.criteres_val),  
+                embed=resultat_embed(self.criteres_val,biblio=custom_bibli(channel,guild)),  
                 view=self.view,
                 ephemeral=False)
 
@@ -714,11 +753,11 @@ class CriteresSelect(discord.ui.Select):
             view=self.view,
             ephemeral=True)
 
-def resultat_embed(criteres : dict,assouplissement=None):
+def resultat_embed(criteres : dict,assouplissement=None,biblio='996244-MetaPano'):
     if assouplissement is None:
         assouplissement = []
 
-    stuff_list=find_stuff(criteres)
+    stuff_list=find_stuff(criteres,biblio=biblio)
 
     if len(stuff_list)>0:
         # lors du renvoi de tous les stuff d'une classe, séparer par éléments primordiaux et mettre indication des éléments secondaires
@@ -868,7 +907,7 @@ def resultat_embed(criteres : dict,assouplissement=None):
             return embed
         
         # print(criteres_altérés,assouplissement)
-        return resultat_embed(criteres_altérés,assouplissement)
+        return resultat_embed(criteres_altérés,assouplissement,biblio=biblio)
 
 
 
@@ -895,6 +934,19 @@ def next_critere_embed(criteres_restants : list):
     embed.add_field(name=content, value="", inline=False)
     return embed
 
+
+def custom_bibli(channel,guild): #returns the custom biblio for the channel or guild or the default one if not found and checks if the biblio is already imported in the db
+    if guild in CUSTOM_BIBLIO:
+        if channel in CUSTOM_BIBLIO[guild]:
+            if CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild][channel]]["imported"]: #if the biblio is already imported in the db it will be true, if not it will be false
+                return CUSTOM_BIBLIO[guild][channel]
+        else:
+            if "default" in CUSTOM_BIBLIO[guild]:
+                if CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild]["default"]]["imported"]:
+                    return CUSTOM_BIBLIO[guild]["default"]
+        return '996244-MetaPano'
+
+
 #choix proposés 
 @app_commands.choices(classe=[app_commands.Choice(name=cl, value=cl) for cl in CLASSES])
 # @app_commands.choices(element=[app_commands.Choice(name=elt, value=elt) for elt in ELEMENTS_DB]) #on ne peut pas l'utiliser car y'a possibilité de combinaisons 
@@ -909,6 +961,7 @@ async def stuff(interaction: Interaction,
                 po_min: app_commands.Range[int, -10, 6]=0, 
                 invo_min: app_commands.Range[int, -10, 6]=0,
                 lvl_max: app_commands.Range[int, 0, 200] = 0):
+    
     if element=="vide" and classe=="vide" and lvl_max==0 and pa_min==0 and pm_min==0 and po_min==0 and invo_min==0: #sans arg
         embed = Embed(
             title=f"Conseils de stuff",
@@ -931,6 +984,7 @@ async def stuff(interaction: Interaction,
             ephemeral=True)
         
     else : #avec au moins un arg
+
         criteres=dict()
         elt_error=[]
         if element!="vide":
@@ -959,7 +1013,9 @@ async def stuff(interaction: Interaction,
         
         if len(elt_error)==0: #si il n'y a pas eu d'erreur
             # print("crit", criteres)
-            resp=resultat_embed(criteres)
+            channel = interaction.channel.name if interaction.channel else "DM"
+            guild = interaction.guild.name if interaction.guild else "DM"
+            resp=resultat_embed(criteres,biblio=custom_bibli(channel,guild))
             await interaction.response.send_message(
                 embed=resp, 
                 ephemeral=False)
@@ -1037,7 +1093,7 @@ Sur ma chaîne youtube je poste la majorité des rediff des matchs que je stream
 async def twitch(interaction: Interaction):
     embed = Embed(
         title=f"Dofusbook",
-        color=0x1b3a57 # Couleur twitch
+        color=0x1b3a57 # Couleur bleu db
     )
     embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
     embed.add_field(name="Bibliothèque de stuffs :",value=("[**MetaPano**](https://d-bk.net/fr/tl/4BAS)"), inline=False)
@@ -1045,6 +1101,360 @@ async def twitch(interaction: Interaction):
 Tous les stuffs que le bot va recommander sont présents dans ce compte dofusbook, c'est en quelques sorte la base de connaissance du bot."""), inline=False)
     embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
     await interaction.response.send_message(embed=embed)
+
+
+@bot.tree.command(name="add_channel_db_account", description="Pour changer la bibliothèque de stuff source du canal")
+async def add_channel_db_account(interaction: Interaction, lien_biblio: str, nom_biblio: str):
+
+    # Check if the link sent is a valid dofusbook link
+    if not re.match(r"https?://(d-bk\.net|touch\.dofusbook\.net)/fr/(tl/\w+|membre/\d+-\w+/equipements)", lien_biblio):
+        print(f"Invalid dofusbook link: {lien_biblio}")
+        # Return embed with an error message
+        embed = Embed(
+            title=f"Changement de la bibliothèque de stuff pour le canal {interaction.channel.name}",
+            color=0xFF0000  # Red color
+        )
+        embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL of an error image for illustration
+        embed.add_field(name="Erreur :", value="""Le lien que tu as donné n'est pas valide, vérifie qu'il s'agit bien d'un lien de bibliothèque dofusbook.
+
+Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/996244-db/equipements""", inline=False)
+        embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+        await interaction.response.send_message(embed=embed)
+        return
+
+
+    try:
+        biblio_id=req.get(lien_biblio).url.split("/")[-2][:-3]
+    except:
+        print(f"Error getting biblio_id from link: {lien_biblio}")
+        #return embed with an error message
+        embed = Embed(
+            title=f"Changement de la bibliothèque de stuff pour le canal {interaction.channel.name}",
+            color=0xFF0000 # Couleur rouge
+        )
+        embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL d'une image pour l'illustration
+        embed.add_field(name="Erreur :",value=(f"""Le lien que tu as donné n'est pas valide, vérifie qu'il s'agit bien d'un lien de bibliothèque dofusbook.
+
+Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/996244-db/equipements"""), inline=False)
+        embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+        await interaction.response.send_message(embed=embed)
+        return 0
+
+    channel = interaction.channel.name if interaction.channel else "DM"
+    guild = interaction.guild.name if interaction.guild else "DM"
+
+    if channel =="alias" or channel=="imported":
+        print(f"Error : channel name is {channel}, it should not be")
+        #return embed with an error message
+        embed = Embed(
+            title=f"Changement de la bibliothèque de stuff pour le canal {interaction.channel.name}",
+            color=0xFF0000 # Couleur rouge
+        )
+        embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL d'une image pour l'illustration
+        embed.add_field(name="Erreur :",value=(f"""Le nom de canal {channel} est réservé et ne peut pas être utilisé."""), inline=False)
+        embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+        await interaction.response.send_message(embed=embed)
+        return 0
+
+    # Update the dictionary
+    if guild in CUSTOM_BIBLIO: #if the guild already exists
+        # on ne peut pas supprimer l'alias car on ne sait pas si il est utilisé ailleurs
+        # if channel in CUSTOM_BIBLIO[guild]: #if the channel already exists
+        #     CUSTOM_BIBLIO[biblio_id]["alias"].remove(CUSTOM_BIBLIO[guild][channel][1]) #remove the old alias from the biblio_id
+        CUSTOM_BIBLIO[guild][channel] = (biblio_id,nom_biblio) #update the channel with the new biblio_id and alias
+    else: #if the guild doesn't exist
+        CUSTOM_BIBLIO[guild] = {} #create the guild
+        CUSTOM_BIBLIO[guild][channel] = (biblio_id,nom_biblio) #add the channel with the new biblio_id and alias   
+    
+    already_imported=False
+    if not biblio_id in CUSTOM_BIBLIO:
+        CUSTOM_BIBLIO[biblio_id] = {"imported": False
+                                    ,"alias":[nom_biblio]}
+    else:
+        if nom_biblio not in CUSTOM_BIBLIO[biblio_id]["alias"]:
+            CUSTOM_BIBLIO[biblio_id]["alias"].append(nom_biblio)
+        already_imported=CUSTOM_BIBLIO[biblio_id]["imported"]
+
+    # Write the updated dictionary to the JSON file
+    try:
+        with open("custom_biblio.json", "w", encoding="utf-8") as file:
+            json.dump(CUSTOM_BIBLIO, file, ensure_ascii=False, indent=4)
+    except Exception as e:
+        print(f"Error writing to custom_biblio.json: {e}")
+
+
+    #return embed with a success message and the name of the current biblio
+    embed = Embed(
+        title=f"Changement de la bibliothèque de stuff pour le canal {interaction.channel.name}",
+        color=0x1b3a57 # Couleur bleu db
+    )
+    embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
+
+    embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({lien_biblio})"), inline=False)
+
+    infos_update=f"""Désormais tous les stuffs que le bot va recommander dans ce canal proviendront de ce compte dofusbook, c'est en quelques sorte la base de connaissance du bot.\n\n"""
+    if already_imported:
+        infos_update+=f"""Cette bibliothèque est déjà importée dans la base de données du bot, donc tu peux dès à présent l'utiliser.
+
+La mise à jour de la base de données du bot se fait automatiquement tous les jours à 4h du matin, et tous les jours les nouveaux stuffs sont ajoutés à ce moment là."""
+    else:  
+        infos_update+=f"""Cette bibliothèque n'est pas encore importée dans la base de données du bot, donc tu ne peux pas encore l'utiliser.
+
+Pour que le bot fonctionne il faut que j'importe les données du compte dofusbook dans la base de données du bot. Ça se fait automatiquement tous les jours à 4h du matin, et tous les jours les nouveaux stuffs sont ajoutés à ce moment là.
+Il faudra donc attendre demain pour pouvoir profiter de cette nouvelle bibliothèque, en attendant la bibliothèque précédente ou par défaut est toujours accessible."""
+
+    embed.add_field(name="INFORMATIONS :", value=(infos_update), inline=False)
+    embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+    await interaction.response.send_message(embed=embed)
+
+@bot.tree.command(name="add_server_db_account", description="Pour changer la bibliothèque de stuff source par défaut du serveur")
+async def add_server_db_account(interaction: Interaction, lien_biblio: str, nom_biblio: str):
+
+    # Check if the link sent is a valid dofusbook link
+    if not re.match(r"https?://(d-bk\.net|touch\.dofusbook\.net)/fr/(tl/\w+|membre/\d+-\w+/equipements)", lien_biblio):
+        print(f"Invalid dofusbook link: {lien_biblio}")
+        # Return embed with an error message
+        embed = Embed(
+            title=f"Changement de la bibliothèque de stuff par défaut pour le serveur {interaction.guild.name}",
+            color=0xFF0000  # Red color
+        )
+        embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL of an error image for illustration
+        embed.add_field(name="Erreur :", value="""Le lien que tu as donné n'est pas valide, vérifie qu'il s'agit bien d'un lien de bibliothèque dofusbook.
+
+Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/996244-db/equipements""", inline=False)
+        embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+        await interaction.response.send_message(embed=embed)
+        return
+
+
+    try:
+        biblio_id=req.get(lien_biblio).url.split("/")[-2][:-3]
+    except:
+        print(f"Error getting biblio_id from link: {lien_biblio}")
+        #return embed with an error message
+        embed = Embed(
+            title=f"Changement de la bibliothèque de stuff par défaut pour le serveur {interaction.guild.name}",
+            color=0xFF0000 # Couleur rouge
+        )
+        embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL d'une image pour l'illustration
+        embed.add_field(name="Erreur :",value=(f"""Le lien que tu as donné n'est pas valide, vérifie qu'il s'agit bien d'un lien de bibliothèque dofusbook.
+
+Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/996244-db/equipements"""), inline=False)
+        embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+        await interaction.response.send_message(embed=embed)
+        return 0
+
+    guild = interaction.guild.name if interaction.guild else "DM"
+
+    # Update the dictionary
+    if guild in CUSTOM_BIBLIO: #if the guild already exists in the dictionary
+        # on ne peut pas supprimer l'alias car on ne sait pas si il est utilisé ailleurs
+        # if "default" in CUSTOM_BIBLIO[guild]: #remove the old default biblio from the alias list
+        #     CUSTOM_BIBLIO[biblio_id]["alias"].remove(CUSTOM_BIBLIO[guild]["default"][1])
+        CUSTOM_BIBLIO[guild]["default"] = (biblio_id,nom_biblio) #add the new default biblio
+    else: #if the guild doesn't exist in the dictionary
+        CUSTOM_BIBLIO[guild] = {"default": (biblio_id,nom_biblio)}#create the guild with the default biblio
+
+    already_imported=False
+    if not biblio_id in CUSTOM_BIBLIO:
+        CUSTOM_BIBLIO[biblio_id] = {"imported": False
+                                    ,"alias":[nom_biblio]}
+    else:
+        CUSTOM_BIBLIO[biblio_id]["alias"].append(nom_biblio)
+        already_imported=True
+
+    # Write the updated dictionary to the JSON file
+    try:
+        with open("custom_biblio.json", "w", encoding="utf-8") as file:
+            json.dump(CUSTOM_BIBLIO, file, ensure_ascii=False, indent=4)
+    except Exception as e:
+        print(f"Error writing to custom_biblio.json: {e}")
+
+
+    #return embed with a success message and the name of the current biblio
+    embed = Embed(
+        title=f"Changement de la bibliothèque de stuff par défaut pour le serveur {interaction.guild.name}",
+        color=0x1b3a57 # Couleur bleu db
+    )
+    embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
+
+    embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({lien_biblio})"), inline=False)
+
+    infos_update=f"""Désormais tous les stuffs que le bot va recommander dans ce canal proviendront de ce compte dofusbook, c'est en quelques sorte la base de connaissance du bot.\n\n"""
+    if already_imported:
+        infos_update+=f"""Cette bibliothèque est déjà importée dans la base de données du bot, donc tu peux dès à présent l'utiliser.
+
+La mise à jour de la base de données du bot se fait automatiquement tous les jours à 4h du matin, et tous les jours les nouveaux stuffs sont ajoutés à ce moment là."""
+    else:  
+        infos_update+=f"""Cette bibliothèque n'est pas encore importée dans la base de données du bot, donc tu ne peux pas encore l'utiliser.
+
+Pour que le bot fonctionne il faut que j'importe les données du compte dofusbook dans la base de données du bot. Ça se fait automatiquement tous les jours à 4h du matin, et tous les jours les nouveaux stuffs sont ajoutés à ce moment là.
+Il faudra donc attendre demain pour pouvoir profiter de cette nouvelle bibliothèque, en attendant la bibliothèque précédente ou par défaut est toujours accessible."""
+
+    embed.add_field(name="INFORMATIONS :", value=(infos_update), inline=False)
+    embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+    await interaction.response.send_message(embed=embed)
+
+@bot.tree.command(name="bibliotheques", description="Pour savoir quelles sont les bibliothèques utilisées dans ce serveur")
+async def bibliotheques(interaction: Interaction): #affiche un embed avec la biblio actuelle du canal et du serveur
+    guild = interaction.guild.name if interaction.guild else "DM"
+    if guild in CUSTOM_BIBLIO:
+        bibli_default=f"[MetaPano]({'https://touch.dofusbook.net/fr/membre/996244-db/equipements'})" #par défaut metapano
+        bibli_canal=""
+        for channel in CUSTOM_BIBLIO[guild]:
+            biblio_id, nom_biblio = CUSTOM_BIBLIO[guild][channel]
+            if channel == "default":
+                bibli_default=f"[{nom_biblio}]({'https://touch.dofusbook.net/fr/membre/'+biblio_id+'-db/equipements'})"
+            else:
+                bibli_canal+=f"- {channel} : [{nom_biblio}]({'https://touch.dofusbook.net/fr/membre/'+biblio_id+'-db/equipements'})\n"
+        if bibli_canal=="":
+            bibli_canal="Aucun canal n'utilise de bibliothèque différente de celle par défaut."
+        embed = Embed(
+            title=f"Bibliothèques de stuff pour le serveur {guild}",
+            color=0x1b3a57 # Couleur bleu db
+        )
+        embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
+        embed.add_field(name="Bibliothèque du serveur :", value=bibli_default, inline=False)
+        embed.add_field(name="Bibliothèques par canal :", value=bibli_canal, inline=False)
+        embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+
+        await interaction.response.send_message(embed=embed)
+    else:
+        embed = Embed(
+            title=f"Bibliothèques de stuff pour le serveur {guild}",
+            color=0x1b3a57 # Couleur bleu db
+        )
+        embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
+        bibli_default=f"[MetaPano]({'https://touch.dofusbook.net/fr/membre/996244-db/equipements'})" #par défaut metapano
+        embed.add_field(name="Bibliothèque du serveur :", value=bibli_default, inline=False)
+        embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+        await interaction.response.send_message(embed=embed)
+
+@bot.tree.command(name="delete_channel_db_account", description="Pour supprimer la bibliothèque de stuff source du canal")
+async def delete_channel_db_account(interaction: Interaction):
+
+    channel = interaction.channel.name if interaction.channel else "DM"
+    guild = interaction.guild.name if interaction.guild else "DM"
+
+    if channel =="alias" or channel=="imported":
+        print(f"Error : channel name is {channel}, it should not be")
+        #return embed with an error message
+        embed = Embed(
+            title=f"Suppression de la bibliothèque de stuff pour le canal {interaction.channel.name}",
+            color=0xFF0000 # Couleur rouge
+        )
+        embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL d'une image pour l'illustration
+        embed.add_field(name="Erreur :",value=(f"""Le nom de canal {channel} est réservé et ne peut pas être utilisé."""), inline=False)
+        embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+        await interaction.response.send_message(embed=embed)
+        return -1
+
+    # Update the dictionary
+    if guild in CUSTOM_BIBLIO: #if the guild already exists
+        if channel in CUSTOM_BIBLIO[guild]: #if the channel already exists
+            del CUSTOM_BIBLIO[guild][channel]
+        else: #the channel doesn't have a custom biblio
+            print(f"Error : channel {channel} doesn't have a custom biblio")
+            #return embed with an error message
+            embed = Embed(
+                title=f"Suppression de la bibliothèque de stuff pour le canal {interaction.channel.name}",
+                color=0xFF0000 # Couleur rouge
+            )
+            embed.set_thumbnail(url=IMAGES_LINK["error"])
+            embed.add_field(name="Erreur :",value=(f"""Le canal {channel} n'a pas de bibliothèque custom qui lui est attribué, il n'y a rien à supprimer."""), inline=False)
+            embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+            await interaction.response.send_message(embed=embed)
+            return -1
+
+    else: #if the guild doesn't exist
+        print(f"Error : guild {guild} doesn't have a custom biblio")
+        #return embed with an error message
+        embed = Embed(
+            title=f"Suppression de la bibliothèque de stuff pour le canal {interaction.channel.name}",
+            color=0xFF0000 # Couleur rouge
+        )
+        embed.set_thumbnail(url=IMAGES_LINK["error"])
+        embed.add_field(name="Erreur :",value=(f"""Ni le canal {channel} ni le serveur {guild} n'ont pas de bibliothèque custom qui leur sont attribués, il n'y a rien à supprimer."""), inline=False)
+        embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+        await interaction.response.send_message(embed=embed)
+        return -1  
+    
+    # Write the updated dictionary to the JSON file
+    try:
+        with open("custom_biblio.json", "w", encoding="utf-8") as file:
+            json.dump(CUSTOM_BIBLIO, file, ensure_ascii=False, indent=4)
+    except Exception as e:
+        print(f"Error writing to custom_biblio.json: {e}")
+
+
+    #return embed with a success message and the name of the current biblio
+    embed = Embed(
+        title=f"Suppression de la bibliothèque de stuff pour le canal {interaction.channel.name}",
+        color=0x1b3a57 # Couleur bleu db
+    )
+    embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
+
+    embed.add_field(name="Bibliothèque :",value=(f"La bibliothèque a été retirée avec succès de ce canal, désormais la bibliothèque par défaut du serveur sera utilisée."), inline=False)
+
+    embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+    await interaction.response.send_message(embed=embed)
+    return 0
+
+@bot.tree.command(name="delete_server_db_account", description="Pour supprimer la bibliothèque de stuff source du canal")
+async def delete_server_db_account(interaction: Interaction):
+
+    guild = interaction.guild.name if interaction.guild else "DM"
+
+    # Update the dictionary
+    if guild in CUSTOM_BIBLIO: #if the guild already exists
+        if "default" in CUSTOM_BIBLIO[guild]: #if the channel default already exists
+            del CUSTOM_BIBLIO[guild]["default"]
+        else: #the channel doesn't have a custom biblio
+            print(f"Error : guild {guild} doesn't have a custom default biblio")
+            #return embed with an error message
+            embed = Embed(
+                title=f"Suppression de la bibliothèque de stuff pour le serveur {guild}",
+                color=0xFF0000 # Couleur rouge
+            )
+            embed.set_thumbnail(url=IMAGES_LINK["error"])
+            embed.add_field(name="Erreur :",value=(f"""Le serveur {guild} n'a pas de bibliothèque custom par défaut qui lui est attribué, il n'y a rien à supprimer."""), inline=False)
+            embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+            await interaction.response.send_message(embed=embed)
+            return -1
+
+    else: #if the guild doesn't exist
+        print(f"Error : guild {guild} doesn't have a custom biblio")
+        #return embed with an error message
+        embed = Embed(
+            title=f"Suppression de la bibliothèque de stuff pour le serveur {guild}",
+            color=0xFF0000 # Couleur rouge
+        )
+        embed.set_thumbnail(url=IMAGES_LINK["error"])
+        embed.add_field(name="Erreur :",value=(f"""Le serveur {guild} n'a pas de bibliothèque custom par défaut qui lui est attribué, il n'y a rien à supprimer."""), inline=False)
+        embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+        await interaction.response.send_message(embed=embed)
+        return -1
+    
+    # Write the updated dictionary to the JSON file
+    try:
+        with open("custom_biblio.json", "w", encoding="utf-8") as file:
+            json.dump(CUSTOM_BIBLIO, file, ensure_ascii=False, indent=4)
+    except Exception as e:
+        print(f"Error writing to custom_biblio.json: {e}")
+
+
+    #return embed with a success message and the name of the current biblio
+    embed = Embed(
+        title=f"Suppression de la bibliothèque de stuff pour le serveur {guild}",
+        color=0x1b3a57 # Couleur bleu db
+    )
+    embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
+
+    embed.add_field(name="Bibliothèque :",value=(f"La bibliothèque a été retirée avec succès de ce serveur, désormais la bibliothèque par défaut du serveur sera celle de MetaPano par défaut."), inline=False)
+
+    embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+    await interaction.response.send_message(embed=embed)
+    return 0
 
 #################################################################################### emojis
 

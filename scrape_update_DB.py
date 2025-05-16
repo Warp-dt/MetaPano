@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import IntegrityError
 import requests as req
+import json
 
 
 ################################################################
@@ -154,7 +155,7 @@ classes_filtre={
     ,"steamer" : "15"
 }
 
-def url_builder(element="rien",classes="rien",page="1",user="996244-metapano"):
+def url_builder(element="rien",classes="rien",page="1",user="996244-MetaPano"):
     #user="244671-warp"
     base="https://touch.dofusbook.net/stuffs/touch/public/"
     membre="&user="+user+"&sort=update-desc"
@@ -340,7 +341,7 @@ def upsert_stuff_data(stuff_list):
                         connection.execute(
                             text("""
                             UPDATE Stuff 
-                            SET DB_surl = :db_surl, Nom = :nom, PA = :pa, PM = :pm, PO = :po, Invo = :invo, Lvl = :lvl
+                            SET DB_surl = :db_surl, Nom = :nom, PA = :pa, PM = :pm, PO = :po, Invo = :invo, Lvl = :lvl, bibli_id = :bibli_id, bibli_name = :bibli_name
                             WHERE DB_id = :db_id
                             """),
                             {
@@ -351,7 +352,9 @@ def upsert_stuff_data(stuff_list):
                                 "pm": stuff["PM"],
                                 "po": stuff["PO"],
                                 "invo": stuff["Invo"],
-                                "lvl" : stuff["Lvl"]
+                                "lvl" : stuff["Lvl"],
+                                'bibli_id' : stuff["bibli_id"],
+                                'bibli_name' : stuff["bibli_name"]
                             }
                         )
                         updated_count += 1
@@ -359,8 +362,8 @@ def upsert_stuff_data(stuff_list):
                         # Insert new stuff
                         connection.execute(
                             text("""
-                            INSERT INTO Stuff (DB_id, DB_surl, Nom, PA, PM, PO, Invo, Lvl)
-                            VALUES (:db_id, :db_surl, :nom, :pa, :pm, :po, :invo, :lvl)
+                            INSERT INTO Stuff (DB_id, DB_surl, Nom, PA, PM, PO, Invo, Lvl, bibli_id, bibli_name)
+                            VALUES (:db_id, :db_surl, :nom, :pa, :pm, :po, :invo, :lvl, :bibli_id, :bibli_name)
                             """),
                             {
                                 "db_id": stuff["DB_id"],
@@ -370,7 +373,9 @@ def upsert_stuff_data(stuff_list):
                                 "pm": stuff["PM"],
                                 "po": stuff["PO"],
                                 "invo": stuff["Invo"],
-                                "lvl" : stuff["Lvl"]
+                                "lvl" : stuff["Lvl"],
+                                'bibli_id' : stuff["bibli_id"],
+                                'bibli_name' : stuff["bibli_name"]
                             }
                         )
                         inserted_count += 1
@@ -428,38 +433,69 @@ def upsert_stuff_data(stuff_list):
     }
 
 
-# Exemple d'utilisation
 if __name__ == "__main__":
 
+
+    # Récupération des id des différentes biblio dans le fichier custom_biblio.json
+
+    custom_biblio_path = "custom_biblio.json"
+    try:
+        with open(custom_biblio_path, "r", encoding="utf-8") as f:
+            custom_biblio = json.load(f)
+        print("custom_biblio.json chargé avec succès.")
+    except Exception as e:
+        print(f"Erreur lors du chargement de custom_biblio.json : {e}")
+        custom_biblio = {}
+
+    biblio_to_scrape=[]
+    for key, value in custom_biblio.items():
+        if "imported" in value and "alias" in value and len(value.keys())==2:
+            biblio_to_scrape.append(key)
+
     page_maxsize=20
-    taille=20
-    i=1
     stuff_liste=[]
     print("Début du scraping")
-    while taille==page_maxsize:
-        resp=req.get(url_builder(page=i)).json()["rows"]
-        taille=len(resp)
-        for stuff in resp:
-            if len(stuff["allowed_classes"])==0:
-                stuff["allowed_classes"].append(16)
-            temp_dict={
-                "DB_id": stuff['id'],
-                "DB_surl": get_stuff_base_info(stuff['id'])["DB_surl"],
-                "Nom": stuff["name"],
-                "PA": get_stuff_base_info(stuff['id'])["PA"],
-                "PM": get_stuff_base_info(stuff['id'])["PM"],
-                "PO": get_stuff_base_info(stuff['id'])["PO"],
-                "Invo": get_stuff_base_info(stuff['id'])["Invo"],
-                "Lvl" : get_stuff_base_info(stuff['id'])["Lvl"],
-                "classes": stuff["allowed_classes"],
-                "elements": [ raw_elt_to_id[elt_raw] for elt_raw in stuff["tags"]]
-            }
-            stuff_liste.append(temp_dict)
-        print("page "+str(i)+" finie")
-        i+=1
+    for biblio in biblio_to_scrape:
+        taille=20
+        i=1
+        while taille==page_maxsize:
+            resp=req.get(url_builder(page=i,user=biblio+'-db')).json()["rows"]
+            taille=len(resp)
+            for stuff in resp:
+                if len(stuff["allowed_classes"])==0:
+                    stuff["allowed_classes"].append(16)
+                temp_dict={
+                    "DB_id": stuff['id'],
+                    "DB_surl": get_stuff_base_info(stuff['id'])["DB_surl"],
+                    "Nom": stuff["name"],
+                    "PA": get_stuff_base_info(stuff['id'])["PA"],
+                    "PM": get_stuff_base_info(stuff['id'])["PM"],
+                    "PO": get_stuff_base_info(stuff['id'])["PO"],
+                    "Invo": get_stuff_base_info(stuff['id'])["Invo"],
+                    "Lvl" : get_stuff_base_info(stuff['id'])["Lvl"],
+                    "classes": stuff["allowed_classes"],
+                    "elements": [ raw_elt_to_id[elt_raw] for elt_raw in stuff["tags"]],
+                    "bibli_id": biblio,
+                    "bibli_name": custom_biblio[biblio]["alias"][0],
+                }
+                stuff_liste.append(temp_dict)
+            print("page "+str(i)+" finie")
+            i+=1
     
     print("Scraping Terminé")
     # Appeler la fonction avec les données
     print("Mise à jour PanoDB")
     result = upsert_stuff_data(stuff_liste)
+
+    #update le fichier custom_biblio.json
+    if result["errors"] == 0:
+        for biblio in biblio_to_scrape:
+            custom_biblio[biblio]["imported"]=True
+    # Write the updated dictionary to the JSON file
+    try:
+        with open("custom_biblio.json", "w", encoding="utf-8") as file:
+            json.dump(custom_biblio, file, ensure_ascii=False, indent=4)
+    except Exception as e:
+        print(f"Error writing to custom_biblio.json: {e}")
+    
     print(f"Résultat: {result['inserted']} insérés, {result['updated']} mis à jour, {result['deleted']} supprimés, {result['errors']} erreurs")
