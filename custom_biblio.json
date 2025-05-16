@@ -1,0 +1,16 @@
+{
+    "Test server": {
+        "général": [
+            "996244",
+            "warpounet"
+        ]
+    },
+    "996244": {
+        "imported": true,
+        "alias": [
+            "metapano",
+            "warp",
+            "warpounet"
+        ]
+    }   
+}

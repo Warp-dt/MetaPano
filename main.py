@@ -753,7 +753,7 @@ class CriteresSelect(discord.ui.Select):
             view=self.view,
             ephemeral=True)
 
-def resultat_embed(criteres : dict,assouplissement=None,biblio='996244-MetaPano'):
+def resultat_embed(criteres : dict,assouplissement=None,biblio=['996244','MetaPano']):
     if assouplissement is None:
         assouplissement = []
 
@@ -938,13 +938,13 @@ def next_critere_embed(criteres_restants : list):
 def custom_bibli(channel,guild): #returns the custom biblio for the channel or guild or the default one if not found and checks if the biblio is already imported in the db
     if guild in CUSTOM_BIBLIO:
         if channel in CUSTOM_BIBLIO[guild]:
-            if CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild][channel]]["imported"]: #if the biblio is already imported in the db it will be true, if not it will be false
+            if CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild][channel][0]]["imported"]: #if the biblio is already imported in the db it will be true, if not it will be false
                 return CUSTOM_BIBLIO[guild][channel]
         else:
             if "default" in CUSTOM_BIBLIO[guild]:
-                if CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild]["default"]]["imported"]:
+                if CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild]["default"][0]]["imported"]:
                     return CUSTOM_BIBLIO[guild]["default"]
-        return '996244-MetaPano'
+        return ['996244','MetaPano']
 
 
 #choix proposés 

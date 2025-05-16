@@ -45,12 +45,12 @@ connection_string = f"mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name
 #         'Invo': '1'
 #         }
 
-def stuff_query(criteres : dict,biblio='996244-MetaPano'):
+def stuff_query(criteres : dict,biblio=['996244','MetaPano']):
     elt_exclusifs=['terre', 'feu', 'eau', 'air', 'dopou']
     elt_nonexclusifs=['cc', 'initiative', 'pp', 'sagesse', 'pods', 'pvp', 'pvm', 'retrait pa', 'retrait pm', 'esquive pa', 'esquive pm', 'repou', 'recri', 'tank','soin']
     
-    biblio_id=biblio.split('-')[0]
-    biblio_name=biblio.split('-')[1]
+    biblio_id=biblio[0]
+    biblio_name=biblio[1]
     # print("query",biblio_id,biblio_name)
     # print(criteres)
     #Query building
@@ -150,7 +150,7 @@ sum(CASE WHEN e.Nom IN ({str(exclusifs_non_inclus).replace("[",'').replace("]",'
 
     return query
 
-def find_stuff(criteres : dict,biblio='996244-MetaPano'):
+def find_stuff(criteres : dict,biblio=['996244','MetaPano']):
     engine = create_engine(connection_string, echo=False)
 
     query=stuff_query(criteres,biblio=biblio)
