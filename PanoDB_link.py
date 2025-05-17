@@ -49,8 +49,15 @@ def stuff_query(criteres : dict,biblio=['996244','MetaPano']):
     elt_exclusifs=['terre', 'feu', 'eau', 'air', 'dopou']
     elt_nonexclusifs=['cc', 'initiative', 'pp', 'sagesse', 'pods', 'pvp', 'pvm', 'retrait pa', 'retrait pm', 'esquive pa', 'esquive pm', 'repou', 'recri', 'tank','soin']
     
-    biblio_id=biblio[0]
-    biblio_name=biblio[1]
+    try:
+        biblio_id=biblio[0]
+        biblio_name=biblio[1]
+    except Exception as e:
+        print("Erreur dans la biblio",e)
+        biblio_id='996244'
+        biblio_name='MetaPano'
+
+
     # print("query",biblio_id,biblio_name)
     # print(criteres)
     #Query building
