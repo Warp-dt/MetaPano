@@ -432,6 +432,25 @@ def upsert_stuff_data(stuff_list):
         "errors": error_count
     }
 
+def cleaning_custom_biblio(custom_biblio): #find all used bibli_id and delete unused ones
+    cleaned_biblio = {}
+
+    used_biblio=set()
+    for server in custom_biblio:
+        if not ("imported" in custom_biblio[server] and "alias" in custom_biblio[server] and len(custom_biblio[server].keys()) == 2): #if not bibli key
+            for chan,bib in custom_biblio[server]:
+                used_biblio.add(bib[0]) #add to used_biblio all the bibli_id i can find used
+    
+    to_delete=[]
+    for bibli in custom_biblio:
+        if ("imported" in custom_biblio[bibli] and "alias" in custom_biblio[bibli] and len(custom_biblio[bibli].keys()) == 2): #if biblio key
+            if not bibli in used_biblio:
+                to_delete.append(bibli)
+    
+    for key in to_delete:
+        del custom_biblio[key]
+    
+    return cleaned_biblio
 
 if __name__ == "__main__":
 
@@ -447,6 +466,8 @@ if __name__ == "__main__":
         print(f"Erreur lors du chargement de custom_biblio.json : {e}")
         custom_biblio = {}
 
+    custom_biblio=cleaning_custom_biblio(custom_biblio)
+
     biblio_to_scrape=[]
     for key, value in custom_biblio.items():
         if "imported" in value and "alias" in value and len(value.keys())==2:
@@ -458,7 +479,9 @@ if __name__ == "__main__":
     for biblio in biblio_to_scrape:
         taille=20
         i=1
+        temp_stuff_liste=[]
         while taille==page_maxsize:
+            
             resp=req.get(url_builder(page=i,user=biblio+'-db')).json()["rows"]
             taille=len(resp)
             for stuff in resp:
@@ -478,9 +501,13 @@ if __name__ == "__main__":
                     "bibli_id": biblio,
                     "bibli_name": custom_biblio[biblio]["alias"][0],
                 }
-                stuff_liste.append(temp_dict)
+                temp_stuff_liste.append(temp_dict)
             print("page "+str(i)+" finie")
             i+=1
+
+        if len(temp_stuff_liste)<501: #do not add to the DB biblio that are bigger than 500 stuff
+            stuff_liste.append(temp_stuff_liste)
+
     
     print("Scraping Terminé")
     # Appeler la fonction avec les données
