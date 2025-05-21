@@ -477,12 +477,14 @@ if __name__ == "__main__":
     page_maxsize=20
     stuff_liste=[]
     print("Début du scraping")
+    print(biblio_to_scrape)
     for biblio in biblio_to_scrape:
         taille=20
         i=1
         temp_stuff_liste=[]
+        print(biblio)
         while taille==page_maxsize:
-            
+            print('page :',i,"taille :",taille)
             resp=req.get(url_builder(page=i,user=biblio+'-db')).json()["rows"]
             taille=len(resp)
             for stuff in resp:
@@ -507,9 +509,8 @@ if __name__ == "__main__":
             i+=1
 
         if len(temp_stuff_liste)<501: #do not add to the DB biblio that are bigger than 500 stuff
-            stuff_liste.append(temp_stuff_liste)
+            stuff_liste=stuff_liste+temp_stuff_liste
 
-    
     print("Scraping Terminé")
     # Appeler la fonction avec les données
     print("Mise à jour PanoDB")
