@@ -477,14 +477,14 @@ if __name__ == "__main__":
     page_maxsize=20
     stuff_liste=[]
     print("Début du scraping")
-    print(biblio_to_scrape)
+    # print(biblio_to_scrape)
     for biblio in biblio_to_scrape:
         taille=20
         i=1
         temp_stuff_liste=[]
-        print(biblio)
+        # print(biblio)
         while taille==page_maxsize:
-            print('page :',i,"taille :",taille)
+            # print('page :',i,"taille :",taille)
             resp=req.get(url_builder(page=i,user=biblio+'-db')).json()["rows"]
             taille=len(resp)
             for stuff in resp:
