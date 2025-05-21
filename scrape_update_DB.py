@@ -438,7 +438,7 @@ def cleaning_custom_biblio(custom_biblio): #find all used bibli_id and delete un
     used_biblio=set()
     for server in custom_biblio:
         if not ("imported" in custom_biblio[server] and "alias" in custom_biblio[server] and len(custom_biblio[server].keys()) == 2): #if not bibli key
-            
+
             for chan,bib in custom_biblio[server]:
                 used_biblio.add(bib[0]) #add to used_biblio all the bibli_id i can find used
     
@@ -467,7 +467,7 @@ if __name__ == "__main__":
         print(f"Erreur lors du chargement de custom_biblio.json : {e}")
         custom_biblio = {}
 
-    custom_biblio=cleaning_custom_biblio(custom_biblio)
+    # custom_biblio=cleaning_custom_biblio(custom_biblio)
 
     biblio_to_scrape=[]
     for key, value in custom_biblio.items():
