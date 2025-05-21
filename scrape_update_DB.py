@@ -438,8 +438,8 @@ def cleaning_custom_biblio(custom_biblio): #find all used bibli_id and delete un
     used_biblio=set()
     for server in custom_biblio:
         if not ("imported" in custom_biblio[server] and "alias" in custom_biblio[server] and len(custom_biblio[server].keys()) == 2): #if not bibli key
-            for chan,bib in custom_biblio[server]:
-                used_biblio.add(bib[0]) #add to used_biblio all the bibli_id i can find used
+            for chan in custom_biblio[server]:
+                used_biblio.add(chan[0]) #add to used_biblio all the bibli_id i can find used
     
     to_delete=[]
     for bibli in custom_biblio:
