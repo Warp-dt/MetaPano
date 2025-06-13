@@ -433,25 +433,31 @@ def upsert_stuff_data(stuff_list):
     }
 
 def cleaning_custom_biblio(custom_biblio): #find all used bibli_id and delete unused ones
-    cleaned_biblio = {}
+    # eliminate guilds & channels that doesn't exist anymore/where the bot does not have access
+    # find all used biblio
+    # eliminate all unused biblio
 
     used_biblio=set()
     for server in custom_biblio:
         if not ("imported" in custom_biblio[server] and "alias" in custom_biblio[server] and len(custom_biblio[server].keys()) == 2): #if not bibli key
+            # print(custom_biblio[server])
+            for chanid_name in custom_biblio[server]:
+                used_biblio.add(custom_biblio[server][chanid_name][0]) #add to used_biblio all the bibli_id i can find used
 
-            for chan,bib in custom_biblio[server]:
-                used_biblio.add(bib[0]) #add to used_biblio all the bibli_id i can find used
-    
-    to_delete=[]
+    bibli_to_delete=[]
     for bibli in custom_biblio:
         if ("imported" in custom_biblio[bibli] and "alias" in custom_biblio[bibli] and len(custom_biblio[bibli].keys()) == 2): #if biblio key
             if not bibli in used_biblio:
-                to_delete.append(bibli)
+                bibli_to_delete.append(bibli)
     
-    for key in to_delete:
+    print("nb de bibli à delete :", len(bibli_to_delete))
+    
+    #find all channels and servers that are not used anymore (can't be accessed by the bot)
+    
+    for key in bibli_to_delete:
         del custom_biblio[key]
-    
-    return cleaned_biblio
+
+    return custom_biblio
 
 if __name__ == "__main__":
 
@@ -467,7 +473,7 @@ if __name__ == "__main__":
         print(f"Erreur lors du chargement de custom_biblio.json : {e}")
         custom_biblio = {}
 
-    # custom_biblio=cleaning_custom_biblio(custom_biblio)
+    cleaning_custom_biblio(custom_biblio) #clean unused biblios but doesn't check for the server and channels that are not accessible anymore
 
     biblio_to_scrape=[]
     for key, value in custom_biblio.items():
