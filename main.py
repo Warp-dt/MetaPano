@@ -1400,7 +1400,7 @@ async def supprime_bibliotheque_canal(interaction: Interaction):
     await interaction.response.send_message(embed=embed)
     return 0
 
-@bot.tree.command(name="supprime_bibliotheque_serveur", description="Pour supprimer la bibliothèque de stuff source du serveur")
+@bot.tree.command(name="supprime_bibliotheque_serveur", description="Pour supprimer la bibliothèque de stuff source par défaut du serveur")
 async def supprime_bibliotheque_serveur(interaction: Interaction):
 
     guild = interaction.guild.name if interaction.guild else "DM"
