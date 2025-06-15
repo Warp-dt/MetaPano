@@ -1103,8 +1103,8 @@ Tous les stuffs que le bot va recommander sont présents dans ce compte dofusboo
     await interaction.response.send_message(embed=embed)
 
 
-@bot.tree.command(name="add_channel_db_account", description="Pour changer la bibliothèque de stuff source du canal")
-async def add_channel_db_account(interaction: Interaction, lien_biblio: str, nom_biblio: str):
+@bot.tree.command(name="change_bibliotheque_canal", description="Pour changer la bibliothèque de stuff source du canal")
+async def change_bibliotheque_canal(interaction: Interaction, lien_biblio: str, nom_biblio: str):
 
     # Check if the link sent is a valid dofusbook link
     if not re.match(r"https?://(d-bk\.net|touch\.dofusbook\.net)/fr/(tl/\w+|membre/\d+-\w+/equipements)", lien_biblio):
@@ -1207,8 +1207,8 @@ Il faudra donc attendre demain pour pouvoir profiter de cette nouvelle biblioth�
     embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
     await interaction.response.send_message(embed=embed)
 
-@bot.tree.command(name="add_server_db_account", description="Pour changer la bibliothèque de stuff source par défaut du serveur")
-async def add_server_db_account(interaction: Interaction, lien_biblio: str, nom_biblio: str):
+@bot.tree.command(name="change_bibliotheque_serveur", description="Pour changer la bibliothèque de stuff source par défaut du serveur")
+async def change_bibliotheque_serveur(interaction: Interaction, lien_biblio: str, nom_biblio: str):
 
     # Check if the link sent is a valid dofusbook link
     if not re.match(r"https?://(d-bk\.net|touch\.dofusbook\.net)/fr/(tl/\w+|membre/\d+-\w+/equipements)", lien_biblio):
@@ -1330,8 +1330,8 @@ async def bibliotheques(interaction: Interaction): #affiche un embed avec la bib
         embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
         await interaction.response.send_message(embed=embed)
 
-@bot.tree.command(name="delete_channel_db_account", description="Pour supprimer la bibliothèque de stuff source du canal")
-async def delete_channel_db_account(interaction: Interaction):
+@bot.tree.command(name="supprime_bibliotheque_canal", description="Pour supprimer la bibliothèque de stuff source du canal")
+async def supprime_bibliotheque_canal(interaction: Interaction):
 
     channel = interaction.channel.name if interaction.channel else "DM"
     guild = interaction.guild.name if interaction.guild else "DM"
@@ -1400,8 +1400,8 @@ async def delete_channel_db_account(interaction: Interaction):
     await interaction.response.send_message(embed=embed)
     return 0
 
-@bot.tree.command(name="delete_server_db_account", description="Pour supprimer la bibliothèque de stuff source du canal")
-async def delete_server_db_account(interaction: Interaction):
+@bot.tree.command(name="supprime_bibliotheque_serveur", description="Pour supprimer la bibliothèque de stuff source du serveur")
+async def supprime_bibliotheque_serveur(interaction: Interaction):
 
     guild = interaction.guild.name if interaction.guild else "DM"
 
