@@ -252,15 +252,31 @@ Actuellement les commandes disponibles sont les suivantes :
 - </youtube:1350823984421273653> : Pour les dernières news de la chaîne Youtube
 - </dofusbook:1351208176120238110> : Pour avoir le lien de la bibliothèque de stuff
 - </bibliotheques:1372970032837165059> : Pour savoir quelles sont les bibliothèques utilisées dans ce serveur
-- </change_bibliotheque_canal:1383835695046721659> : Pour changer la bibliothèque de stuff source du canal
-- </change_bibliotheque_serveur:1383835695046721660> : Pour changer la bibliothèque de stuff source par défaut du serveur
-- </supprime_bibliotheque_canal:1383835695046721661> : Pour supprimer la bibliothèque de stuff source du canal
-- </supprime_bibliotheque_serveur:1383835695046721662> : Pour supprimer la bibliothèque de stuff source par défaut du serveur
 
-Pour plus d'informations sur l'utilisation de ces commandes, tu peux taper `/help <commande>` ou aller voir la documentation sur [Dofus Touls](https://discord.gg/TcrNrRE5QV).
+Gestion des bibliothèques de stuff :
+- </change_bibliotheque_canal:1383835695046721659> 
+- </change_bibliotheque_serveur:1383835695046721660> 
+- </supprime_bibliotheque_canal:1383835695046721661> 
+- </supprime_bibliotheque_serveur:1383835695046721662>
+
+Pour plus d'informations sur l'utilisation de ces commandes, `/help <commande>` ou documentation sur [Dofus Touls](https://discord.gg/TcrNrRE5QV).
 """
     return resp
-        
+
+# Actuellement les commandes disponibles sont les suivantes :
+# - </stuff:1290488859909423174> : Pour recevoir des recommandations de stuff selon des critères au choix
+# - </help:1350823984421273652> : Pour une aide sur l'utilisation du bot
+# - </twitch:1290500457659371563> : Pour les dernières news sur la chaîne Twitch
+# - </youtube:1350823984421273653> : Pour les dernières news de la chaîne Youtube
+# - </dofusbook:1351208176120238110> : Pour avoir le lien de la bibliothèque de stuff
+# - </bibliotheques:1372970032837165059> : Pour savoir quelles sont les bibliothèques utilisées dans ce serveur
+# - </change_bibliotheque_canal:1383835695046721659> : Pour changer la bibliothèque de stuff source du canal
+# - </change_bibliotheque_serveur:1383835695046721660> : Pour changer la bibliothèque de stuff source par défaut du serveur
+# - </supprime_bibliotheque_canal:1383835695046721661> : Pour supprimer la bibliothèque de stuff source du canal
+# - </supprime_bibliotheque_serveur:1383835695046721662> : Pour supprimer la bibliothèque de stuff source par défaut du serveur
+
+# Pour plus d'informations sur l'utilisation de ces commandes, tu peux taper `/help <commande>` ou aller voir la documentation sur [Dofus Touls](https://discord.gg/TcrNrRE5QV).
+
 def stuff_response(element,classe,plateforme="discord"):
 
     elt=lecture_elt(element)
