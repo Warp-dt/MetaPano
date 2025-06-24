@@ -1076,7 +1076,7 @@ Au programme :
 
 # Youtube command
 @bot.tree.command(name="youtube", description="Pour avoir des infos sur la chaine Youtube de Warp.")
-async def twitch(interaction: Interaction):
+async def youtube(interaction: Interaction):
     embed = Embed(
         title=f"Youtube",
         color=0xFF0000 # Couleur twitch
@@ -1104,6 +1104,9 @@ Tous les stuffs que le bot va recommander sont présents dans ce compte dofusboo
 
 
 @bot.tree.command(name="change_bibliotheque_canal", description="Pour changer la bibliothèque de stuff source du canal")
+@app_commands.default_permissions(administrator=True) #only admin can use this command
+@app_commands.checks.has_permissions(administrator=True) #and the admin can not give the permission to use this command
+@app_commands.guild_only() #only in guilds, not in DMs
 async def change_bibliotheque_canal(interaction: Interaction, lien_biblio: str, nom_biblio: str):
 
     # Check if the link sent is a valid dofusbook link
@@ -1208,6 +1211,9 @@ Il faudra donc attendre demain pour pouvoir profiter de cette nouvelle biblioth�
     await interaction.response.send_message(embed=embed)
 
 @bot.tree.command(name="change_bibliotheque_serveur", description="Pour changer la bibliothèque de stuff source par défaut du serveur")
+@app_commands.default_permissions(administrator=True) #only admin can use this command
+@app_commands.checks.has_permissions(administrator=True) #and the admin can not give the permission to use this command
+@app_commands.guild_only() #only in guilds, not in DMs
 async def change_bibliotheque_serveur(interaction: Interaction, lien_biblio: str, nom_biblio: str):
 
     # Check if the link sent is a valid dofusbook link
@@ -1331,6 +1337,9 @@ async def bibliotheques(interaction: Interaction): #affiche un embed avec la bib
         await interaction.response.send_message(embed=embed)
 
 @bot.tree.command(name="supprime_bibliotheque_canal", description="Pour supprimer la bibliothèque de stuff source du canal")
+@app_commands.default_permissions(administrator=True) #only admin can use this command
+@app_commands.checks.has_permissions(administrator=True) #and the admin can not give the permission to use this command
+@app_commands.guild_only() #only in guilds, not in DMs
 async def supprime_bibliotheque_canal(interaction: Interaction):
 
     channel = interaction.channel.name if interaction.channel else "DM"
@@ -1401,6 +1410,9 @@ async def supprime_bibliotheque_canal(interaction: Interaction):
     return 0
 
 @bot.tree.command(name="supprime_bibliotheque_serveur", description="Pour supprimer la bibliothèque de stuff source par défaut du serveur")
+@app_commands.default_permissions(administrator=True) #only admin can use this command
+@app_commands.checks.has_permissions(administrator=True) #and the admin can not give the permission to use this command
+@app_commands.guild_only() #only in guilds, not in DMs
 async def supprime_bibliotheque_serveur(interaction: Interaction):
 
     guild = interaction.guild.name if interaction.guild else "DM"
