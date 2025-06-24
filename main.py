@@ -1302,6 +1302,7 @@ Il faudra donc attendre demain pour pouvoir profiter de cette nouvelle biblioth�
     await interaction.response.send_message(embed=embed)
 
 @bot.tree.command(name="bibliotheques", description="Pour savoir quelles sont les bibliothèques utilisées dans ce serveur")
+@app_commands.guild_only() #only in guilds, not in DMs
 async def bibliotheques(interaction: Interaction): #affiche un embed avec la biblio actuelle du canal et du serveur
     guild = interaction.guild.name if interaction.guild else "DM"
     if guild in CUSTOM_BIBLIO:
