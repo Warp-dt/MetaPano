@@ -791,12 +791,19 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=['996244','MetaPa
             if crit=="Élément":
                 content_criteres+=f"- {crit} : "
                 for c in criteres[crit]:
-                    content_criteres+=f"<:{c.replace(' ','')}:{bot.application_emojis[c.replace(' ','')]}>"
+                    content_criteres+=f"<:{c.replace(' ','')}:{bot.application_emojis[c.replace(' ','').lower()]}>"
                 content_criteres+="\n"
             elif crit=="Classe":
-                content_criteres+=f"- {crit} : <:{criteres[crit].replace(' ','')}:{bot.application_emojis[criteres[crit].replace(' ','')]}>\n"
+                content_criteres+=f"- {crit} : <:{criteres[crit].replace(' ','')}:{bot.application_emojis[criteres[crit].replace(' ','').lower()]}>\n"
             elif crit in ["PA",'PM','PO','Invo']:
-                content_criteres+=f"- <:{crit.replace(' ','')}:{bot.application_emojis[crit.replace(' ','')]}> : {criteres[crit]}\n"
+                # print(crit,criteres)
+                # try:
+                #     print("bot_emoji",bot.application_emojis[crit.replace(' ','')])
+                #     print("criteres",criteres[crit])
+                # except:
+                #     print(bot.application_emojis.keys())
+                #     print(bot.application_emojis)
+                content_criteres+=f"- <:{crit.replace(' ','')}:{bot.application_emojis[crit.replace(' ','').lower()]}> : {criteres[crit]}\n"
             else:
                 content_criteres+=f"""- {crit} : {str(criteres[crit]).replace("[","").replace("]","").replace("'","")}\n"""
 
@@ -811,13 +818,13 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=['996244','MetaPa
                         if cd=="Élément":
                             all_elts_crit=vd
                     for elt_retitré in set(criteres["Élément"])^set(all_elts_crit):
-                        content_criteres+=f"<:{elt_retitré.replace(' ','')}:{bot.application_emojis[elt_retitré.replace(' ','')]}>"
+                        content_criteres+=f"<:{elt_retitré.replace(' ','')}:{bot.application_emojis[elt_retitré.replace(' ','').lower()]}>"
                     content_criteres+="\n"
                     assou_dopou=False
                 elif c_assou=="Élément" and assou_dopou:
                     content_criteres+=f"- {c_assou} :"
                     for elt_retitré in set(v_assou)^set(criteres["Élément"]):
-                        content_criteres+=f"<:{elt_retitré.replace(' ','')}:{bot.application_emojis[elt_retitré.replace(' ','')]}>"
+                        content_criteres+=f"<:{elt_retitré.replace(' ','')}:{bot.application_emojis[elt_retitré.replace(' ','').lower()]}>"
                     content_criteres+="\n"
                 else :
                     content_criteres+=f"- {c_assou}\n"
@@ -837,9 +844,9 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=['996244','MetaPa
             for elt_princi in content_dict:
                 # print("elt_princi",elt_princi)
                 if ' ' in elt_princi:
-                    emoji_elt=''.join([f'<:{e.replace(" ","")}:{bot.application_emojis[e.replace(" ","")]}>' for e in elt_princi.split(' ')])
+                    emoji_elt=''.join([f'<:{e.replace(" ","")}:{bot.application_emojis[e.replace(" ","").lower()]}>' for e in elt_princi.split(' ')])
                 else:
-                    emoji_elt=f'<:{elt_princi.replace(" ","")}:{bot.application_emojis[elt_princi.replace(" ","")]}>'
+                    emoji_elt=f'<:{elt_princi.replace(" ","")}:{bot.application_emojis[elt_princi.replace(" ","").lower()]}>'
                 embed.add_field(name=f"{elt_princi}{emoji_elt}", value=content_dict[elt_princi], inline=True)
 
         else:
