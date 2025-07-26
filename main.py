@@ -776,13 +776,17 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=['996244','MetaPa
             title=titre,
             color=color #0x773d02#607d83
         )
-        if "Élément" in criteres:
-            illustration=IMAGES_LINK['+'.join(filter_sort_main_elts(criteres["Élément"]))]
-        elif "Classe" in criteres:
-            illustration=IMAGES_LINK[criteres["Classe"]]
-        else:
+        print('criteres',criteres)
+        try :
+            if "Élément" in criteres:
+                illustration=IMAGES_LINK['+'.join(filter_sort_main_elts(criteres["Élément"]))]
+            elif "Classe" in criteres:
+                illustration=IMAGES_LINK[criteres["Classe"]]
+            else:
+                illustration=IMAGES_LINK["harry"]
+        except :
             illustration=IMAGES_LINK["harry"]
-        
+
         embed.set_thumbnail(url=illustration)  # URL d'une image pour l'illustration
 
         #field criteres
@@ -900,10 +904,14 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=['996244','MetaPa
                 title="Oups",
                 color=color#0xff0000 #0x773d02#607d83
             )
-            if "Élément" in criteres:
-                illustration=IMAGES_LINK['+'.join(filter_sort_main_elts(criteres["Élément"]))]
-            else:
+            try :
+                if "Élément" in criteres:
+                    illustration=IMAGES_LINK['+'.join(filter_sort_main_elts(criteres["Élément"]))]
+                else:
+                    illustration=IMAGES_LINK["error"]
+            except :
                 illustration=IMAGES_LINK["error"]
+            
             embed.set_thumbnail(url=IMAGES_LINK["error"]) 
             if "Élément" in criteres:
                 embed.add_field(name=f'Élément {" ".join(criteres["Élément"])} vide',value="Je n'ai pas de stuff dans ma base pour cet élément ou cette combinaison d'éléments.")
