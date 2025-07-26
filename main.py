@@ -27,16 +27,16 @@ except FileNotFoundError:
 except json.JSONDecodeError as e:
     print(f"Error decoding custom_biblio.json: {e}")
 
-# STEP 0: LOAD OUR TOKEN FROM SOMEWHERE SAFE
+# LOAD OUR TOKEN FROM SOMEWHERE SAFE
 load_dotenv()
 TOKEN: Final[str] = os.getenv('DISCORD_TOKEN')
 
-# STEP 1: BOT SETUP
+# BOT SETUP
 intents: Intents = Intents.default()
 intents.message_content = True 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
-# STEP 2: HANDLING THE STARTUP FOR OUR BOT
+# HANDLING THE STARTUP FOR OUR BOT
 
 def parse_log(log_message):
     pattern = r"(?P<user>[\w.]+) used /(?P<command>\w+)(?: with args: (?P<args>.*?))? in server (?P<server>.*?) channel (?P<channel>.*?)$"
@@ -64,6 +64,40 @@ def parse_log(log_message):
         "SERVERNAME": server,
         "CHANNELNAME": channel
     }
+
+# emojis
+
+async def fetch_application_emojis(application_id):
+    # L'URL de l'API pour les emojis d'application
+    url = f"https://discord.com/api/v10/applications/{application_id}/emojis"
+    
+    # Les headers nécessaires, incluant le token du bot
+    headers = {
+        "Authorization": f"Bot {bot.http.token}",
+        "Content-Type": "application/json"
+    }
+    
+    try:
+        async with bot.http_session.get(url, headers=headers) as response:
+            if response.status == 200:
+                emojis_data = await response.json()
+                
+                # structurer les informations utiles
+                emojis_dict=dict()
+                for emo in emojis_data["items"]:
+                    emojis_dict[emo["name"]]=emo["id"]
+
+                # Stocker les données pour utilisation ultérieure
+                bot.application_emojis = emojis_dict
+                print(f"Emojis récupérés!")
+                return emojis_dict
+            else:
+                error_text = await response.text()
+                print(f"Erreur API récupération emojis: {response.status}, {error_text}")
+                return None
+    except Exception as e:
+        print(f"Erreur lors de la requête: {e}")
+        return None
 
 
 @bot.event
@@ -239,9 +273,15 @@ async def on_ready() -> None:
     except Exception as e:
         print(f"Failed to sync commands: {e}")
 
+# N'oubliez pas de fermer la session HTTP lors de la fermeture du bot
+@bot.event
+async def on_shutdown():
+    if hasattr(bot, 'http_session'):
+        await bot.http_session.close()
+
 # Commands logging
 @bot.event
-async def on_interaction(interaction):
+async def on_interaction(interaction : Interaction):
         # Vérifie si l'interaction est une commande
     if interaction.type == InteractionType.application_command and not interaction.response.is_done():
         channel = bot.get_channel(1335368709157421056)
@@ -268,34 +308,6 @@ async def on_interaction(interaction):
         # print(log_message)
         await channel.send(log_message)
 
-############################################################################################
-# @bot.event
-# async def on_disconnect():
-#     print("My battery is low and it's getting dark.")
-
-# ## STEP 2.1 : HANDLING THE SHUTDOWN
-# async def shutdown_handler():
-#     """Sends a message to the target channel before shutting down."""
-#     channel = bot.get_channel(1308510294506606623)
-#     if channel is not None:
-#         try:
-#             await channel.send("My battery is low and it's getting dark.")
-#             print("Shutdown message sent successfully.")
-#         except Exception as e:
-#             print(f"Failed to send shutdown message: {e}")
-
-# def handle_exit(signum, frame):
-#     """Capture termination signals and shut down gracefully."""
-#     print("Shutting down bot...")
-#     loop = bot.loop
-#     if loop.is_running():
-#         loop.create_task(shutdown_handler())
-#     loop.stop()
-
-# # Register signals (e.g., SIGINT for Ctrl+C)
-# signal.signal(signal.SIGINT, handle_exit)
-# signal.signal(signal.SIGTERM, handle_exit)
-############################################################################################
 # Flag global pour suivre si le message a été envoyé
 shutdown_message_sent = False
 
@@ -351,9 +363,59 @@ async def on_disconnect():
                 print("Disconnection message sent successfully.")
             except Exception as e:
                 print(f"Failed to send disconnection message: {e}")
-############################################################################################
-# STEP 3: SLASH COMMAND IMPLEMENTATION
 
+
+# SLASH COMMAND IMPLEMENTATION
+
+def embed_erreur_generale():
+    embed = Embed(
+        title=f"ERREUR",
+        color=0x000000
+    )
+    embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL d'une image pour l'illustration
+    
+    content="""Une erreur inconnue est arrivée le bot a planté, n'hésite pas à signaler cette erreur sur à warp sur [Dofus Touls](https://discord.gg/TcrNrRE5QV)"""
+    embed.add_field(name="ERREUR INCONNUE", value=content, inline=False)
+    return embed
+
+
+@bot.tree.error
+async def on_app_command_error(interaction : Interaction, error: discord.DiscordException):
+    embed = Embed(
+        title=f"ERREUR",
+        color=0x000000
+    )
+    embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL d'une image pour l'illustration
+
+    if isinstance(error, ZeroDivisionError):
+        embed.description = "Division by zero attempt"
+    else:
+        embed.description = f"""Une erreur est arrivée le bot a planté, n'hésite pas à signaler cette erreur à warp sur [Dofus Touls](https://discord.gg/TcrNrRE5QV)"""
+        embed.add_field(name="Détails :", value=f"```py\n{error}```")
+        
+        if interaction.type == InteractionType.application_command and not interaction.response.is_done():
+            channel = bot.get_channel(1335368709157421056)
+            server = interaction.guild.name
+            user = interaction.user
+            command = interaction.command.name
+            cmd_channel = interaction.channel
+            
+            # Récupération des arguments
+            options = []
+            if interaction.data.get('options'):
+                for option in interaction.data['options']:
+                    option_name = option['name']
+                    option_value = option['value']
+                    options.append(f"{option_name}: {option_value}")
+
+            embed.add_field(name="Source de l'erreur :", value=f"```commande : {command}\narguments : {options}```")
+    
+    try:
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+    except discord.InteractionResponded:
+        await interaction.followup.send(embed=embed, ephemeral=True)
+
+    
 CRITERES=["Élément","Classe","PA","PM","PO","Invo","Lvl"]
 ELEMENTS_DB=['air','dopou', 'eau','feu','terre','cc','initiative','soin','retrait_pa', 'retrait_pm', 'esquive_pa', 'esquive_pm', 'repou', 'recri', 'tank', 'pp', 'sagesse','pods','pvp', 'pvm']
 LVL_TRANCHES=["200","199","198-195"]+[str(195-k*5-1)+'-'+str(190-k*5) for k in range(21)]+["<90"]
@@ -659,7 +721,6 @@ class ClasseSelect(discord.ui.Select):
                 view=self.view,
                 ephemeral=False)
 
-
 class ElementSelect(discord.ui.Select):
     def __init__(self,criteres_restants,criteres_val):
         
@@ -923,8 +984,6 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=['996244','MetaPa
         # print(criteres_altérés,assouplissement)
         return resultat_embed(criteres_altérés,assouplissement,biblio=biblio)
 
-
-
 def next_critere_embed(criteres_restants : list):
     crit=criteres_restants[0]
     embed = Embed(
@@ -947,7 +1006,6 @@ def next_critere_embed(criteres_restants : list):
 
     embed.add_field(name=content, value="", inline=False)
     return embed
-
 
 def custom_bibli(channel,guild): #returns the custom biblio for the channel or guild or the default one if not found and checks if the biblio is already imported in the db
     if guild in CUSTOM_BIBLIO:
@@ -975,8 +1033,8 @@ async def stuff(interaction: Interaction,
                 po_min: app_commands.Range[int, -10, 6]=0, 
                 invo_min: app_commands.Range[int, -10, 6]=0,
                 lvl_max: app_commands.Range[int, 0, 200] = 0):
-    
     if element=="vide" and classe=="vide" and lvl_max==0 and pa_min==0 and pm_min==0 and po_min==0 and invo_min==0: #sans arg
+    
         embed = Embed(
             title=f"Conseils de stuff",
             color=0x773d02#607d83
@@ -996,7 +1054,7 @@ async def stuff(interaction: Interaction,
             embed=embed,
             view=view,
             ephemeral=True)
-        
+            
     else : #avec au moins un arg
 
         criteres=dict()
@@ -1483,77 +1541,10 @@ async def supprime_bibliotheque_serveur(interaction: Interaction):
     await interaction.response.send_message(embed=embed)
     return 0
 
-#################################################################################### emojis
-
-async def fetch_application_emojis(application_id):
-    # L'URL de l'API pour les emojis d'application
-    url = f"https://discord.com/api/v10/applications/{application_id}/emojis"
-    
-    # Les headers nécessaires, incluant le token du bot
-    headers = {
-        "Authorization": f"Bot {bot.http.token}",
-        "Content-Type": "application/json"
-    }
-    
-    try:
-        async with bot.http_session.get(url, headers=headers) as response:
-            if response.status == 200:
-                emojis_data = await response.json()
-                
-                # structurer les informations utiles
-                emojis_dict=dict()
-                for emo in emojis_data["items"]:
-                    emojis_dict[emo["name"]]=emo["id"]
-
-                # Stocker les données pour utilisation ultérieure
-                bot.application_emojis = emojis_dict
-                print(f"Emojis récupérés!")
-                return emojis_dict
-            else:
-                error_text = await response.text()
-                print(f"Erreur API récupération emojis: {response.status}, {error_text}")
-                return None
-    except Exception as e:
-        print(f"Erreur lors de la requête: {e}")
-        return None
-
-# @bot.tree.command()
-# async def app_emojis(interaction: Interaction):
-#     if hasattr(bot, 'application_emojis') and bot.application_emojis:
-#         # Formatter et afficher les emojis
-#         emoji_info = "\n".join([f"Nom: {emoji}, ID: {bot.application_emojis[emoji]}, <:{emoji}:{bot.application_emojis[emoji]}>" for emoji in bot.application_emojis])
-#         await interaction.response.send_message(f"Emojis de l'application:\n{emoji_info[:1900]}")
-        
-#         # # Exemple d'utilisation d'un emoji si disponible
-#         # if bot.application_emojis:
-#         #     emoji = bot.application_emojis[0]
-#         #     emoji_id = emoji['id']
-#         #     emoji_name = emoji['name']
-#         #     await interaction.response.send_message(f"Exemple d'emoji: <:{emoji_name}:{emoji_id}>")
-#     else:
-#         await interaction.response.send_message("Aucun emoji d'application trouvé ou non encore chargé.")
-
-# @bot.tree.command()
-# async def reload_emojis(interaction: Interaction):
-#     application = await bot.application_info()
-#     emojis = await fetch_application_emojis(application.id)
-#     if emojis:
-#         await interaction.response.send_message(f"Rechargement réussi, {len(emojis)} emojis trouvés.")
-#     else:
-#         await interaction.response.send_message("Échec du rechargement des emojis.")
-
-# N'oubliez pas de fermer la session HTTP lors de la fermeture du bot
-@bot.event
-async def on_shutdown():
-    if hasattr(bot, 'http_session'):
-        await bot.http_session.close()
-
-
-
-# STEP 4: MAIN ENTRY POINT
-def main() -> None:
-    bot.run(TOKEN)
+# # STEP 4: MAIN ENTRY POINT
+# def main() -> None:
+#     bot.run(TOKEN)
 
 
 if __name__ == '__main__':
-    main()
+    bot.run(TOKEN)
