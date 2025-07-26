@@ -72,146 +72,146 @@ async def on_ready() -> None:
 
     commands_channel=bot.get_channel(1335368709157421056)
 
-    #dashboard
-    commands_messages = [message async for message in commands_channel.history(limit=None) if message.author.id==1288167324586872842] #tous les messages de metapano
-    dashboard_channel=bot.get_channel(1352443097337827378)
-    usage_commandes={
-        "stuff" : 0
-        ,"help" : 0
-        ,"twitch" : 0
-        ,"youtube" : 0
-        ,"dofusbook" : 0
-    }
-    usage_classes={c : 0 for c in CLASSES}
-    usage_elements=dict()
-    usage_users=dict()
-    usage_servers=dict()
-    usage_channels=dict()
+#     #dashboard
+#     commands_messages = [message async for message in commands_channel.history(limit=None) if message.author.id==1288167324586872842] #tous les messages de metapano
+#     dashboard_channel=bot.get_channel(1352443097337827378)
+#     usage_commandes={
+#         "stuff" : 0
+#         ,"help" : 0
+#         ,"twitch" : 0
+#         ,"youtube" : 0
+#         ,"dofusbook" : 0
+#     }
+#     usage_classes={c : 0 for c in CLASSES}
+#     usage_elements=dict()
+#     usage_users=dict()
+#     usage_servers=dict()
+#     usage_channels=dict()
 
-    try:
-        for i in commands_messages:
-            log_parsed=parse_log(i.content)
-            if log_parsed:
-                if log_parsed["USER"]!="warp_is_fine":
-                    if log_parsed["COMMAND"] in usage_commandes.keys():
-                        usage_commandes[log_parsed["COMMAND"]]+=1
-                    else:
-                        usage_commandes[log_parsed["COMMAND"]]=1
-                    if log_parsed["USER"] in usage_users.keys():
-                        usage_users[log_parsed["USER"]]+=1
-                    else:
-                        usage_users[log_parsed["USER"]]=1
-                    if log_parsed["SERVERNAME"] in usage_servers.keys():
-                        usage_servers[log_parsed["SERVERNAME"]]+=1
-                    else:
-                        usage_servers[log_parsed["SERVERNAME"]]=1
-                    if log_parsed["CHANNELNAME"] in usage_channels.keys():
-                        usage_channels[log_parsed["CHANNELNAME"]]+=1
-                    else:
-                        usage_channels[log_parsed["CHANNELNAME"]]=1
-                    if 'classe' in log_parsed["ARGS"].keys():
-                        if log_parsed["ARGS"]["classe"].strip().lower() in usage_classes.keys():
-                            usage_classes[log_parsed["ARGS"]["classe"].strip().lower()]+=1
-                        else:
-                            usage_classes[log_parsed["ARGS"]["classe"].strip().lower()]=1
-                    if 'element' in log_parsed["ARGS"].keys():
-                        if log_parsed["ARGS"]["element"].strip().lower().replace("+"," ").replace("/"," ") in usage_elements.keys():
-                            usage_elements[log_parsed["ARGS"]["element"].strip().lower().replace("+"," ").replace("/"," ")]+=1
-                        else:
-                            usage_elements[log_parsed["ARGS"]["element"].strip().lower().replace("+"," ").replace("/"," ")]=1
-        print("Logs are parsed and the dashboard is updated")     
-    except Exception as e:
-        print(f"Failed to parse and  commands log, error : {e}")
+#     try:
+#         for i in commands_messages:
+#             log_parsed=parse_log(i.content)
+#             if log_parsed:
+#                 if log_parsed["USER"]!="warp_is_fine":
+#                     if log_parsed["COMMAND"] in usage_commandes.keys():
+#                         usage_commandes[log_parsed["COMMAND"]]+=1
+#                     else:
+#                         usage_commandes[log_parsed["COMMAND"]]=1
+#                     if log_parsed["USER"] in usage_users.keys():
+#                         usage_users[log_parsed["USER"]]+=1
+#                     else:
+#                         usage_users[log_parsed["USER"]]=1
+#                     if log_parsed["SERVERNAME"] in usage_servers.keys():
+#                         usage_servers[log_parsed["SERVERNAME"]]+=1
+#                     else:
+#                         usage_servers[log_parsed["SERVERNAME"]]=1
+#                     if log_parsed["CHANNELNAME"] in usage_channels.keys():
+#                         usage_channels[log_parsed["CHANNELNAME"]]+=1
+#                     else:
+#                         usage_channels[log_parsed["CHANNELNAME"]]=1
+#                     if 'classe' in log_parsed["ARGS"].keys():
+#                         if log_parsed["ARGS"]["classe"].strip().lower() in usage_classes.keys():
+#                             usage_classes[log_parsed["ARGS"]["classe"].strip().lower()]+=1
+#                         else:
+#                             usage_classes[log_parsed["ARGS"]["classe"].strip().lower()]=1
+#                     if 'element' in log_parsed["ARGS"].keys():
+#                         if log_parsed["ARGS"]["element"].strip().lower().replace("+"," ").replace("/"," ") in usage_elements.keys():
+#                             usage_elements[log_parsed["ARGS"]["element"].strip().lower().replace("+"," ").replace("/"," ")]+=1
+#                         else:
+#                             usage_elements[log_parsed["ARGS"]["element"].strip().lower().replace("+"," ").replace("/"," ")]=1
+#         print("Logs are parsed and the dashboard is updated")     
+#     except Exception as e:
+#         print(f"Failed to parse and  commands log, error : {e}")
 
 
-    try:
-        s_usage_commandes=dict(sorted(usage_commandes.items(), key=lambda item: item[1],reverse=True))
-        s_usage_users=dict(sorted(usage_users.items(), key=lambda item: item[1],reverse=True))
-        s_usage_classes=dict(sorted(usage_classes.items(), key=lambda item: item[1],reverse=True))
-        s_usage_servers=dict(sorted(usage_servers.items(), key=lambda item: item[1],reverse=True))
-        s_usage_channels=dict(sorted(usage_channels.items(), key=lambda item: item[1],reverse=True))
-        s_usage_elements=dict(sorted(usage_elements.items(), key=lambda item: item[1],reverse=True))
+#     try:
+#         s_usage_commandes=dict(sorted(usage_commandes.items(), key=lambda item: item[1],reverse=True))
+#         s_usage_users=dict(sorted(usage_users.items(), key=lambda item: item[1],reverse=True))
+#         s_usage_classes=dict(sorted(usage_classes.items(), key=lambda item: item[1],reverse=True))
+#         s_usage_servers=dict(sorted(usage_servers.items(), key=lambda item: item[1],reverse=True))
+#         s_usage_channels=dict(sorted(usage_channels.items(), key=lambda item: item[1],reverse=True))
+#         s_usage_elements=dict(sorted(usage_elements.items(), key=lambda item: item[1],reverse=True))
 
-        mc=0 #messages counter
-        dashboard=[]
+#         mc=0 #messages counter
+#         dashboard=[]
         
-        dashboard.append('__**COMMANDES:**__\n')
-        for cmd in s_usage_commandes:
-            line=f'- {cmd} : {s_usage_commandes[cmd]}\n'
-            if len(dashboard[mc])+len(line)<1990:
-                dashboard[mc]+=line
-            else:
-                dashboard.append(line)
-                mc+=1
-        dashboard[mc]+='\n'
+#         dashboard.append('__**COMMANDES:**__\n')
+#         for cmd in s_usage_commandes:
+#             line=f'- {cmd} : {s_usage_commandes[cmd]}\n'
+#             if len(dashboard[mc])+len(line)<1990:
+#                 dashboard[mc]+=line
+#             else:
+#                 dashboard.append(line)
+#                 mc+=1
+#         dashboard[mc]+='\n'
 
-        dashboard[mc]+='__**USERS:**__\n'
-        for cmd in s_usage_users:
-            line=f'- {cmd} : {s_usage_users[cmd]}\n'
-            if len(dashboard[mc])+len(line)<1990:
-                dashboard[mc]+=line
-            else:
-                dashboard.append(line)
-                mc+=1
-        dashboard[mc]+='\n'
+#         dashboard[mc]+='__**USERS:**__\n'
+#         for cmd in s_usage_users:
+#             line=f'- {cmd} : {s_usage_users[cmd]}\n'
+#             if len(dashboard[mc])+len(line)<1990:
+#                 dashboard[mc]+=line
+#             else:
+#                 dashboard.append(line)
+#                 mc+=1
+#         dashboard[mc]+='\n'
 
-        dashboard[mc]+='__**CLASSES:**__\n'
-        for cmd in s_usage_classes:
-            line=f'- {cmd} : {s_usage_classes[cmd]}\n'
-            if len(dashboard[mc])+len(line)<1990:
-                dashboard[mc]+=line
-            else:
-                dashboard.append(line)
-                mc+=1
-        dashboard[mc]+='\n'
+#         dashboard[mc]+='__**CLASSES:**__\n'
+#         for cmd in s_usage_classes:
+#             line=f'- {cmd} : {s_usage_classes[cmd]}\n'
+#             if len(dashboard[mc])+len(line)<1990:
+#                 dashboard[mc]+=line
+#             else:
+#                 dashboard.append(line)
+#                 mc+=1
+#         dashboard[mc]+='\n'
 
-        dashboard[mc]+='__**ELEMENTS:**__\n'
-        for cmd in s_usage_elements:
-            line=f'- {cmd} : {s_usage_elements[cmd]}\n'
-            if len(dashboard[mc])+len(line)<1990:
-                dashboard[mc]+=line
-            else:
-                dashboard.append(line)
-                mc+=1
-        dashboard[mc]+='\n'
+#         dashboard[mc]+='__**ELEMENTS:**__\n'
+#         for cmd in s_usage_elements:
+#             line=f'- {cmd} : {s_usage_elements[cmd]}\n'
+#             if len(dashboard[mc])+len(line)<1990:
+#                 dashboard[mc]+=line
+#             else:
+#                 dashboard.append(line)
+#                 mc+=1
+#         dashboard[mc]+='\n'
 
-        dashboard[mc]+='__**SERVERS:**__\n'
-        for cmd in s_usage_servers:
-            line=f'- {cmd} : {s_usage_servers[cmd]}\n'
-            if len(dashboard[mc])+len(line)<1990:
-                dashboard[mc]+=line
-            else:
-                dashboard.append(line)
-                mc+=1
-        dashboard[mc]+='\n'
+#         dashboard[mc]+='__**SERVERS:**__\n'
+#         for cmd in s_usage_servers:
+#             line=f'- {cmd} : {s_usage_servers[cmd]}\n'
+#             if len(dashboard[mc])+len(line)<1990:
+#                 dashboard[mc]+=line
+#             else:
+#                 dashboard.append(line)
+#                 mc+=1
+#         dashboard[mc]+='\n'
 
-        dashboard[mc]+='__**CHANNELS:**__\n'
-        for cmd in s_usage_channels:
-            line=f'- {cmd} : {s_usage_channels[cmd]}\n'
-            if len(dashboard[mc])+len(line)<1990:
-                dashboard[mc]+=line
-            else:
-                dashboard.append(line)
-                mc+=1
-        dashboard[mc]+='\n'
+#         dashboard[mc]+='__**CHANNELS:**__\n'
+#         for cmd in s_usage_channels:
+#             line=f'- {cmd} : {s_usage_channels[cmd]}\n'
+#             if len(dashboard[mc])+len(line)<1990:
+#                 dashboard[mc]+=line
+#             else:
+#                 dashboard.append(line)
+#                 mc+=1
+#         dashboard[mc]+='\n'
 
-        resume=f"""__**RÉSUMÉ:**__
-- nombre de commandes utilisées : {sum(usage_commandes.values())}
-- nombre d'utilisateurs uniques : {len(usage_users.keys())-1}
-- nombre de serveurs : {len(usage_servers.keys())}
-"""     
-        if len(dashboard[mc])+len(resume)<1990:
-            dashboard[mc]+=resume
-        else:
-            dashboard.append(resume)
-            mc+=1
+#         resume=f"""__**RÉSUMÉ:**__
+# - nombre de commandes utilisées : {sum(usage_commandes.values())}
+# - nombre d'utilisateurs uniques : {len(usage_users.keys())-1}
+# - nombre de serveurs : {len(usage_servers.keys())}
+# """     
+#         if len(dashboard[mc])+len(resume)<1990:
+#             dashboard[mc]+=resume
+#         else:
+#             dashboard.append(resume)
+#             mc+=1
         
-        for dash_msg in dashboard:
-            await dashboard_channel.send(dash_msg)
+#         for dash_msg in dashboard:
+#             await dashboard_channel.send(dash_msg)
         
-        print('Dashboard message posted!')
-    except Exception as e:
-        print(f"Failed to post dashboard message, error : {e}")
+#         print('Dashboard message posted!')
+#     except Exception as e:
+#         print(f"Failed to post dashboard message, error : {e}")
 
     ### récupération des emoji
     # Initialiser une session HTTP si elle n'existe pas déjà
@@ -355,7 +355,7 @@ async def on_disconnect():
 # STEP 3: SLASH COMMAND IMPLEMENTATION
 
 CRITERES=["Élément","Classe","PA","PM","PO","Invo","Lvl"]
-ELEMENTS_DB=['air','dopou', 'eau','feu','terre','cc','initiative','soin','retrait pa', 'retrait pm', 'esquive pa', 'esquive pm', 'repou', 'recri', 'tank', 'pp', 'sagesse','pods','pvp', 'pvm']
+ELEMENTS_DB=['air','dopou', 'eau','feu','terre','cc','initiative','soin','retrait_pa', 'retrait_pm', 'esquive_pa', 'esquive_pm', 'repou', 'recri', 'tank', 'pp', 'sagesse','pods','pvp', 'pvm']
 LVL_TRANCHES=["200","199","198-195"]+[str(195-k*5-1)+'-'+str(190-k*5) for k in range(21)]+["<90"]
 
 
@@ -776,7 +776,6 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=['996244','MetaPa
             title=titre,
             color=color #0x773d02#607d83
         )
-        print('criteres',criteres)
         try :
             if "Élément" in criteres:
                 illustration=IMAGES_LINK['+'.join(filter_sort_main_elts(criteres["Élément"]))]
@@ -1044,7 +1043,7 @@ async def stuff(interaction: Interaction,
             for err in elt_error:
                 err_resp+=f"Element `{err}` non reconnu.\n"
             err_resp+="""\nListe des éléments valides :
-- air, eau, feu, terre, dopou, cc, initiative, soin, retrait pa, retrait pm, esquive pa, esquive pm, repou, recri, tank, pp, sagesse, pods, pvp, pvm
+- air, eau, feu, terre, dopou, cc, initiative, soin, retrait_pa, retrait_pm, esquive_pa, esquive_pm, repou, recri, tank, pp, sagesse, pods, pvp, pvm
 Et toute combinaison de ces éléments."""
             # print("err_resp",err_resp)
             embed.add_field(name='Liste des erreurs :', value=err_resp)

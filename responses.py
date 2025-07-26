@@ -17,10 +17,10 @@ COLORS["sagesse"]="8162FF"
 COLORS["pods"]="A46D41"
 COLORS["repou"]="FC4903"
 COLORS["recri"]="FF4233"
-COLORS["retrait pa"]="30F8FC"
-COLORS["retrait pm"]="83AF3D"
-COLORS["esquive pa"]="30F8FC"
-COLORS["esquive pm"]="83AF3D"
+COLORS["retrait_pa"]="30F8FC"
+COLORS["retrait_pm"]="83AF3D"
+COLORS["esquive_pa"]="30F8FC"
+COLORS["esquive_pm"]="83AF3D"
 
 ELEMENTS=['terre', 'feu', 'eau', 'air', 'dopou', 'feu+terre', 'eau+terre', 
           'air+terre', 'dopou+terre', 'eau+feu', 'air+feu', 'dopou+feu', 
