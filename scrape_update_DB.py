@@ -532,11 +532,11 @@ if __name__ == "__main__":
 
                 ## pas nécessaire car on a déjà dossier_id et dossier_name
                 if stuff["folder_id"] is None:
-                    dossier_id=-1
-                    dossier_name="tout"
+                    temp_dossier_id=-1
+                    temp_dossier_name="tout"
                 else:                    
-                    dossier_id=stuff["folder_id"]
-                    dossier_name=stuff["folder"]["name"]
+                    temp_dossier_id=stuff["folder_id"]
+                    temp_dossier_name=stuff["folder"]["name"]
 
                 #on prend le premier alias de tout si il y a tout, et sinon le premier alias du premier dossier
                 if "-1" in custom_biblio[biblio_id]:
@@ -557,8 +557,8 @@ if __name__ == "__main__":
                     "elements": [ raw_elt_to_id[elt_raw] for elt_raw in stuff["tags"]],
                     "bibli_id": biblio_id,
                     "bibli_name": bibli_name,
-                    "dossier_id" : dossier_id,
-                    "dossier_name" : dossier_name
+                    "dossier_id" : temp_dossier_id,
+                    "dossier_name" : temp_dossier_name
                 }
                 temp_stuff_liste.append(temp_dict)
             print("page "+str(i)+" finie")
