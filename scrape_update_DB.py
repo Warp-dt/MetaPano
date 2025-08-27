@@ -508,7 +508,7 @@ if __name__ == "__main__":
         first_val=value[list(value.keys())[0]]
         if "imported" in first_val and "alias" in first_val: #test pour savoir si on est dans une clé de biblio ou de guild, on teste si dans le premier élément de value, il y a les clés "imported" et "alias"
             for dossier_id in value:
-                biblio_to_scrape.append((blibli_id,dossier_id,value[dossier_id]["dossier"]))# l'idée c'est de récupérer les ("bibli_id","dossier_id","dossier_name") de toutes les bibli à scraper
+                biblio_to_scrape.append((blibli_id,str(dossier_id),value[dossier_id]["dossier"]))# l'idée c'est de récupérer les ("bibli_id","dossier_id","dossier_name") de toutes les bibli à scraper
 
     page_maxsize=20
     stuff_liste=[]
