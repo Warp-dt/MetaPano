@@ -1473,7 +1473,7 @@ async def bibliotheques(interaction: Interaction): #affiche un embed avec la bib
                 if dossier_nom:
                     bibli_default+=f" | Dossier : {dossier_nom}"
             else:
-                bibli_canal+=f"- {channel} : [{nom_biblio}]({'https://touch.dofusbook.net/fr/membre/'+biblio_id+'-db/equipements'})  | Importée : {CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild][channel][0]]['imported']}"
+                bibli_canal+=f"- {channel} : [{nom_biblio}]({'https://touch.dofusbook.net/fr/membre/'+biblio_id+'-db/equipements'})  | Importée : {CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild][channel]["dossier_id"]]['imported']}"
                 if dossier_nom != "tout":
                     bibli_canal+=f" | Dossier : {dossier_nom}"
                 bibli_canal+="\n"
