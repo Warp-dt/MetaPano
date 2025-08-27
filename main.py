@@ -384,41 +384,41 @@ def embed_erreur_generale():
     return embed
 
 
-@bot.tree.error
-async def on_app_command_error(interaction : Interaction, error: discord.DiscordException):
-    embed = Embed(
-        title=f"ERREUR",
-        color=0x000000
-    )
-    embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL d'une image pour l'illustration
+# @bot.tree.error
+# async def on_app_command_error(interaction : Interaction, error: discord.DiscordException):
+#     embed = Embed(
+#         title=f"ERREUR",
+#         color=0x000000
+#     )
+#     embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL d'une image pour l'illustration
 
-    if isinstance(error, ZeroDivisionError):
-        embed.description = "Division by zero attempt"
-    else:
-        embed.description = f"""Une erreur est arrivée le bot a planté, n'hésite pas à signaler cette erreur à warp sur [Dofus Touls](https://discord.gg/TcrNrRE5QV)"""
-        embed.add_field(name="Détails :", value=f"```py\n{error}```")
+#     if isinstance(error, ZeroDivisionError):
+#         embed.description = "Division by zero attempt"
+#     else:
+#         embed.description = f"""Une erreur est arrivée le bot a planté, n'hésite pas à signaler cette erreur à warp sur [Dofus Touls](https://discord.gg/TcrNrRE5QV)"""
+#         embed.add_field(name="Détails :", value=f"```py\n{error}```")
         
-        if interaction.type == InteractionType.application_command and not interaction.response.is_done():
-            channel = bot.get_channel(1335368709157421056)
-            server = interaction.guild.name
-            user = interaction.user
-            command = interaction.command.name
-            cmd_channel = interaction.channel
+#         if interaction.type == InteractionType.application_command and not interaction.response.is_done():
+#             channel = bot.get_channel(1335368709157421056)
+#             server = interaction.guild.name
+#             user = interaction.user
+#             command = interaction.command.name
+#             cmd_channel = interaction.channel
             
-            # Récupération des arguments
-            options = []
-            if interaction.data.get('options'):
-                for option in interaction.data['options']:
-                    option_name = option['name']
-                    option_value = option['value']
-                    options.append(f"{option_name}: {option_value}")
+#             # Récupération des arguments
+#             options = []
+#             if interaction.data.get('options'):
+#                 for option in interaction.data['options']:
+#                     option_name = option['name']
+#                     option_value = option['value']
+#                     options.append(f"{option_name}: {option_value}")
 
-            embed.add_field(name="Source de l'erreur :", value=f"```commande : {command}\narguments : {options}```")
+#             embed.add_field(name="Source de l'erreur :", value=f"```commande : {command}\narguments : {options}```")
     
-    try:
-        await interaction.response.send_message(embed=embed, ephemeral=True)
-    except discord.InteractionResponded:
-        await interaction.followup.send(embed=embed, ephemeral=True)
+#     try:
+#         await interaction.response.send_message(embed=embed, ephemeral=True)
+#     except discord.InteractionResponded:
+#         await interaction.followup.send(embed=embed, ephemeral=True)
 
     
 CRITERES=["Élément","Classe","PA","PM","PO","Invo","Lvl"]
