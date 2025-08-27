@@ -157,7 +157,7 @@ classes_filtre={
 
 def folder_id_finder(folder_name,user):
     base="https://touch.dofusbook.net/stuffs/touch/public/"
-    membre="&user="+user+"&sort=update-desc"
+    membre="?user="+user+"&sort=update-desc"
 
     fold_rep=req.get(base+membre).json()["folders"]
     for fold in fold_rep:
