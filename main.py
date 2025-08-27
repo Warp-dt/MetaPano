@@ -1307,8 +1307,12 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
         color=0x1b3a57 # Couleur bleu db
     )
     embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
+    
+    if dossier=="tout":
+        embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({lien_biblio})"), inline=False)
+    else:
+        embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({lien_biblio}), dossier : {dossier}"), inline=False)
 
-    embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({lien_biblio})"), inline=False)
 
     infos_update=f"""Désormais tous les stuffs que le bot va recommander dans ce canal proviendront de ce compte dofusbook, c'est en quelques sorte la base de connaissance du bot.\n\n"""
     if already_imported:
@@ -1332,7 +1336,7 @@ Il faudra donc attendre demain pour pouvoir profiter de cette nouvelle biblioth�
 @app_commands.default_permissions(administrator=True) #only admin can use this command
 @app_commands.checks.has_permissions(administrator=True) #and the admin can not give the permission to use this command
 @app_commands.guild_only() #only in guilds, not in DMs
-async def change_bibliotheque_serveur(interaction: Interaction, lien_biblio: str, nom_biblio: str, dossier: Optional[str] = None  ):
+async def change_bibliotheque_serveur(interaction: Interaction, lien_biblio: str, nom_biblio: str, dossier: Optional[str] = "tout"  ):
 
     # Check if the link sent is a valid dofusbook link
     if not re.match(r"https?://(d-bk\.net|touch\.dofusbook\.net)/fr/(tl/\w+|membre/\d+-\w+/equipements)", lien_biblio):
@@ -1436,7 +1440,10 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
     )
     embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
 
-    embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({lien_biblio})"), inline=False)
+    if dossier=="tout":
+        embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({lien_biblio})"), inline=False)
+    else:
+        embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({lien_biblio}), dossier : {dossier}"), inline=False)
 
     infos_update=f"""Désormais tous les stuffs que le bot va recommander dans ce canal proviendront de ce compte dofusbook, c'est en quelques sorte la base de connaissance du bot.\n\n"""
     if already_imported:
@@ -1467,15 +1474,18 @@ async def bibliotheques(interaction: Interaction): #affiche un embed avec la bib
             biblio_id= CUSTOM_BIBLIO[guild][channel]["biblio_id"]
             nom_biblio= CUSTOM_BIBLIO[guild][channel]["nom_biblio"]
             dossier_nom= CUSTOM_BIBLIO[guild][channel]["dossier"]
-            # dossier_id= CUSTOM_BIBLIO[guild][channel]["dossier_id"]
+            dossier_id= CUSTOM_BIBLIO[guild][channel]["dossier_id"]
             if channel == "default":
-                bibli_default=f"[{nom_biblio}]({'https://touch.dofusbook.net/fr/membre/'+biblio_id+'-db/equipements'})"
-                if dossier_nom:
-                    bibli_default+=f" | Dossier : {dossier_nom}"
-            else:
-                bibli_canal+=f"- {channel} : [{nom_biblio}]({'https://touch.dofusbook.net/fr/membre/'+biblio_id+'-db/equipements'})  | Importée : {CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild][channel]["biblio_id"]][CUSTOM_BIBLIO[guild][channel]["dossier_id"]]['imported']}"
                 if dossier_nom != "tout":
-                    bibli_canal+=f" | Dossier : {dossier_nom}"
+                    bibli_default=f"[{nom_biblio}]({'https://touch.dofusbook.net/fr/membre/'+biblio_id+f'-db/equipements?folder={dossier_id}'}) | Importée : {CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild][channel]["biblio_id"]][CUSTOM_BIBLIO[guild][channel]["dossier_id"]]['imported']} | Dossier : {dossier_nom}"
+                else:
+                    bibli_default=f"[{nom_biblio}]({'https://touch.dofusbook.net/fr/membre/'+biblio_id+'-db/equipements'}) | Importée : {CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild][channel]["biblio_id"]][CUSTOM_BIBLIO[guild][channel]["dossier_id"]]['imported']}"
+
+            else:
+                if dossier_nom != "tout":
+                    bibli_canal+=f"- {channel} : [{nom_biblio}]({'https://touch.dofusbook.net/fr/membre/'+biblio_id+f'-db/equipements?folder={dossier_id}'}) | Importée : {CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild][channel]["biblio_id"]][CUSTOM_BIBLIO[guild][channel]["dossier_id"]]['imported']} | Dossier : {dossier_nom}"
+                else:
+                    bibli_canal+=f"- {channel} : [{nom_biblio}]({'https://touch.dofusbook.net/fr/membre/'+biblio_id+'-db/equipements'})  | Importée : {CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild][channel]["biblio_id"]][CUSTOM_BIBLIO[guild][channel]["dossier_id"]]['imported']}"
                 bibli_canal+="\n"
                 
         if bibli_canal=="":
