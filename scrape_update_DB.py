@@ -528,13 +528,13 @@ if __name__ == "__main__":
                 if len(stuff["allowed_classes"])==0:
                     stuff["allowed_classes"].append(16)
 
-                ### pas nécessaire car on a déjà dossier_id et dossier_name
-                # if stuff["folder_id"] is None:
-                #     dossier_id=-1
-                #     dossier_name="tout"
-                # else:                    
-                #     dossier_id=stuff["folder_id"]
-                #     dossier_name=stuff["folder"]["name"]
+                ## pas nécessaire car on a déjà dossier_id et dossier_name
+                if stuff["folder_id"] is None:
+                    dossier_id=-1
+                    dossier_name="tout"
+                else:                    
+                    dossier_id=stuff["folder_id"]
+                    dossier_name=stuff["folder"]["name"]
 
                 temp_dict={
                     "DB_id": stuff['id'],
