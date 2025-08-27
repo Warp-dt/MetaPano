@@ -193,7 +193,7 @@ def url_builder(element="rien",classes="rien",page="1",user="996244-MetaPano",fo
             filtre+=classes_filtre[cla]
 
     if folder!="-1":
-        filtre+="&folder="+folder
+        filtre+="&folder="+str(folder)
     
     return base+page_base+str(page)+membre+filtre
 
