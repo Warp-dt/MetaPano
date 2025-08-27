@@ -536,6 +536,12 @@ if __name__ == "__main__":
                     dossier_id=stuff["folder_id"]
                     dossier_name=stuff["folder"]["name"]
 
+                #on prend le premier alias de tout si il y a tout, et sinon le premier alias du premier dossier
+                if "-1" in custom_biblio[biblio_id]:
+                    bibli_name=custom_biblio[biblio_id]["-1"]["alias"][0]
+                else:
+                    bibli_name=custom_biblio[biblio_id][list(custom_biblio[biblio_id].keys())[0]]["alias"][0]
+
                 temp_dict={
                     "DB_id": stuff['id'],
                     "DB_surl": get_stuff_base_info(stuff['id'])["DB_surl"],
@@ -548,7 +554,7 @@ if __name__ == "__main__":
                     "classes": stuff["allowed_classes"],
                     "elements": [ raw_elt_to_id[elt_raw] for elt_raw in stuff["tags"]],
                     "bibli_id": biblio_id,
-                    "bibli_name": custom_biblio[biblio_id][dossier_id]["alias"][0],
+                    "bibli_name": bibli_name,
                     "dossier_id" : dossier_id,
                     "dossier_name" : dossier_name
                 }
