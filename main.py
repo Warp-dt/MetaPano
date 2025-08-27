@@ -15,15 +15,11 @@ import aiohttp
 
 from responses import help_response,color_mix,IMAGES_LINK,image_response,CLASSES, filter_sort_main_elts,ELEMENTS_PRINCIPAUX, no_secondary_elt,no_main_elt
 from scrape_update_DB import folder_id_finder
-from PanoDB_link import find_stuff
+from PanoDB_link import find_stuff, BIBLI_DEFAULT
+
 import json
 
-BIBLI_DEFAULT={
-    "biblio_id" : "996244"
-    ,"nom_biblio" : "MetaPano"
-    ,"dossier" : "tout"
-    ,"dossier_id": "-1"
-}
+
 
 # Load the JSON file into memory
 CUSTOM_BIBLIO = {}

@@ -3,8 +3,12 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import IntegrityError
 
-from main import BIBLI_DEFAULT
-
+BIBLI_DEFAULT={
+    "biblio_id" : "996244"
+    ,"nom_biblio" : "MetaPano"
+    ,"dossier" : "tout"
+    ,"dossier_id": "-1"
+}
 
 ################################################################
 # DB HANDLING
