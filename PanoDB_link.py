@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import IntegrityError
 
+from main import BIBLI_DEFAULT
 
 
 ################################################################
@@ -45,17 +46,21 @@ connection_string = f"mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name
 #         'Invo': '1'
 #         }
 
-def stuff_query(criteres : dict,biblio=['996244','MetaPano']):
+def stuff_query(criteres : dict,biblio=BIBLI_DEFAULT):
     elt_exclusifs=['terre', 'feu', 'eau', 'air', 'dopou']
     elt_nonexclusifs=['cc', 'initiative', 'pp', 'sagesse', 'pods', 'pvp', 'pvm', 'retrait pa', 'retrait pm', 'esquive pa', 'esquive pm', 'repou', 'recri', 'tank','soin']
     
     try:
-        biblio_id=biblio[0]
-        biblio_name=biblio[1]
+        biblio_id=biblio["biblio_id"]
+        biblio_name=biblio["nom_biblio"]
+        dossier=biblio["dossier"]
+        dossier_id=biblio["dossier_id"]
     except Exception as e:
         print("Erreur dans la biblio",e)
-        biblio_id='996244'
-        biblio_name='MetaPano'
+        biblio_id=BIBLI_DEFAULT["biblio_id"]
+        biblio_name=BIBLI_DEFAULT["nom_biblio"]
+        dossier=BIBLI_DEFAULT["dossier"]
+        dossier_id=BIBLI_DEFAULT["dossier_id"]
 
 
     # print("query",biblio_id,biblio_name)
@@ -112,6 +117,10 @@ def stuff_query(criteres : dict,biblio=['996244','MetaPano']):
         if crit in criteres.keys():
             where+=" AND "+crit+">="+criteres[crit]+"\n"
 
+    if dossier_id!="-1":
+        where+="AND dossier_id="+dossier_id+"\n"
+
+
     if 'Classe' in criteres.keys():
         if first_having:
             having+="HAVING\n"
@@ -157,7 +166,7 @@ sum(CASE WHEN e.Nom IN ({str(exclusifs_non_inclus).replace("[",'').replace("]",'
 
     return query
 
-def find_stuff(criteres : dict,biblio=['996244','MetaPano']):
+def find_stuff(criteres : dict,biblio=BIBLI_DEFAULT):
     engine = create_engine(connection_string, echo=False)
 
     query=stuff_query(criteres,biblio=biblio)

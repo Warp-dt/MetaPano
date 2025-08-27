@@ -155,7 +155,18 @@ classes_filtre={
     ,"steamer" : "15"
 }
 
-def url_builder(element="rien",classes="rien",page="1",user="996244-MetaPano"):
+def folder_id_finder(folder_name,user):
+    base="https://touch.dofusbook.net/stuffs/touch/public/"
+    membre="&user="+user+"&sort=update-desc"
+
+    fold_rep=req.get(base+membre).json(["folders"])
+    for fold in fold_rep:
+        if fold["name"].lower()==folder_name.lower():
+            return fold["id"]
+    print(f"folder {folder_name} not found in user {user}")
+    return "-1"
+
+def url_builder(element="rien",classes="rien",page="1",user="996244-MetaPano",folder="-1"):
     #user="244671-warp"
     base="https://touch.dofusbook.net/stuffs/touch/public/"
     membre="&user="+user+"&sort=update-desc"
@@ -180,7 +191,9 @@ def url_builder(element="rien",classes="rien",page="1",user="996244-MetaPano"):
             else:
                 first2=False
             filtre+=classes_filtre[cla]
-    
+
+    if folder!="-1":
+        filtre+="&folder="+folder
     
     return base+page_base+str(page)+membre+filtre
 
@@ -211,12 +224,16 @@ def get_stats(id):
         perso[TRAD_DB_STATS[elt]]+=perso_stats[elt]
     
     for elt in fmglobal:
-        perso[TRAD_DB_STATS[elt]]+=fmglobal[elt]
-    
+        try:
+            perso[TRAD_DB_STATS[elt]]+=fmglobal[elt]
+        except:
+            pass #au cas où y'a un effet rajouté que je reconnais pas, genre 10% dommages distance, go ignorer
     for item in fmitems:
         for elt in fmitems[item]:
-            perso[TRAD_DB_STATS[elt]]+=fmitems[item][elt]
-    
+            try:
+                perso[TRAD_DB_STATS[elt]]+=fmitems[item][elt]
+            except:
+                pass #au cas où y'a un effet rajouté que je reconnais pas, genre 10% dommages distance, go ignorer
     for item in items:
         for stat in item["effects"]:
             if stat["type"]=='E':
@@ -341,7 +358,7 @@ def upsert_stuff_data(stuff_list):
                         connection.execute(
                             text("""
                             UPDATE Stuff 
-                            SET DB_surl = :db_surl, Nom = :nom, PA = :pa, PM = :pm, PO = :po, Invo = :invo, Lvl = :lvl, bibli_id = :bibli_id, bibli_name = :bibli_name
+                            SET DB_surl = :db_surl, Nom = :nom, PA = :pa, PM = :pm, PO = :po, Invo = :invo, Lvl = :lvl, bibli_id = :bibli_id, bibli_name = :bibli_name,dossier_id = :dossier_id, dossier_name = :dossier_name
                             WHERE DB_id = :db_id
                             """),
                             {
@@ -354,7 +371,9 @@ def upsert_stuff_data(stuff_list):
                                 "invo": stuff["Invo"],
                                 "lvl" : stuff["Lvl"],
                                 'bibli_id' : stuff["bibli_id"],
-                                'bibli_name' : stuff["bibli_name"]
+                                'bibli_name' : stuff["bibli_name"],
+                                'dossier_id' : stuff["dossier_id"],
+                                'dossier_name' : stuff["dossier_name"]
                             }
                         )
                         updated_count += 1
@@ -362,8 +381,8 @@ def upsert_stuff_data(stuff_list):
                         # Insert new stuff
                         connection.execute(
                             text("""
-                            INSERT INTO Stuff (DB_id, DB_surl, Nom, PA, PM, PO, Invo, Lvl, bibli_id, bibli_name)
-                            VALUES (:db_id, :db_surl, :nom, :pa, :pm, :po, :invo, :lvl, :bibli_id, :bibli_name)
+                            INSERT INTO Stuff (DB_id, DB_surl, Nom, PA, PM, PO, Invo, Lvl, bibli_id, bibli_name, dossier_id, dossier_name)
+                            VALUES (:db_id, :db_surl, :nom, :pa, :pm, :po, :invo, :lvl, :bibli_id, :bibli_name, :dossier_id, :dossier_name)
                             """),
                             {
                                 "db_id": stuff["DB_id"],
@@ -375,7 +394,9 @@ def upsert_stuff_data(stuff_list):
                                 "invo": stuff["Invo"],
                                 "lvl" : stuff["Lvl"],
                                 'bibli_id' : stuff["bibli_id"],
-                                'bibli_name' : stuff["bibli_name"]
+                                'bibli_name' : stuff["bibli_name"],
+                                'dossier_id' : stuff["dossier_id"],
+                                'dossier_name' : stuff["dossier_name"]
                             }
                         )
                         inserted_count += 1
@@ -432,6 +453,9 @@ def upsert_stuff_data(stuff_list):
         "errors": error_count
     }
 
+######################
+# A MAJ AVEC NOUVEAU SYSTEME CUSTOM_BIBLIO FOLDER
+######################
 def cleaning_custom_biblio(custom_biblio): #find all used bibli_id and delete unused ones
     # eliminate guilds & channels that doesn't exist anymore/where the bot does not have access
     # find all used biblio
@@ -473,29 +497,45 @@ if __name__ == "__main__":
         print(f"Erreur lors du chargement de custom_biblio.json : {e}")
         custom_biblio = {}
 
-    cleaning_custom_biblio(custom_biblio) #clean unused biblios but doesn't check for the server and channels that are not accessible anymore
-
-    biblio_to_scrape=[]
-    for key, value in custom_biblio.items():
-        if "imported" in value and "alias" in value and len(value.keys())==2:
-            biblio_to_scrape.append(key)
+    # cleaning_custom_biblio(custom_biblio) #clean unused biblios but doesn't check for the server and channels that are not accessible anymore
+    
+    ###################################################
+    # faut pas prendre toutes les biblio, mais sélectionner les dossiers nécessaires
+    ###################################################
+       
+    biblio_to_scrape=[]#filled with ("bibli_id","dossier_id","dossier_name")
+    for blibli_id, value in custom_biblio.items():
+        first_val=value[list(value.keys())[0]]
+        if "imported" in first_val and "alias" in first_val: #test pour savoir si on est dans une clé de biblio ou de guild, on teste si dans le premier élément de value, il y a les clés "imported" et "alias"
+            for dossier_id in value:
+                biblio_to_scrape.append((blibli_id,dossier_id,value[dossier_id]["dossier_name"]))# l'idée c'est de récupérer les ("bibli_id","dossier_id","dossier_name") de toutes les bibli à scraper
 
     page_maxsize=20
     stuff_liste=[]
     print("Début du scraping")
     # print(biblio_to_scrape)
-    for biblio in biblio_to_scrape:
-        taille=20
+    
+    for biblio_id,dossier_id,dossier_name in biblio_to_scrape:
+        taille=page_maxsize
         i=1
         temp_stuff_liste=[]
         # print(biblio)
         while taille==page_maxsize:
             # print('page :',i,"taille :",taille)
-            resp=req.get(url_builder(page=i,user=biblio+'-db')).json()["rows"]
+            resp=req.get(url_builder(page=i,user=biblio_id+'-db',folder=dossier_id)).json()["rows"]
             taille=len(resp)
             for stuff in resp:
                 if len(stuff["allowed_classes"])==0:
                     stuff["allowed_classes"].append(16)
+
+                ### pas nécessaire car on a déjà dossier_id et dossier_name
+                # if stuff["folder_id"] is None:
+                #     dossier_id=-1
+                #     dossier_name="tout"
+                # else:                    
+                #     dossier_id=stuff["folder_id"]
+                #     dossier_name=stuff["folder"]["name"]
+
                 temp_dict={
                     "DB_id": stuff['id'],
                     "DB_surl": get_stuff_base_info(stuff['id'])["DB_surl"],
@@ -507,8 +547,10 @@ if __name__ == "__main__":
                     "Lvl" : get_stuff_base_info(stuff['id'])["Lvl"],
                     "classes": stuff["allowed_classes"],
                     "elements": [ raw_elt_to_id[elt_raw] for elt_raw in stuff["tags"]],
-                    "bibli_id": biblio,
-                    "bibli_name": custom_biblio[biblio]["alias"][0],
+                    "bibli_id": biblio_id,
+                    "bibli_name": custom_biblio[biblio_id]["alias"][0],
+                    "dossier_id" : dossier_id,
+                    "dossier_name" : dossier_name
                 }
                 temp_stuff_liste.append(temp_dict)
             print("page "+str(i)+" finie")
@@ -524,8 +566,8 @@ if __name__ == "__main__":
 
     #update le fichier custom_biblio.json
     if result["errors"] == 0:
-        for biblio in biblio_to_scrape:
-            custom_biblio[biblio]["imported"]=True
+        for biblio_id,dossier_id,dossier_name in biblio_to_scrape:
+            custom_biblio[biblio_id][dossier_id]["imported"]=True
     # Write the updated dictionary to the JSON file
     try:
         with open("custom_biblio.json", "w", encoding="utf-8") as file:

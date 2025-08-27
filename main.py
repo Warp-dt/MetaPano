@@ -1,4 +1,5 @@
 from typing import Final
+from typing import Optional
 import os
 import re
 import requests as req
@@ -13,8 +14,16 @@ import sys
 import aiohttp
 
 from responses import help_response,color_mix,IMAGES_LINK,image_response,CLASSES, filter_sort_main_elts,ELEMENTS_PRINCIPAUX, no_secondary_elt,no_main_elt
+from scrape_update_DB import folder_id_finder
 from PanoDB_link import find_stuff
 import json
+
+BIBLI_DEFAULT={
+    "biblio_id" : "996244"
+    ,"nom_biblio" : "MetaPano"
+    ,"dossier" : "tout"
+    ,"dossier_id": "-1"
+}
 
 # Load the JSON file into memory
 CUSTOM_BIBLIO = {}
@@ -814,7 +823,7 @@ class CriteresSelect(discord.ui.Select):
             view=self.view,
             ephemeral=True)
 
-def resultat_embed(criteres : dict,assouplissement=None,biblio=['996244','MetaPano']):
+def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
     if assouplissement is None:
         assouplissement = []
 
@@ -1008,15 +1017,16 @@ def next_critere_embed(criteres_restants : list):
     return embed
 
 def custom_bibli(channel,guild): #returns the custom biblio for the channel or guild or the default one if not found and checks if the biblio is already imported in the db
+        
     if guild in CUSTOM_BIBLIO:
         if channel in CUSTOM_BIBLIO[guild]:
-            if CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild][channel][0]]["imported"]: #if the biblio is already imported in the db it will be true, if not it will be false
+            if CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild][channel]["biblio_id"]["dossier_id"]]["imported"]: #if the biblio is already imported in the db it will be true, if not it will be false
                 return CUSTOM_BIBLIO[guild][channel]
         else:
             if "default" in CUSTOM_BIBLIO[guild]:
-                if CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild]["default"][0]]["imported"]:
+                if CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild]["default"]["dossier_id"]]["imported"]:
                     return CUSTOM_BIBLIO[guild]["default"]
-        return ['996244','MetaPano']
+        return BIBLI_DEFAULT #si on n'a pas de bibliothèque qui est custom, on renvoie le défaut
 
 
 #choix proposés 
@@ -1179,7 +1189,7 @@ Tous les stuffs que le bot va recommander sont présents dans ce compte dofusboo
 @app_commands.default_permissions(administrator=True) #only admin can use this command
 @app_commands.checks.has_permissions(administrator=True) #and the admin can not give the permission to use this command
 @app_commands.guild_only() #only in guilds, not in DMs
-async def change_bibliotheque_canal(interaction: Interaction, lien_biblio: str, nom_biblio: str):
+async def change_bibliotheque_canal(interaction: Interaction, lien_biblio: str, nom_biblio: str, dossier: Optional[str] = "tout"  ):
 
     # Check if the link sent is a valid dofusbook link
     if not re.match(r"https?://(d-bk\.net|touch\.dofusbook\.net)/fr/(tl/\w+|membre/\d+-\w+/equipements)", lien_biblio):
@@ -1231,25 +1241,62 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
         await interaction.response.send_message(embed=embed)
         return 0
 
+    dossierpastrouve=False
+    if dossier!="tout":
+        folder_id=folder_id_finder(folder_name=dossier,user=biblio_id)
+        if folder_id=="-1": #dossier pas trouvé
+            dossierpastrouve=True
+    else:
+        folder_id=="-1"
+
     # Update the dictionary
+    #ajout/modif de la clé du canal
     if guild in CUSTOM_BIBLIO: #if the guild already exists
         # on ne peut pas supprimer l'alias car on ne sait pas si il est utilisé ailleurs
         # if channel in CUSTOM_BIBLIO[guild]: #if the channel already exists
         #     CUSTOM_BIBLIO[biblio_id]["alias"].remove(CUSTOM_BIBLIO[guild][channel][1]) #remove the old alias from the biblio_id
-        CUSTOM_BIBLIO[guild][channel] = (biblio_id,nom_biblio) #update the channel with the new biblio_id and alias
+        CUSTOM_BIBLIO[guild][channel] = {"biblio_id" : biblio_id
+                                         ,"nom_biblio" : nom_biblio
+                                         ,"dossier" : dossier
+                                         ,"dossier_id": folder_id
+                                         } #update the channel with the new biblio_id and alias
     else: #if the guild doesn't exist
         CUSTOM_BIBLIO[guild] = {} #create the guild
-        CUSTOM_BIBLIO[guild][channel] = (biblio_id,nom_biblio) #add the channel with the new biblio_id and alias   
+        CUSTOM_BIBLIO[guild][channel] = {"biblio_id" : biblio_id
+                                         ,"nom_biblio" : nom_biblio
+                                         ,"dossier" : dossier
+                                         ,"dossier_id": folder_id
+                                         } #add the channel with the new biblio_id and alias   
     
+    #ajout/modif de la clé de la biblio
     already_imported=False
-    if not biblio_id in CUSTOM_BIBLIO:
-        CUSTOM_BIBLIO[biblio_id] = {"imported": False
-                                    ,"alias":[nom_biblio]}
-    else:
-        if nom_biblio not in CUSTOM_BIBLIO[biblio_id]["alias"]:
-            CUSTOM_BIBLIO[biblio_id]["alias"].append(nom_biblio)
-        already_imported=CUSTOM_BIBLIO[biblio_id]["imported"]
+    if not biblio_id in CUSTOM_BIBLIO: #si la biblio est inconnue (donc folder idem)
+        # CUSTOM_BIBLIO[biblio_id] = {"imported": False
+        #                             ,"alias":[nom_biblio]}
+        
+        CUSTOM_BIBLIO[biblio_id] = {}
+        CUSTOM_BIBLIO[biblio_id][folder_id]= {"dossier" : dossier
+                                            ,"imported": False
+                                            ,"alias":[nom_biblio]}
+    else: # si la biblio est connue
+        # if nom_biblio not in CUSTOM_BIBLIO[biblio_id]["alias"]:
+        #     CUSTOM_BIBLIO[biblio_id]["alias"].append(nom_biblio)
+        # already_imported=CUSTOM_BIBLIO[biblio_id]["imported"]
 
+        if folder_id in CUSTOM_BIBLIO[biblio_id]: #si le user et le folder sont connus
+            if nom_biblio not in CUSTOM_BIBLIO[biblio_id][folder_id]["alias"]:
+                CUSTOM_BIBLIO[biblio_id][folder_id].append(nom_biblio)
+        else:#si la biblio est connue mais pas le folder
+            if "-1" in CUSTOM_BIBLIO[biblio_id]: #si la biblio entière a été déjà ajoutée
+                CUSTOM_BIBLIO[biblio_id][folder_id]={"dossier" : dossier
+                                            ,"imported": CUSTOM_BIBLIO[biblio_id]["-1"]["imported"]
+                                            ,"alias":[nom_biblio]}
+            else:
+                CUSTOM_BIBLIO[biblio_id][folder_id]={"dossier" : dossier
+                                            ,"imported": False
+                                            ,"alias":[nom_biblio]}
+                
+        already_imported=CUSTOM_BIBLIO[biblio_id][folder_id]["imported"]
     # Write the updated dictionary to the JSON file
     try:
         with open("custom_biblio.json", "w", encoding="utf-8") as file:
@@ -1273,11 +1320,14 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
 
 La mise à jour de la base de données du bot se fait automatiquement tous les jours à 4h du matin, et tous les jours les nouveaux stuffs sont ajoutés à ce moment là."""
     else:  
-        infos_update+=f"""Cette bibliothèque n'est pas encore importée dans la base de données du bot, donc tu ne peux pas encore l'utiliser.
+        infos_update+=f"""Cette bibliothèque n'est **pas encore importée** dans la base de données du bot, donc tu ne peux pas encore l'utiliser.
 
 Pour que le bot fonctionne il faut que j'importe les données du compte dofusbook dans la base de données du bot. Ça se fait automatiquement tous les jours à 4h du matin, et tous les jours les nouveaux stuffs sont ajoutés à ce moment là.
 Il faudra donc attendre demain pour pouvoir profiter de cette nouvelle bibliothèque, en attendant la bibliothèque précédente ou par défaut est toujours accessible."""
 
+    if dossierpastrouve:
+        infos_update=f"""⚠️ Le dossier {dossier} n'a pas été trouvé dans la bibliothèque, par défaut je donc faire comme si aucun dossier n'avait été spécifié.\n"""+infos_update
+        
     embed.add_field(name="INFORMATIONS :", value=(infos_update), inline=False)
     embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
     await interaction.response.send_message(embed=embed)
@@ -1286,7 +1336,7 @@ Il faudra donc attendre demain pour pouvoir profiter de cette nouvelle biblioth�
 @app_commands.default_permissions(administrator=True) #only admin can use this command
 @app_commands.checks.has_permissions(administrator=True) #and the admin can not give the permission to use this command
 @app_commands.guild_only() #only in guilds, not in DMs
-async def change_bibliotheque_serveur(interaction: Interaction, lien_biblio: str, nom_biblio: str):
+async def change_bibliotheque_serveur(interaction: Interaction, lien_biblio: str, nom_biblio: str, dossier: Optional[str] = None  ):
 
     # Check if the link sent is a valid dofusbook link
     if not re.match(r"https?://(d-bk\.net|touch\.dofusbook\.net)/fr/(tl/\w+|membre/\d+-\w+/equipements)", lien_biblio):
@@ -1324,23 +1374,57 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
 
     guild = interaction.guild.name if interaction.guild else "DM"
 
+    dossierpastrouve=False
+    if dossier!="tout":
+        folder_id=folder_id_finder(folder_name=dossier,user=biblio_id)
+        if folder_id=="-1": #dossier pas trouvé
+            dossierpastrouve=True
+    else:
+        folder_id=="-1"
+
     # Update the dictionary
+    #ajout/modif de la clé du serveur
     if guild in CUSTOM_BIBLIO: #if the guild already exists in the dictionary
         # on ne peut pas supprimer l'alias car on ne sait pas si il est utilisé ailleurs
         # if "default" in CUSTOM_BIBLIO[guild]: #remove the old default biblio from the alias list
         #     CUSTOM_BIBLIO[biblio_id]["alias"].remove(CUSTOM_BIBLIO[guild]["default"][1])
-        CUSTOM_BIBLIO[guild]["default"] = (biblio_id,nom_biblio) #add the new default biblio
+        # CUSTOM_BIBLIO[guild]["default"] = (biblio_id,nom_biblio) #add the new default biblio
+        CUSTOM_BIBLIO[guild]["default"] = {"biblio_id" : biblio_id
+                                         ,"nom_biblio" : nom_biblio
+                                         ,"dossier" : dossier
+                                         ,"dossier_id": folder_id
+                                         } #update the channel with the new biblio_id and alias
     else: #if the guild doesn't exist in the dictionary
-        CUSTOM_BIBLIO[guild] = {"default": (biblio_id,nom_biblio)}#create the guild with the default biblio
+        CUSTOM_BIBLIO[guild] = {"default": {"biblio_id" : biblio_id
+                                         ,"nom_biblio" : nom_biblio
+                                         ,"dossier" : dossier
+                                         ,"dossier_id": folder_id}
+                                }#create the guild with the default biblio
 
+    #ajout/modif de la clé de la biblio
     already_imported=False
-    if not biblio_id in CUSTOM_BIBLIO:
-        CUSTOM_BIBLIO[biblio_id] = {"imported": False
-                                    ,"alias":[nom_biblio]}
-    else:
-        CUSTOM_BIBLIO[biblio_id]["alias"].append(nom_biblio)
-        already_imported=True
-
+    if not biblio_id in CUSTOM_BIBLIO: #si la biblio est inconnue (donc folder idem)
+        CUSTOM_BIBLIO[biblio_id] = {}
+        CUSTOM_BIBLIO[biblio_id][folder_id]= {"dossier" : dossier
+                                            ,"imported": False
+                                            ,"alias":[nom_biblio]}
+    else: # si la biblio est connue
+        # CUSTOM_BIBLIO[biblio_id]["alias"].append(nom_biblio)
+        # already_imported=True
+        if folder_id in CUSTOM_BIBLIO[biblio_id]: #si le user et le folder sont connus
+            if nom_biblio not in CUSTOM_BIBLIO[biblio_id][folder_id]["alias"]:
+                CUSTOM_BIBLIO[biblio_id][folder_id].append(nom_biblio)
+        else:#si la biblio est connue mais pas le folder
+            if "-1" in CUSTOM_BIBLIO[biblio_id]: #si la biblio entière a été déjà ajoutée
+                CUSTOM_BIBLIO[biblio_id][folder_id]={"dossier" : dossier
+                                            ,"imported": CUSTOM_BIBLIO[biblio_id]["-1"]["imported"]
+                                            ,"alias":[nom_biblio]}
+            else:
+                CUSTOM_BIBLIO[biblio_id][folder_id]={"dossier" : dossier
+                                            ,"imported": False
+                                            ,"alias":[nom_biblio]}
+                
+        already_imported=CUSTOM_BIBLIO[biblio_id][folder_id]["imported"]
     # Write the updated dictionary to the JSON file
     try:
         with open("custom_biblio.json", "w", encoding="utf-8") as file:
@@ -1369,6 +1453,9 @@ La mise à jour de la base de données du bot se fait automatiquement tous les j
 Pour que le bot fonctionne il faut que j'importe les données du compte dofusbook dans la base de données du bot. Ça se fait automatiquement tous les jours à 4h du matin, et tous les jours les nouveaux stuffs sont ajoutés à ce moment là.
 Il faudra donc attendre demain pour pouvoir profiter de cette nouvelle bibliothèque, en attendant la bibliothèque précédente ou par défaut est toujours accessible."""
 
+    if dossierpastrouve:
+        infos_update=f"""⚠️ Le dossier {dossier} n'a pas été trouvé dans la bibliothèque, par défaut je donc faire comme si aucun dossier n'avait été spécifié.\n"""+infos_update
+
     embed.add_field(name="INFORMATIONS :", value=(infos_update), inline=False)
     embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
     await interaction.response.send_message(embed=embed)
@@ -1381,11 +1468,20 @@ async def bibliotheques(interaction: Interaction): #affiche un embed avec la bib
         bibli_default=f"[MetaPano]({'https://touch.dofusbook.net/fr/membre/996244-db/equipements'})" #par défaut metapano
         bibli_canal=""
         for channel in CUSTOM_BIBLIO[guild]:
-            biblio_id, nom_biblio = CUSTOM_BIBLIO[guild][channel]
+            biblio_id= CUSTOM_BIBLIO[guild][channel]["biblio_id"]
+            nom_biblio= CUSTOM_BIBLIO[guild][channel]["nom_biblio"]
+            dossier_nom= CUSTOM_BIBLIO[guild][channel]["dossier"]
+            # dossier_id= CUSTOM_BIBLIO[guild][channel]["dossier_id"]
             if channel == "default":
                 bibli_default=f"[{nom_biblio}]({'https://touch.dofusbook.net/fr/membre/'+biblio_id+'-db/equipements'})"
+                if dossier_nom:
+                    bibli_default+=f" | Dossier : {dossier_nom}"
             else:
-                bibli_canal+=f"- {channel} : [{nom_biblio}]({'https://touch.dofusbook.net/fr/membre/'+biblio_id+'-db/equipements'})  | Importée : {CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild][channel][0]]['imported']}\n"
+                bibli_canal+=f"- {channel} : [{nom_biblio}]({'https://touch.dofusbook.net/fr/membre/'+biblio_id+'-db/equipements'})  | Importée : {CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild][channel][0]]['imported']}"
+                if dossier_nom != "tout":
+                    bibli_canal+=f" | Dossier : {dossier_nom}"
+                bibli_canal+="\n"
+                
         if bibli_canal=="":
             bibli_canal="Aucun canal n'utilise de bibliothèque différente de celle par défaut."
         embed = Embed(
