@@ -522,8 +522,10 @@ if __name__ == "__main__":
         # print(biblio)
         while taille==page_maxsize:
             # print('page :',i,"taille :",taille)
-            resp=req.get(url_builder(page=i,user=biblio_id+'-db',folder=dossier_id)).json()["rows"]
+            url=url_builder(page=i,user=biblio_id+'-db',folder=dossier_id)
+            resp=req.get(url).json()["rows"]
             taille=len(resp)
+            print(f"biblio_id : {biblio_id},dossier_id : {dossier_id},page : {i}, taille : {taille}, url : {url}")
             for stuff in resp:
                 if len(stuff["allowed_classes"])==0:
                     stuff["allowed_classes"].append(16)
