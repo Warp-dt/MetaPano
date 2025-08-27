@@ -1281,7 +1281,7 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
 
         if folder_id in CUSTOM_BIBLIO[biblio_id]: #si le user et le folder sont connus
             if nom_biblio not in CUSTOM_BIBLIO[biblio_id][folder_id]["alias"]:
-                CUSTOM_BIBLIO[biblio_id][folder_id].append(nom_biblio)
+                CUSTOM_BIBLIO[biblio_id][folder_id]["alias"].append(nom_biblio)
         else:#si la biblio est connue mais pas le folder
             if "-1" in CUSTOM_BIBLIO[biblio_id]: #si la biblio entière a été déjà ajoutée
                 CUSTOM_BIBLIO[biblio_id][folder_id]={"dossier" : dossier
@@ -1413,7 +1413,7 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
         # already_imported=True
         if folder_id in CUSTOM_BIBLIO[biblio_id]: #si le user et le folder sont connus
             if nom_biblio not in CUSTOM_BIBLIO[biblio_id][folder_id]["alias"]:
-                CUSTOM_BIBLIO[biblio_id][folder_id].append(nom_biblio)
+                CUSTOM_BIBLIO[biblio_id][folder_id]["alias"].append(nom_biblio)
         else:#si la biblio est connue mais pas le folder
             if "-1" in CUSTOM_BIBLIO[biblio_id]: #si la biblio entière a été déjà ajoutée
                 CUSTOM_BIBLIO[biblio_id][folder_id]={"dossier" : dossier
