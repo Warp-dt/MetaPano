@@ -159,7 +159,11 @@ def folder_id_finder(folder_name,user):
     base="https://touch.dofusbook.net/stuffs/touch/public/"
     membre="?user="+user+"&sort=update-desc"
 
-    fold_rep=req.get(base+membre).json()["folders"]
+    resp=req.get(base+membre).json()
+    if "folders" not in resp:
+        print(f"Erreur : fold_rep=req.get(base+membre).json() a échoué, url ={base+membre}")
+        return "-1"
+    fold_rep=resp["folders"]
     for fold in fold_rep:
         if fold["name"].lower()==folder_name.lower():
             return fold["id"]
