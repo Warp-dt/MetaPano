@@ -1307,11 +1307,11 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
         color=0x1b3a57 # Couleur bleu db
     )
     embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
-    
+
     if dossier=="tout":
         embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({lien_biblio})"), inline=False)
     else:
-        embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({lien_biblio}), dossier : {dossier}"), inline=False)
+        embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({lien_biblio}) | dossier : {dossier}"), inline=False)
 
 
     infos_update=f"""Désormais tous les stuffs que le bot va recommander dans ce canal proviendront de ce compte dofusbook, c'est en quelques sorte la base de connaissance du bot.\n\n"""
@@ -1443,7 +1443,7 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
     if dossier=="tout":
         embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({lien_biblio})"), inline=False)
     else:
-        embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({lien_biblio}), dossier : {dossier}"), inline=False)
+        embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({lien_biblio}) | dossier : {dossier}"), inline=False)
 
     infos_update=f"""Désormais tous les stuffs que le bot va recommander dans ce canal proviendront de ce compte dofusbook, c'est en quelques sorte la base de connaissance du bot.\n\n"""
     if already_imported:
