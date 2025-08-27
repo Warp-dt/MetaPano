@@ -166,7 +166,7 @@ def folder_id_finder(folder_name,user):
     fold_rep=resp["folders"]
     for fold in fold_rep:
         if fold["name"].lower()==folder_name.lower():
-            return fold["id"]
+            return str(fold["id"])
     print(f"folder {folder_name} not found in user {user}")
     return "-1"
 
