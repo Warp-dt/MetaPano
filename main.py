@@ -1016,11 +1016,11 @@ def custom_bibli(channel,guild): #returns the custom biblio for the channel or g
         
     if guild in CUSTOM_BIBLIO:
         if channel in CUSTOM_BIBLIO[guild]:
-            if CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild][channel]["biblio_id"]["dossier_id"]]["imported"]: #if the biblio is already imported in the db it will be true, if not it will be false
+            if CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild][channel]["biblio_id"]][CUSTOM_BIBLIO[guild][channel]["dossier_id"]]["imported"]: #if the biblio is already imported in the db it will be true, if not it will be false
                 return CUSTOM_BIBLIO[guild][channel]
         else:
             if "default" in CUSTOM_BIBLIO[guild]:
-                if CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild]["default"]["dossier_id"]]["imported"]:
+                if CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild]["default"]["biblio_id"]][CUSTOM_BIBLIO[guild]["default"]["dossier_id"]]["imported"]:
                     return CUSTOM_BIBLIO[guild]["default"]
         return BIBLI_DEFAULT #si on n'a pas de bibliothèque qui est custom, on renvoie le défaut
 
