@@ -1243,7 +1243,7 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
         if folder_id=="-1": #dossier pas trouvé
             dossierpastrouve=True
     else:
-        folder_id=="-1"
+        folder_id="-1"
 
     # Update the dictionary
     #ajout/modif de la clé du canal
@@ -1380,7 +1380,7 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
         if folder_id=="-1": #dossier pas trouvé
             dossierpastrouve=True
     else:
-        folder_id=="-1"
+        folder_id="-1"
 
     # Update the dictionary
     #ajout/modif de la clé du serveur
