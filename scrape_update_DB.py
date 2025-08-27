@@ -548,7 +548,7 @@ if __name__ == "__main__":
                     "classes": stuff["allowed_classes"],
                     "elements": [ raw_elt_to_id[elt_raw] for elt_raw in stuff["tags"]],
                     "bibli_id": biblio_id,
-                    "bibli_name": custom_biblio[biblio_id]["alias"][0],
+                    "bibli_name": custom_biblio[biblio_id][dossier_id]["alias"][0],
                     "dossier_id" : dossier_id,
                     "dossier_name" : dossier_name
                 }
