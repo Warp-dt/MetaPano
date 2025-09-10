@@ -203,9 +203,18 @@ def url_builder(element="rien",classes="rien",page="1",user="996244-MetaPano",fo
 
 
 def get_stats(id):
-       
-    data= req.get("https://touch.dofusbook.net/stuffs/touch/public/"+str(id)).json()
+    perso={key: 0 for key in FR_KEYS}
 
+    url="https://touch.dofusbook.net/stuffs/touch/public/"+str(id)
+    data_req= req.get(url)
+    
+    try:
+        data=data_req.json()
+    except:
+        print("Erreur lors de la transformation en json")
+        print(f"URL = {url}")
+        return perso
+    
     perso_stats=data["stuffStats"] # 1 element = 1 stat
     fmitems=data["fmItems"] # chaque element est un item sous forme dict, chaque element d'un item est un fm qui lui est rajouté
     fmglobal=data["fmGlobal"] #  1 element = 1 stat
@@ -213,7 +222,7 @@ def get_stats(id):
     panos=data["cloths"] # list de pano, chaque item est un dict dont la clef "effects" est une liste d'effets où chaque effet est un dict contenant les clefts suivantes 'name': 'nomdelastat','type': 'E', 'value' : 1
     
 
-    perso={key: 0 for key in FR_KEYS}
+    
     perso["DB_surl"]=data["stuff"]["short_url"]
     perso["Lvl"]=data["stuff"]["character_level"]
     perso["db_name"]=data["stuff"]["name"]
