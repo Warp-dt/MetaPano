@@ -203,8 +203,7 @@ def url_builder(element="rien",classes="rien",page="1",user="996244-MetaPano",fo
 
 
 def get_stats(id):
-    perso={key: 0 for key in FR_KEYS}
-
+    
     url="https://touch.dofusbook.net/stuffs/touch/public/"+str(id)
     data_req= req.get(url)
     
@@ -213,8 +212,17 @@ def get_stats(id):
     except:
         print("Erreur lors de la transformation en json")
         print(f"URL = {url}")
+        perso={key: -1 for key in FR_KEYS}
+        perso["DB_surl"]=-1
+        perso["Lvl"]=-1
+        perso["db_name"]=-1
+        perso["PA"]=-1
+        perso["PM"]=-1
+        perso["Invocation"]=-1
+        perso["Vitalité"]=-1
         return perso
     
+    perso={key: -1 for key in FR_KEYS}
     perso_stats=data["stuffStats"] # 1 element = 1 stat
     fmitems=data["fmItems"] # chaque element est un item sous forme dict, chaque element d'un item est un fm qui lui est rajouté
     fmglobal=data["fmGlobal"] #  1 element = 1 stat
