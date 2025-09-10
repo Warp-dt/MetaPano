@@ -545,56 +545,56 @@ if __name__ == "__main__":
         while taille==page_maxsize:
             # print('page :',i,"taille :",taille)
             url=url_builder(page=i,user=biblio_id+'-db',folder=dossier_id)
-            try:
-                resp=req.get(url).json()["rows"]
-                taille=len(resp)
-                print(f"biblio_id : {biblio_id},dossier_id : {dossier_id},page : {i}, taille : {taille}, url : {url}")
-                for stuff in resp:
-                    if len(stuff["allowed_classes"])==0:
-                        stuff["allowed_classes"].append(16)
+            # try:
+            resp=req.get(url).json()["rows"]
+            taille=len(resp)
+            print(f"biblio_id : {biblio_id},dossier_id : {dossier_id},page : {i}, taille : {taille}, url : {url}")
+            for stuff in resp:
+                if len(stuff["allowed_classes"])==0:
+                    stuff["allowed_classes"].append(16)
 
-                    ## pas nécessaire car on a déjà dossier_id et dossier_name
-                    if stuff["folder_id"] is None:
-                        temp_dossier_id=-1
-                        temp_dossier_name="tout"
-                    else:                    
-                        temp_dossier_id=stuff["folder_id"]
-                        temp_dossier_name=stuff["folder"]["name"]
+                ## pas nécessaire car on a déjà dossier_id et dossier_name
+                if stuff["folder_id"] is None:
+                    temp_dossier_id=-1
+                    temp_dossier_name="tout"
+                else:                    
+                    temp_dossier_id=stuff["folder_id"]
+                    temp_dossier_name=stuff["folder"]["name"]
 
-                    #on prend le premier alias de tout si il y a tout, et sinon le premier alias du premier dossier
-                    if "-1" in custom_biblio[biblio_id]:
-                        bibli_name=custom_biblio[biblio_id]["-1"]["alias"][0]
-                    else:
-                        bibli_name=custom_biblio[biblio_id][list(custom_biblio[biblio_id].keys())[0]]["alias"][0]
+                #on prend le premier alias de tout si il y a tout, et sinon le premier alias du premier dossier
+                if "-1" in custom_biblio[biblio_id]:
+                    bibli_name=custom_biblio[biblio_id]["-1"]["alias"][0]
+                else:
+                    bibli_name=custom_biblio[biblio_id][list(custom_biblio[biblio_id].keys())[0]]["alias"][0]
 
-                    temp_dict={
-                        "DB_id": stuff['id'],
-                        "DB_surl": get_stuff_base_info(stuff['id'])["DB_surl"],
-                        "Nom": stuff["name"],
-                        "PA": get_stuff_base_info(stuff['id'])["PA"],
-                        "PM": get_stuff_base_info(stuff['id'])["PM"],
-                        "PO": get_stuff_base_info(stuff['id'])["PO"],
-                        "Invo": get_stuff_base_info(stuff['id'])["Invo"],
-                        "Lvl" : get_stuff_base_info(stuff['id'])["Lvl"],
-                        "classes": stuff["allowed_classes"],
-                        "elements": [ raw_elt_to_id[elt_raw] for elt_raw in stuff["tags"]],
-                        "bibli_id": biblio_id,
-                        "bibli_name": bibli_name,
-                        "dossier_id" : temp_dossier_id,
-                        "dossier_name" : temp_dossier_name
-                    }
-                    if temp_dict!=-1:
-                        temp_stuff_liste.append(temp_dict)
-                    else:
-                        print(f"Erreur dans la récupération des stats du stuff {stuff['id']}")
-                print("page "+str(i)+" finie")
-                i+=1
-            except Exception as e:
-                print("Erreur lors de la transformation en json dans main")
-                print(f"URL : {url}")
-                print(f"Exception : {e}")
-                taille=0 #pour sortir de la boucle
-                err_flag=True #on ignore ce dossier quand y'a une erreur
+                temp_dict={
+                    "DB_id": stuff['id'],
+                    "DB_surl": get_stuff_base_info(stuff['id'])["DB_surl"],
+                    "Nom": stuff["name"],
+                    "PA": get_stuff_base_info(stuff['id'])["PA"],
+                    "PM": get_stuff_base_info(stuff['id'])["PM"],
+                    "PO": get_stuff_base_info(stuff['id'])["PO"],
+                    "Invo": get_stuff_base_info(stuff['id'])["Invo"],
+                    "Lvl" : get_stuff_base_info(stuff['id'])["Lvl"],
+                    "classes": stuff["allowed_classes"],
+                    "elements": [ raw_elt_to_id[elt_raw] for elt_raw in stuff["tags"]],
+                    "bibli_id": biblio_id,
+                    "bibli_name": bibli_name,
+                    "dossier_id" : temp_dossier_id,
+                    "dossier_name" : temp_dossier_name
+                }
+                if temp_dict!=-1:
+                    temp_stuff_liste.append(temp_dict)
+                else:
+                    print(f"Erreur dans la récupération des stats du stuff {stuff['id']}")
+            print("page "+str(i)+" finie")
+            i+=1
+            # except Exception as e:
+            #     print("Erreur lors de la transformation en json dans main")
+            #     print(f"URL : {url}")
+            #     print(f"Exception : {e}")
+            #     taille=0 #pour sortir de la boucle
+            #     err_flag=True #on ignore ce dossier quand y'a une erreur
 
         if len(temp_stuff_liste)<501 and not err_flag: #do not add to the DB biblio that are bigger than 500 stuff
             stuff_liste=stuff_liste+temp_stuff_liste
