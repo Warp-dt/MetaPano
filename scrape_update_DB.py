@@ -487,7 +487,7 @@ def cleaning_custom_biblio(custom_biblio): #find all used bibli_id and delete un
             if not bibli in used_biblio:
                 bibli_to_delete.append(bibli)
     
-    print("nb de bibli à delete :", len(bibli_to_delete))
+    # print("nb de bibli à delete :", len(bibli_to_delete))
     
     #find all channels and servers that are not used anymore (can't be accessed by the bot)
     
@@ -522,7 +522,7 @@ if __name__ == "__main__":
         if "imported" in first_val and "alias" in first_val: #test pour savoir si on est dans une clé de biblio ou de guild, on teste si dans le premier élément de value, il y a les clés "imported" et "alias"
             for dossier_id in value:
                 biblio_to_scrape.append((blibli_id,str(dossier_id),value[dossier_id]["dossier"]))# l'idée c'est de récupérer les ("bibli_id","dossier_id","dossier_name") de toutes les bibli à scraper
-    print(biblio_to_scrape)
+    # print(f"biblio à scrape : {biblio_to_scrape})
     page_maxsize=20
     stuff_liste=[]
     print("Début du scraping")
@@ -573,7 +573,10 @@ if __name__ == "__main__":
                     "dossier_id" : temp_dossier_id,
                     "dossier_name" : temp_dossier_name
                 }
-                temp_stuff_liste.append(temp_dict)
+                if temp_dict!=-1:
+                    temp_stuff_liste.append(temp_dict)
+                else:
+                    print(f"Erreur dans la récupération des stats du stuff {stuff['id']}")
             print("page "+str(i)+" finie")
             i+=1
 
