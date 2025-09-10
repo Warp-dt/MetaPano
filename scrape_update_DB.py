@@ -589,9 +589,10 @@ if __name__ == "__main__":
                         print(f"Erreur dans la récupération des stats du stuff {stuff['id']}")
                 print("page "+str(i)+" finie")
                 i+=1
-            except:
+            except Exception as e:
                 print("Erreur lors de la transformation en json dans main")
                 print(f"URL : {url}")
+                print(f"Exception : {e}")
                 taille=0 #pour sortir de la boucle
                 err_flag=True #on ignore ce dossier quand y'a une erreur
 
