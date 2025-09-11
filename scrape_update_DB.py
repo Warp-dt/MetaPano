@@ -543,10 +543,11 @@ if __name__ == "__main__":
 
     # Crée un dossier temporaire unique pour le profil
     # user_data_dir = tempfile.mkdtemp()
+    user_data_dir = tempfile.mkdtemp(prefix="selenium_chrome_")
     # print("Profil temporaire créé :", user_data_dir)
     # print(ChromeDriverManager().install())
     options = Options()
-    # options.add_argument(f"--user-data-dir={user_data_dir}")
+    options.add_argument(f"--user-data-dir={user_data_dir}")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-blink-features=AutomationControlled")
@@ -566,8 +567,8 @@ if __name__ == "__main__":
             url=url_builder(page=i,user=biblio_id+'-db',folder=dossier_id)
             try:
                 #requests
-                resp=req.get(url).json()["rows"]
-                print(resp)
+                # resp=req.get(url).json()["rows"]
+
                 #selenium
                 driver.get(url)
                 try:
