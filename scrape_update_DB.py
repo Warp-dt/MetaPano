@@ -160,6 +160,7 @@ classes_filtre={
     ,"steamer" : "15"
 }
 
+#A MAJ AVEC SELENIUM
 def folder_id_finder(folder_name,user):
     base="https://touch.dofusbook.net/stuffs/touch/public/"
     membre="?user="+user+"&sort=update-desc"
@@ -207,13 +208,16 @@ def url_builder(element="rien",classes="rien",page="1",user="996244-MetaPano",fo
     return base+page_base+str(page)+membre+filtre
 
 
-def get_stats(id):
+def get_stats(id,driver):
     
     url="https://touch.dofusbook.net/stuffs/touch/public/"+str(id)
-    data_req= req.get(url)
-    
+    # data_req= req.get(url)
+    data_req=driver.get(url)
     try:
-        data=data_req.json()
+        pre_text = driver.find_element("tag name", "pre").text
+        data = json.loads(pre_text)
+
+        # data=data_req.json()
     except:
         print("Erreur lors de la transformation en json dans get_stats")
         print(f"URL = {url}")
@@ -285,8 +289,8 @@ def get_stats(id):
 
     return perso
 
-def get_stuff_base_info(id):
-    resp=get_stats(id)
+def get_stuff_base_info(id,driver):
+    resp=get_stats(id,driver)
     ans={
         "DB_surl": resp["DB_surl"],
         "PA": resp["PA"],
@@ -542,10 +546,7 @@ if __name__ == "__main__":
     # print(biblio_to_scrape)
 
     # Crée un dossier temporaire unique pour le profil
-    # user_data_dir = tempfile.mkdtemp()
     user_data_dir = tempfile.mkdtemp(prefix="selenium_chrome_")
-    # print("Profil temporaire créé :", user_data_dir)
-    # print(ChromeDriverManager().install())
     options = Options()
     options.add_argument(f"--user-data-dir={user_data_dir}")
     options.add_argument("--no-sandbox")
@@ -600,15 +601,16 @@ if __name__ == "__main__":
                     else:
                         bibli_name=custom_biblio[biblio_id][list(custom_biblio[biblio_id].keys())[0]]["alias"][0]
 
+                    stuff_base_info=get_stuff_base_info(stuff['id'],driver)
                     temp_dict={
                         "DB_id": stuff['id'],
-                        "DB_surl": get_stuff_base_info(stuff['id'])["DB_surl"],
+                        "DB_surl": stuff_base_info["DB_surl"],
                         "Nom": stuff["name"],
-                        "PA": get_stuff_base_info(stuff['id'])["PA"],
-                        "PM": get_stuff_base_info(stuff['id'])["PM"],
-                        "PO": get_stuff_base_info(stuff['id'])["PO"],
-                        "Invo": get_stuff_base_info(stuff['id'])["Invo"],
-                        "Lvl" : get_stuff_base_info(stuff['id'])["Lvl"],
+                        "PA": stuff_base_info["PA"],
+                        "PM": stuff_base_info["PM"],
+                        "PO": stuff_base_info["PO"],
+                        "Invo": stuff_base_info["Invo"],
+                        "Lvl" : stuff_base_info["Lvl"],
                         "classes": stuff["allowed_classes"],
                         "elements": [ raw_elt_to_id[elt_raw] for elt_raw in stuff["tags"]],
                         "bibli_id": biblio_id,
