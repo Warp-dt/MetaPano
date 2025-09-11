@@ -550,7 +550,7 @@ if __name__ == "__main__":
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-blink-features=AutomationControlled")
     options.add_argument("--disable-gpu")
-    options.add_argument("--headless=new")
+    # options.add_argument("--headless=new")
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     
     for biblio_id,dossier_id,dossier_name in biblio_to_scrape:
