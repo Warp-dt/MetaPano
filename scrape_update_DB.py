@@ -567,6 +567,7 @@ if __name__ == "__main__":
             try:
                 #requests
                 resp=req.get(url).json()["rows"]
+                print(resp)
                 #selenium
                 driver.get(url)
                 try:
