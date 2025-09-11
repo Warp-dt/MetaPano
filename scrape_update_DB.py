@@ -545,7 +545,7 @@ if __name__ == "__main__":
     user_data_dir = tempfile.mkdtemp()
     print("Profil temporaire créé :", user_data_dir)
     options = Options()
-    options.add_argument(f"--user-data-dir={user_data_dir}")
+    # options.add_argument(f"--user-data-dir={user_data_dir}")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-blink-features=AutomationControlled")
