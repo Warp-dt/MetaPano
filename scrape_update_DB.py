@@ -544,6 +544,7 @@ if __name__ == "__main__":
     # Crée un dossier temporaire unique pour le profil
     user_data_dir = tempfile.mkdtemp()
     print("Profil temporaire créé :", user_data_dir)
+    print(ChromeDriverManager().install())
     options = Options()
     # options.add_argument(f"--user-data-dir={user_data_dir}")
     options.add_argument("--no-sandbox")
