@@ -542,9 +542,9 @@ if __name__ == "__main__":
     # print(biblio_to_scrape)
 
     # Crée un dossier temporaire unique pour le profil
-    user_data_dir = tempfile.mkdtemp()
-    print("Profil temporaire créé :", user_data_dir)
-    print(ChromeDriverManager().install())
+    # user_data_dir = tempfile.mkdtemp()
+    # print("Profil temporaire créé :", user_data_dir)
+    # print(ChromeDriverManager().install())
     options = Options()
     # options.add_argument(f"--user-data-dir={user_data_dir}")
     options.add_argument("--no-sandbox")
@@ -552,7 +552,8 @@ if __name__ == "__main__":
     options.add_argument("--disable-blink-features=AutomationControlled")
     options.add_argument("--disable-gpu")
     # options.add_argument("--headless=new")
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    service = Service("/usr/bin/chromedriver")  # ou /usr/local/bin/chromedriver
+    driver = webdriver.Chrome(service=service, options=options)
     
     for biblio_id,dossier_id,dossier_name in biblio_to_scrape:
         taille=page_maxsize
