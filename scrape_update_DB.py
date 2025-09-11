@@ -5,6 +5,10 @@ from sqlalchemy.exc import IntegrityError
 import requests as req
 import json
 
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
 
 ################################################################
 # SCRAPING
@@ -536,6 +540,8 @@ if __name__ == "__main__":
     print("Début du scraping")
     # print(biblio_to_scrape)
     
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+
     for biblio_id,dossier_id,dossier_name in biblio_to_scrape:
         taille=page_maxsize
         i=1
@@ -546,7 +552,19 @@ if __name__ == "__main__":
             # print('page :',i,"taille :",taille)
             url=url_builder(page=i,user=biblio_id+'-db',folder=dossier_id)
             try:
+                #requests
                 resp=req.get(url).json()["rows"]
+                #selenium
+                driver.get(url)
+                try:
+                    pre_text = driver.find_element("tag name", "pre").text
+                    resp = json.loads(pre_text)["rows"]
+                    # print(resp)
+                except Exception as e:
+                    print("on n'a pas réussi à trouver les données, erreur :",e)
+                    print(driver.page_source)
+
+
                 taille=len(resp)
                 print(f"biblio_id : {biblio_id},dossier_id : {dossier_id},page : {i}, taille : {taille}, url : {url}")
                 for stuff in resp:
@@ -598,7 +616,8 @@ if __name__ == "__main__":
 
         if len(temp_stuff_liste)<501 and not err_flag: #do not add to the DB biblio that are bigger than 500 stuff
             stuff_liste=stuff_liste+temp_stuff_liste
-
+    
+    driver.quit()
     print("Scraping Terminé")
     # Appeler la fonction avec les données
     print("Mise à jour PanoDB")
