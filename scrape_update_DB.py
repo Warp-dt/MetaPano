@@ -7,8 +7,9 @@ import json
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
-
+import tempfile
 
 ################################################################
 # SCRAPING
@@ -539,9 +540,19 @@ if __name__ == "__main__":
     stuff_liste=[]
     print("Début du scraping")
     # print(biblio_to_scrape)
-    
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
+    # Crée un dossier temporaire unique pour le profil
+    user_data_dir = tempfile.mkdtemp()
+
+    options = Options()
+    options.add_argument(f"--user-data-dir={user_data_dir}")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--headless=new")
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    
     for biblio_id,dossier_id,dossier_name in biblio_to_scrape:
         taille=page_maxsize
         i=1
