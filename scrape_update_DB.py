@@ -552,7 +552,7 @@ if __name__ == "__main__":
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-blink-features=AutomationControlled")
     options.add_argument("--disable-gpu")
-    options.add_argument("--headless=new")
+    # options.add_argument("--headless=new")
     service = Service("/usr/bin/chromedriver")  # ou /usr/local/bin/chromedriver
     driver = webdriver.Chrome(service=service, options=options)
     
