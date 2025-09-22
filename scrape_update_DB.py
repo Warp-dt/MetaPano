@@ -11,6 +11,8 @@ from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 import tempfile
 
+from PanoDB_link import engine
+
 ################################################################
 # SCRAPING
 ################################################################
@@ -301,34 +303,32 @@ def get_stuff_base_info(id,driver):
         }
     return ans
 
-################################################################
-# DB HANDLING
-################################################################
-# Charger les variables d'environnement depuis le fichier .env
-load_dotenv()
+# ################################################################
+# # DB HANDLING
+# ################################################################
+# # Charger les variables d'environnement depuis le fichier .env
+# load_dotenv()
 
-# Récupérer l'environnement
-environment = os.getenv("ENVIRONMENT", "windows")  # Par défaut, considérer que c'est Windows
+# # Récupérer l'environnement
+# environment = os.getenv("ENVIRONMENT", "windows")  # Par défaut, considérer que c'est Windows
 
-# Configuration selon l'environnement
-if environment == "windows":
-    db_user = "pc_wind"
-    db_password = os.getenv("DB_PASSWORD")
-    db_host = "192.168.1.193"  # IP du serveur MySQL
-    db_name = "PanoDB"
-elif environment == "server":
-    db_user = "localuser"  # Utilisateur sur le serveur
-    db_password = os.getenv("SERVER_DB_PASSWORD")
-    db_host = "localhost"  # MySQL est accessible localement sur le serveur
-    db_name = "PanoDB"
-else:
-    raise ValueError(f"Environnement inconnu : {environment}")
+# # Configuration selon l'environnement
+# if environment == "windows":
+#     db_user = "pc_wind"
+#     db_password = os.getenv("DB_PASSWORD")
+#     db_host = "192.168.1.193"  # IP du serveur MySQL
+#     db_name = "PanoDB"
+# elif environment == "server":
+#     db_user = "localuser"  # Utilisateur sur le serveur
+#     db_password = os.getenv("SERVER_DB_PASSWORD")
+#     db_host = "localhost"  # MySQL est accessible localement sur le serveur
+#     db_name = "PanoDB"
+# else:
+#     raise ValueError(f"Environnement inconnu : {environment}")
 
-# Créer l'URL de connexion
-connection_string = f"mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name}"
+# # Créer l'URL de connexion
+# CONNECTION_STRING = f"mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name}"
 
-# Créer le moteur SQLAlchemy
-engine = create_engine(connection_string, echo=False)
 
 def upsert_stuff_data(stuff_list):
     """

@@ -2,6 +2,12 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import Column, Integer, BigInteger, String, TIMESTAMP, JSON, text
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import SQLAlchemyError
+from datetime import datetime, timezone
+
 
 BIBLI_DEFAULT={
     "biblio_id" : "996244"
@@ -34,10 +40,10 @@ else:
     raise ValueError(f"Environnement inconnu : {environment}")
 
 # Créer l'URL de connexion
-connection_string = f"mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name}"
+CONNECTION_STRING = f"mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name}"
 
 # Créer le moteur SQLAlchemy
-# engine = create_engine(connection_string, echo=False)
+# engine = create_engine(CONNECTION_STRING, echo=False)
 
 
 # criteres={
@@ -171,7 +177,7 @@ sum(CASE WHEN e.Nom IN ({str(exclusifs_non_inclus).replace("[",'').replace("]",'
     return query
 
 def find_stuff(criteres : dict,biblio=BIBLI_DEFAULT):
-    engine = create_engine(connection_string, echo=False)
+    engine = create_engine(CONNECTION_STRING, echo=False)
 
     query=stuff_query(criteres,biblio=biblio)
 
@@ -191,4 +197,78 @@ def find_stuff(criteres : dict,biblio=BIBLI_DEFAULT):
 # if __name__ == "__main__":
 #     print(find_stuff(criteres))
         
+
+Base = declarative_base()
+
+class CommandLog(Base):
+    __tablename__ = 'command_logs'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    executed_at = Column(TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'))
+    user_id = Column(BigInteger, nullable=False)
+    user_name = Column(String(100), nullable=False)
+    guild_id = Column(BigInteger, nullable=False)
+    guild_name = Column(String(100), nullable=False)
+    channel_id = Column(BigInteger, nullable=False)
+    channel_name = Column(String(100), nullable=False)
+    command = Column(String(50), nullable=False)
+    arguments = Column(JSON)
+
+
+# Créer le moteur SQLAlchemy
+engine = create_engine(CONNECTION_STRING, echo=False)
+# Création du sessionmaker (à faire une seule fois dans ton script principal)
+Session = sessionmaker(bind=engine)
+
+# def command_log(user_name,user_id,server_name,server_id,channel_name,channel_id,command_name,arguments,date="CURRENT_TIMESTAMP"):
+#     engine = create_engine(CONNECTION_STRING, echo=False)
+
+
+
+def command_log(user_name, user_id, server_name, server_id, channel_name, channel_id, command_name, arguments, date=None):
+    """
+    Enregistre l'exécution d'une commande Discord dans la base de données.
+    
+    :param user_name: Nom visible de l'utilisateur
+    :param user_id: ID Discord unique de l'utilisateur
+    :param server_name: Nom du serveur (guild)
+    :param server_id: ID Discord du serveur
+    :param channel_name: Nom du channel
+    :param channel_id: ID Discord du channel
+    :param command_name: Nom de la commande exécutée
+    :param arguments: Dictionnaire des arguments de la commande
+    :param date: Date d'exécution (optionnelle, default = CURRENT_TIMESTAMP)
+    """
+    session = Session()
+    
+    try:
+        # On prépare les arguments du constructeur
+        log_kwargs = {
+            "user_id": user_id,
+            "user_name": user_name,
+            "guild_id": server_id,
+            "guild_name": server_name,
+            "channel_id": channel_id,
+            "channel_name": channel_name,
+            "command": command_name,
+            "arguments": arguments
+        }
+        
+        # Si date fournie, on l'ajoute
+        # Si aucune date fournie, on laisse MySQL mettre CURRENT_TIMESTAMP
+        if date:
+            log_kwargs["executed_at"] = date
+        
+        log_entry = CommandLog(**log_kwargs)
+               
+        session.add(log_entry)
+        session.commit()
+        # print(f"[LOG] Commande '{command_name}' exécutée par {user_name} enregistrée avec succès.")
+    
+    except SQLAlchemyError as e:
+        session.rollback()
+        # print(f"[ERREUR LOG] Impossible d'enregistrer la commande '{command_name}': {e}")
+    
+    finally:
+        session.close()
 
