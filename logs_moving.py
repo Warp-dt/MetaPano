@@ -11,6 +11,8 @@ from discord.ext import commands
 from dotenv import load_dotenv
 import os
 from PanoDB_link import CONNECTION_STRING
+from typing import Final
+
 # ----------------------------
 # CONFIGURATION
 # ----------------------------
