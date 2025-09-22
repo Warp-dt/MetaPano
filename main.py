@@ -330,7 +330,7 @@ async def on_interaction(interaction : Interaction):
             log_message = f'{user_name} used /{command_name} in server {server_name} channel {channel_name}'
         
         # print(log_message)
-        # await channel.send(log_message)
+        await channel.send(log_message)
 
 # Flag global pour suivre si le message a été envoyé
 shutdown_message_sent = False
