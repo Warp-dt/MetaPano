@@ -841,7 +841,7 @@ class CriteresSelect(discord.ui.Select):
 message_anniversaire="""Salut à tous, pour fêter les 1 ans de MetaPano le 26 septembre rendez-vous sur le serveur du bot pour se retrouver et pour un **giveaway**.
 J'ai un **__Écu de la discorde__** <:ecudiscorde:1419986821504565338> à faire gagner 🎉
 
-Lien du serveur : https://discord.gg/dfDV8Zvwqp"""
+Lien du serveur : https://discord.gg/w5HGcEnGX9"""
 
 def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
     if assouplissement is None:
