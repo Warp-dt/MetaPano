@@ -1094,6 +1094,8 @@ async def stuff(interaction: Interaction,
         criteres=dict()
         elt_error=[]
         if element!="vide":
+            element=element.lower().replace("do pou","dopou")
+            element.replace("do pou","dopou").replace("o pou","dopou")
             element_list=element.strip().lower().replace("/","+").replace(" ","+").split("+")
             criteres['Élément']=[]
             for elt in element_list:
