@@ -951,7 +951,7 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
                     break
             embed.add_field(name="Liens dofusbook", value=content_dblink, inline=True)
 
-        embed.add_field(name="🎁Giveaway anniversaire🎂", value=message_anniversaire, inline=False)
+        embed.add_field(name="🎁**__Giveaway anniversaire__**🎂", value=message_anniversaire, inline=False)
         embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
         return embed
     
@@ -1010,7 +1010,7 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
                 embed.add_field(name="Recherche vide", value="Je n'ai pas de stuff dans ma base pour cette recherche.")
             
             embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
-            embed.add_field(name="🎁Giveaway anniversaire🎂", value=message_anniversaire, inline=False)
+            embed.add_field(name="🎁**__Giveaway anniversaire__**🎂", value=message_anniversaire, inline=False)
 
             return embed
         
