@@ -838,8 +838,11 @@ class CriteresSelect(discord.ui.Select):
             view=self.view,
             ephemeral=True)
 
-message_anniversaire="""Salut à tous, pour fêter les 1 ans de MetaPano le 26 septembre rendez-vous sur le serveur du bot pour se retrouver et pour un giveaway, j'ai un Écu de la discorde <:ecudiscorde:1419986821504565338> à faire gagner 🎉
+message_anniversaire="""Salut à tous, pour fêter les 1 ans de MetaPano le 26 septembre rendez-vous sur le serveur du bot pour se retrouver et pour un **giveaway**.
+J'ai un **__Écu de la discorde__** <:ecudiscorde:1419986821504565338> à faire gagner 🎉
+
 Lien du serveur : https://discord.gg/TcrNrRE5QV"""
+
 def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
     if assouplissement is None:
         assouplissement = []
@@ -948,7 +951,7 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
                     break
             embed.add_field(name="Liens dofusbook", value=content_dblink, inline=True)
 
-        embed.add_field(name="🎁Giveaway anniversaire🎂", value=message_anniversaire, inline=True)
+        embed.add_field(name="🎁Giveaway anniversaire🎂", value=message_anniversaire, inline=False)
         embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
         return embed
     
@@ -1007,6 +1010,8 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
                 embed.add_field(name="Recherche vide", value="Je n'ai pas de stuff dans ma base pour cette recherche.")
             
             embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+            embed.add_field(name="🎁Giveaway anniversaire🎂", value=message_anniversaire, inline=False)
+
             return embed
         
         # print(criteres_altérés,assouplissement)
