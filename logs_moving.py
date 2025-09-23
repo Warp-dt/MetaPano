@@ -21,8 +21,7 @@ load_dotenv()
 TOKEN: Final[str] = os.getenv('DISCORD_TOKEN')
 from typing import Final
 
-LOG_CHANNEL_ID = 1335368709157421056  # ID du channel où tes logs sont postés
-# CONNECTION_STRING = "mysql+mysqlconnector://user:password@localhost:3306/ma_base"
+LOG_CHANNEL_ID = 1335368709157421056  # ID du channel où les logs sont postés
 
 
 # ----------------------------

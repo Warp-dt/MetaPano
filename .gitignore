@@ -1,4 +1,5 @@
 .env
+.venv
 warpbot_maj.bat - Raccourci
 custom_biblio.json
 tests.ipynb

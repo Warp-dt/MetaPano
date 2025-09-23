@@ -838,6 +838,8 @@ class CriteresSelect(discord.ui.Select):
             view=self.view,
             ephemeral=True)
 
+message_anniversaire="""Salut à tous, pour fêter les 1 ans de MetaPano le 26 septembre rendez-vous sur le serveur du bot pour se retrouver et pour un giveaway, j'ai un Écu de la discorde <:ecudiscorde:1419986821504565338> à faire gagner 🎉
+Lien du serveur : https://discord.gg/TcrNrRE5QV"""
 def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
     if assouplissement is None:
         assouplissement = []
@@ -945,6 +947,8 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
                     content_dblink+="D'autres stuffs existent mais je n'ai pas assez de place ici pour tous les lister, précise ta recherche."
                     break
             embed.add_field(name="Liens dofusbook", value=content_dblink, inline=True)
+
+        embed.add_field(name="🎁Giveaway anniversaire🎂", value=message_anniversaire, inline=True)
         embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
         return embed
     
