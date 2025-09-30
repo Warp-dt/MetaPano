@@ -840,7 +840,7 @@ class CriteresSelect(discord.ui.Select):
             ephemeral=True)
 
 add_message=True
-message_reponse="""🔍 Aide-moi à améliorer MetaPano : Participe au sondage sur [Dofus Touls](https://discord.gg/qADVDpj4)."""
+message_reponse="""🔍 Aide-moi à améliorer MetaPano : Participe au sondage sur [Dofus Touls](https://discord.gg/qZ8mveke)."""
 titre_message=":pencil: **__SONDAGE__** :pencil:"
 
 def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
