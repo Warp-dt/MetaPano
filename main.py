@@ -41,6 +41,7 @@ intents: Intents = Intents.default()
 intents.message_content = True 
 bot = commands.Bot(command_prefix='', intents=intents, help_command=None)
 
+footer_message="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord [Dofus Touls](https://discord.gg/dfDV8Zvwqp)."
 # HANDLING THE STARTUP FOR OUR BOT
 
 def parse_log(log_message):
@@ -838,10 +839,8 @@ class CriteresSelect(discord.ui.Select):
             view=self.view,
             ephemeral=True)
 
-# message_anniversaire="""Salut à tous, pour fêter les 1 ans de MetaPano le 26 septembre rendez-vous sur le serveur du bot pour se retrouver et pour un **giveaway**.
-# J'ai un **__Écu de la discorde__** <:ecudiscorde:1419986821504565338> à faire gagner 🎉
-
-# Lien du serveur : [Dofus Touls](https://discord.gg/w5HGcEnGX9)"""
+message_reponse="""Est-ce
+Lien du serveur : [Dofus Touls](https://discord.gg/qADVDpj4)"""
 
 def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
     if assouplissement is None:
@@ -952,7 +951,7 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
             embed.add_field(name="Liens dofusbook", value=content_dblink, inline=True)
 
         # embed.add_field(name="🎁**__Giveaway anniversaire__**🎂", value=message_anniversaire, inline=False)
-        embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+        embed.set_footer(text=footer_message)
         return embed
     
     else: #on a pas trouvé de stuff, on va donc assouplir les critères pour essayer de trouver quelque chose de proche
@@ -1009,7 +1008,7 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
             else:
                 embed.add_field(name="Recherche vide", value="Je n'ai pas de stuff dans ma base pour cette recherche.")
             
-            embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+            embed.set_footer(text=footer_message)
             # embed.add_field(name="🎁**__Giveaway anniversaire__**🎂", value=message_anniversaire, inline=False)
 
             return embed
@@ -1207,7 +1206,7 @@ async def twitch(interaction: Interaction):
     embed.add_field(name="Bibliothèque de stuffs :",value=("[**MetaPano**](https://d-bk.net/fr/tl/4BAS)"), inline=False)
     embed.add_field(name="Contenu :", value=(f"""
 Tous les stuffs que le bot va recommander sont présents dans ce compte dofusbook, c'est en quelques sorte la base de connaissance du bot."""), inline=False)
-    embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+    embed.set_footer(text=footer_message)
     await interaction.response.send_message(embed=embed)
 
 
@@ -1229,7 +1228,7 @@ async def change_bibliotheque_canal(interaction: Interaction, lien_biblio: str, 
         embed.add_field(name="Erreur :", value="""Le lien que tu as donné n'est pas valide, vérifie qu'il s'agit bien d'un lien de bibliothèque dofusbook.
 
 Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/996244-db/equipements""", inline=False)
-        embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+        embed.set_footer(text=footer_message)
         await interaction.response.send_message(embed=embed)
         return
 
@@ -1247,7 +1246,7 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
         embed.add_field(name="Erreur :",value=(f"""Le lien que tu as donné n'est pas valide, vérifie qu'il s'agit bien d'un lien de bibliothèque dofusbook.
 
 Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/996244-db/equipements"""), inline=False)
-        embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+        embed.set_footer(text=footer_message)
         await interaction.response.send_message(embed=embed)
         return 0
 
@@ -1263,7 +1262,7 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
         )
         embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL d'une image pour l'illustration
         embed.add_field(name="Erreur :",value=(f"""Le nom de canal {channel} est réservé et ne peut pas être utilisé."""), inline=False)
-        embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+        embed.set_footer(text=footer_message)
         await interaction.response.send_message(embed=embed)
         return 0
 
@@ -1359,7 +1358,7 @@ Il faudra donc attendre demain pour pouvoir profiter de cette nouvelle biblioth�
         infos_update=f"""⚠️ Le dossier {dossier} n'a pas été trouvé dans la bibliothèque, par défaut je donc faire comme si aucun dossier n'avait été spécifié.\n"""+infos_update
         
     embed.add_field(name="INFORMATIONS :", value=(infos_update), inline=False)
-    embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+    embed.set_footer(text=footer_message)
     await interaction.response.send_message(embed=embed)
 
 @bot.tree.command(name="change_bibliotheque_serveur", description="Pour changer la bibliothèque de stuff source par défaut du serveur")
@@ -1380,7 +1379,7 @@ async def change_bibliotheque_serveur(interaction: Interaction, lien_biblio: str
         embed.add_field(name="Erreur :", value="""Le lien que tu as donné n'est pas valide, vérifie qu'il s'agit bien d'un lien de bibliothèque dofusbook.
 
 Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/996244-db/equipements""", inline=False)
-        embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+        embed.set_footer(text=footer_message)
         await interaction.response.send_message(embed=embed)
         return
 
@@ -1398,7 +1397,7 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
         embed.add_field(name="Erreur :",value=(f"""Le lien que tu as donné n'est pas valide, vérifie qu'il s'agit bien d'un lien de bibliothèque dofusbook.
 
 Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/996244-db/equipements"""), inline=False)
-        embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+        embed.set_footer(text=footer_message)
         await interaction.response.send_message(embed=embed)
         return 0
 
@@ -1490,7 +1489,7 @@ Il faudra donc attendre demain pour pouvoir profiter de cette nouvelle biblioth�
         infos_update=f"""⚠️ Le dossier {dossier} n'a pas été trouvé dans la bibliothèque, par défaut je donc faire comme si aucun dossier n'avait été spécifié.\n"""+infos_update
 
     embed.add_field(name="INFORMATIONS :", value=(infos_update), inline=False)
-    embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+    embed.set_footer(text=footer_message)
     await interaction.response.send_message(embed=embed)
 
 @bot.tree.command(name="bibliotheques", description="Pour savoir quelles sont les bibliothèques utilisées dans ce serveur")
@@ -1527,7 +1526,7 @@ async def bibliotheques(interaction: Interaction): #affiche un embed avec la bib
         embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
         embed.add_field(name="Bibliothèque du serveur :", value=bibli_default, inline=False)
         embed.add_field(name="Bibliothèques par canal :", value=bibli_canal, inline=False)
-        embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+        embed.set_footer(text=footer_message)
 
         await interaction.response.send_message(embed=embed)
     else:
@@ -1538,7 +1537,7 @@ async def bibliotheques(interaction: Interaction): #affiche un embed avec la bib
         embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
         bibli_default=f"[MetaPano]({'https://touch.dofusbook.net/fr/membre/996244-db/equipements'})" #par défaut metapano
         embed.add_field(name="Bibliothèque du serveur :", value=bibli_default, inline=False)
-        embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+        embed.set_footer(text=footer_message)
         await interaction.response.send_message(embed=embed)
 
 @bot.tree.command(name="supprime_bibliotheque_canal", description="Pour supprimer la bibliothèque de stuff source du canal")
@@ -1559,7 +1558,7 @@ async def supprime_bibliotheque_canal(interaction: Interaction):
         )
         embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL d'une image pour l'illustration
         embed.add_field(name="Erreur :",value=(f"""Le nom de canal {channel} est réservé et ne peut pas être utilisé."""), inline=False)
-        embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+        embed.set_footer(text=footer_message)
         await interaction.response.send_message(embed=embed)
         return -1
 
@@ -1576,7 +1575,7 @@ async def supprime_bibliotheque_canal(interaction: Interaction):
             )
             embed.set_thumbnail(url=IMAGES_LINK["error"])
             embed.add_field(name="Erreur :",value=(f"""Le canal {channel} n'a pas de bibliothèque custom qui lui est attribué, il n'y a rien à supprimer."""), inline=False)
-            embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+            embed.set_footer(text=footer_message)
             await interaction.response.send_message(embed=embed)
             return -1
 
@@ -1589,7 +1588,7 @@ async def supprime_bibliotheque_canal(interaction: Interaction):
         )
         embed.set_thumbnail(url=IMAGES_LINK["error"])
         embed.add_field(name="Erreur :",value=(f"""Ni le canal {channel} ni le serveur {guild} n'ont pas de bibliothèque custom qui leur sont attribués, il n'y a rien à supprimer."""), inline=False)
-        embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+        embed.set_footer(text=footer_message)
         await interaction.response.send_message(embed=embed)
         return -1  
     
@@ -1610,7 +1609,7 @@ async def supprime_bibliotheque_canal(interaction: Interaction):
 
     embed.add_field(name="Bibliothèque :",value=(f"La bibliothèque a été retirée avec succès de ce canal, désormais la bibliothèque par défaut du serveur sera utilisée."), inline=False)
 
-    embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+    embed.set_footer(text=footer_message)
     await interaction.response.send_message(embed=embed)
     return 0
 
@@ -1635,7 +1634,7 @@ async def supprime_bibliotheque_serveur(interaction: Interaction):
             )
             embed.set_thumbnail(url=IMAGES_LINK["error"])
             embed.add_field(name="Erreur :",value=(f"""Le serveur {guild} n'a pas de bibliothèque custom par défaut qui lui est attribué, il n'y a rien à supprimer."""), inline=False)
-            embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+            embed.set_footer(text=footer_message)
             await interaction.response.send_message(embed=embed)
             return -1
 
@@ -1648,7 +1647,7 @@ async def supprime_bibliotheque_serveur(interaction: Interaction):
         )
         embed.set_thumbnail(url=IMAGES_LINK["error"])
         embed.add_field(name="Erreur :",value=(f"""Le serveur {guild} n'a pas de bibliothèque custom par défaut qui lui est attribué, il n'y a rien à supprimer."""), inline=False)
-        embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+        embed.set_footer(text=footer_message)
         await interaction.response.send_message(embed=embed)
         return -1
     
@@ -1669,7 +1668,7 @@ async def supprime_bibliotheque_serveur(interaction: Interaction):
 
     embed.add_field(name="Bibliothèque :",value=(f"La bibliothèque a été retirée avec succès de ce serveur, désormais la bibliothèque par défaut du serveur sera celle de MetaPano par défaut."), inline=False)
 
-    embed.set_footer(text="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls.")
+    embed.set_footer(text=footer_message)
     await interaction.response.send_message(embed=embed)
     return 0
 
