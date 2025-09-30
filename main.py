@@ -839,8 +839,9 @@ class CriteresSelect(discord.ui.Select):
             view=self.view,
             ephemeral=True)
 
-message_reponse="""Est-ce
-Lien du serveur : [Dofus Touls](https://discord.gg/qADVDpj4)"""
+add_message=True
+message_reponse="""🔍 Aide-moi à améliorer MetaPano : Participe au sondage sur [Dofus Touls](https://discord.gg/qADVDpj4)."""
+titre_message=":pencil: **__SONDAGE__** :pencil:"
 
 def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
     if assouplissement is None:
@@ -950,7 +951,8 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
                     break
             embed.add_field(name="Liens dofusbook", value=content_dblink, inline=True)
 
-        # embed.add_field(name="🎁**__Giveaway anniversaire__**🎂", value=message_anniversaire, inline=False)
+        if add_message:
+            embed.add_field(name=titre_message, value=message_reponse, inline=False)
         embed.set_footer(text=footer_message)
         return embed
     
@@ -1009,7 +1011,9 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
                 embed.add_field(name="Recherche vide", value="Je n'ai pas de stuff dans ma base pour cette recherche.")
             
             embed.set_footer(text=footer_message)
-            # embed.add_field(name="🎁**__Giveaway anniversaire__**🎂", value=message_anniversaire, inline=False)
+            
+            if add_message:
+                embed.add_field(name=titre_message, value=message_reponse, inline=False)
 
             return embed
         
