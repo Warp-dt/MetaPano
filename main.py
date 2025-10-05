@@ -1006,9 +1006,9 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
             
             embed.set_thumbnail(url=IMAGES_LINK["error"]) 
             if "Élément" in criteres:
-                embed.add_field(name=f'Élément {" ".join(criteres["Élément"])} vide',value="Je n'ai pas de stuff dans ma base pour cet élément ou cette combinaison d'éléments.")
+                embed.add_field(name=f'Élément {" ".join(criteres["Élément"])} vide',value="Il n'y a pas de stuff dans la base pour cet élément ou cette combinaison d'éléments.")
             else:
-                embed.add_field(name="Recherche vide", value="Je n'ai pas de stuff dans ma base pour cette recherche.")
+                embed.add_field(name="Recherche vide", value="Il n'y a pas de stuff dans la base pour cette recherche.")
             
             embed.set_footer(text=footer_message)
             

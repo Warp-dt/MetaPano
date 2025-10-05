@@ -162,14 +162,34 @@ classes_filtre={
     ,"steamer" : "15"
 }
 
-#A MAJ AVEC SELENIUM
 def folder_id_finder(folder_name,user):
     base="https://touch.dofusbook.net/stuffs/touch/public/"
     membre="?user="+user+"&sort=update-desc"
 
-    resp=req.get(base+membre).json()
+    # Crée un dossier temporaire unique pour le profil
+    user_data_dir = tempfile.mkdtemp(prefix="selenium_chrome_")
+    options = Options()
+    options.add_argument(f"--user-data-dir={user_data_dir}")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_argument("--disable-gpu")
+    # options.add_argument("--headless=new")
+    service = Service("/usr/bin/chromedriver")  # ou /usr/local/bin/chromedriver
+    driver = webdriver.Chrome(service=service, options=options)
+
+    driver.get(base+membre)
+
+    try:
+        pre_text = driver.find_element("tag name", "pre").text
+        resp = json.loads(pre_text)
+        # print(resp)
+    except Exception as e:
+        print("on n'a pas réussi à trouver les données, erreur :",e)
+        print(driver.page_source)
+
     if "folders" not in resp:
-        print(f"Erreur : fold_rep=req.get(base+membre).json() a échoué, url ={base+membre}")
+        print(f"Erreur : pre_text = driver.find_element('tag name', 'pre').text ou resp = json.loads(pre_text) a échoué, url ={base+membre}")
         return "-1"
     fold_rep=resp["folders"]
     for fold in fold_rep:
@@ -213,13 +233,11 @@ def url_builder(element="rien",classes="rien",page="1",user="996244-MetaPano",fo
 def get_stats(id,driver):
     
     url="https://touch.dofusbook.net/stuffs/touch/public/"+str(id)
-    # data_req= req.get(url)
-    data_req=driver.get(url)
+    driver.get(url)
     try:
         pre_text = driver.find_element("tag name", "pre").text
         data = json.loads(pre_text)
 
-        # data=data_req.json()
     except:
         print("Erreur lors de la transformation en json dans get_stats")
         print(f"URL = {url}")
