@@ -667,7 +667,7 @@ if __name__ == "__main__":
 
     #update le fichier custom_biblio.json
     if result["errors"] == 0:
-        for biblio_id,dossier_id,dossier_name in biblio_to_scrape:
+        for biblio_id,dossier_id,dossier_name,jeu in biblio_to_scrape:
             custom_biblio[biblio_id][dossier_id]["imported"]=True
     # Write the updated dictionary to the JSON file
     try:
