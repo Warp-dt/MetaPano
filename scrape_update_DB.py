@@ -616,6 +616,8 @@ if __name__ == "__main__":
                 taille=len(resp)
                 print(f"biblio_id : {biblio_id},dossier_id : {dossier_id},page : {i}, taille : {taille}, url : {url}")
                 for stuff in resp:
+                    url_test=f"{DOFUSBOOK_URL[jeu]}/api/stuffs/{DB_JEU_SHORT[jeu]}/public/{stuff['id']}" #pour tests
+
                     if len(stuff["allowed_classes"])==0:
                         stuff["allowed_classes"].append(16)
 
@@ -660,6 +662,7 @@ if __name__ == "__main__":
                 print("Erreur lors de la recupération des infos sur les stuffs")
                 print(f"URL : {url}")
                 print(f"Exception : {e}")
+                print(f"stuff problématique : {url_test}")
                 taille=0 #pour sortir de la boucle
                 err_flag=True #on ignore ce dossier quand y'a une erreur
 
