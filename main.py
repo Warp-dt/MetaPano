@@ -1376,7 +1376,7 @@ Il faudra donc attendre demain pour pouvoir profiter de cette nouvelle biblioth√
 async def change_bibliotheque_serveur(interaction: Interaction, lien_biblio: str, nom_biblio: str, dossier: Optional[str] = "tout"  ):
 
     # Check if the link sent is a valid dofusbook link
-    if not re.match(r"https?://(d-bk\.net|touch\.dofusbook\.net)/fr/(tl/\w+|membre/\d+-\w+/equipements)", lien_biblio):
+    if not re.match(r"https?://(d-bk\.net|(touch|retro|www)\.dofusbook\.net)/fr/((t|d|r)l/\w+|membre/\d+-\w+/equipements)", lien_biblio):
         print(f"Invalid dofusbook link: {lien_biblio}")
         # Return embed with an error message
         embed = Embed(
