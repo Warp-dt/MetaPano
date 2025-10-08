@@ -22,6 +22,12 @@ DOFUSBOOK_URL={
     ,"Dofus 3"      : "https://www.dofusbook.net"
     ,"Dofus Retro"  : "https://retro.dofusbook.net"
 }
+DB_JEU_SHORT={
+    "Dofus Touch"   : "touch"
+    ,"Dofus 3"      : "dofus"
+    ,"Dofus Retro"  : "retro"
+
+}
 
 FR_KEYS=['Lvl','PA', 'PM', 'PO', 'Initiative', 'Critique', 'Invocation', 'Soin', 'Vitalité', 'Sagesse', 'Force', 'Intelligence', 'Chance', 'Agilité', 'Puissance', 'Fuite', 'Esq. PA', 'Esq. PM', 'Pods', 'Tacle', 'Ret. PA', 'Ret. PM',  'Do Critique', '% Ré Air', '% Ré Feu', 'Do Eau', 'Do Terre', 'Do Neutre', '% Ré Terre', 'Prospection', 'Do Feu', 'Do Air', 'Do Poussée', 'Ré Neutre', '% Ré Neutre', 'Ré Terre', 'Ré Feu', 'Ré Eau', '% Ré Eau', 'Ré Air', 'Ré Critique', 'Ré Poussée', "Do"]
 EN_KEYS=['Lvl','AP', 'MP', 'Range', 'Initiative', 'Critical', 'Summon', 'Heal', 'Vitality', 'Wisdom', 'Strength', 'Intelligence', 'Chance', 'Agility', 'Power', 'Dodge', 'AP Res.', 'MP Res.', 'Pods', 'Lock', 'AP Red', 'MP Red',  'Da Critical', '% Re Air', '% Re Fire', 'Da Water', 'Da Earth', 'Da Neutral', '% Re Earth', 'Prospecting', 'Da Fire', 'Da Air', 'Da Pushback', 'Re Neutral', '% Re Neutral', 'Re Earth', 'Re Fire', 'Re Water', '% Re Water', 'Re Air', 'Re Critical', 'Re Pushback', "Da"]
@@ -170,7 +176,7 @@ classes_filtre={
 }
 
 def folder_id_finder(folder_name,user,jeu='Dofus Touch'):
-    base=DOFUSBOOK_URL[jeu]+"/api/stuffs/touch/public/"
+    base=f"{DOFUSBOOK_URL[jeu]}/api/stuffs/{DB_JEU_SHORT[jeu]}/public/"
     membre="?user="+user+"&sort=update-desc"
 
     # Crée un dossier temporaire unique pour le profil
@@ -207,7 +213,7 @@ def folder_id_finder(folder_name,user,jeu='Dofus Touch'):
 
 def url_builder(element="rien",classes="rien",page="1",user="996244-MetaPano",folder="-1",jeu='Dofus Touch'):
     #user="244671-warp"
-    base=DOFUSBOOK_URL[jeu]+"/api/stuffs/touch/public/"
+    base=f"{DOFUSBOOK_URL[jeu]}/api/stuffs/{DB_JEU_SHORT[jeu]}/public/"
     membre="&user="+user+"&sort=update-desc"
     page_base="?page="
     filtre=""
@@ -239,7 +245,7 @@ def url_builder(element="rien",classes="rien",page="1",user="996244-MetaPano",fo
 
 def get_stats(id,driver,jeu='Dofus Touch'):
     
-    url=DOFUSBOOK_URL[jeu]+"/api/stuffs/touch/public/"+str(id)
+    url=f"{DOFUSBOOK_URL[jeu]}/api/stuffs/{DB_JEU_SHORT[jeu]}/public/{id}"
     driver.get(url)
     try:
         pre_text = driver.find_element("tag name", "pre").text
@@ -563,6 +569,7 @@ if __name__ == "__main__":
         first_val=value[list(value.keys())[0]]
         if "imported" in first_val and "alias" in first_val: #test pour savoir si on est dans une clé de biblio ou de guild, on teste si dans le premier élément de value, il y a les clés "imported" et "alias"
             for dossier_id in value :
+                print(blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"])
                 biblio_to_scrape.append((blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"]))# l'idée c'est de récupérer les ("bibli_id","dossier_id","dossier_name") de toutes les bibli à scraper
     # print(f"biblio à scrape : {biblio_to_scrape})
     page_maxsize=20
