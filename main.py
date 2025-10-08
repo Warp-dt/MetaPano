@@ -14,7 +14,7 @@ import sys
 import aiohttp
 
 from responses import help_response,color_mix,IMAGES_LINK,image_response,CLASSES, filter_sort_main_elts,ELEMENTS_PRINCIPAUX, no_secondary_elt,no_main_elt
-from scrape_update_DB import folder_id_finder
+from scrape_update_DB import folder_id_finder, DOFUSBOOK_URL
 from PanoDB_link import find_stuff, BIBLI_DEFAULT, command_log
 
 import json
@@ -1005,10 +1005,7 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
                 illustration=IMAGES_LINK["error"]
             
             embed.set_thumbnail(url=IMAGES_LINK["error"]) 
-            if "Élément" in criteres:
-                embed.add_field(name=f'Élément {" ".join(criteres["Élément"])} vide',value="Il n'y a pas de stuff dans la base pour cet élément ou cette combinaison d'éléments.")
-            else:
-                embed.add_field(name="Recherche vide", value="Il n'y a pas de stuff dans la base pour cette recherche.")
+            embed.add_field(name="Recherche vide", value="Il n'y a pas de stuff dans la base pour ce critère ou cette combinaison de critères.")
             
             embed.set_footer(text=footer_message)
             
@@ -1148,12 +1145,6 @@ Et toute combinaison de ces éléments."""
                 embed=embed, 
                 ephemeral=True)
 
-
-# # context command
-# @bot.tree.context_menu(name="test_contexte")
-# async def test_contexte(interaction: Interaction, member : discord.Member):
-#     await interaction.response.send_message(f"member joined at : {member.joined_at}")
-
 # help command
 @bot.tree.command(name="help", description="Besoin d'aide sur l'utilisation du bot?")
 async def help(interaction: Interaction, commande: str ='vide'):
@@ -1214,11 +1205,12 @@ Tous les stuffs que le bot va recommander sont présents dans ce compte dofusboo
     await interaction.response.send_message(embed=embed)
 
 
+
 @bot.tree.command(name="change_bibliotheque_canal", description="Pour changer la bibliothèque de stuff source du canal")
 @app_commands.default_permissions(administrator=True) #only admin can use this command
 @app_commands.checks.has_permissions(administrator=True) #and the admin can not give the permission to use this command
 @app_commands.guild_only() #only in guilds, not in DMs
-async def change_bibliotheque_canal(interaction: Interaction, lien_biblio: str, nom_biblio: str, dossier: Optional[str] = "tout"  ):
+async def change_bibliotheque_canal(interaction: Interaction, lien_biblio: str, nom_biblio: str, dossier: Optional[str] = "tout"):
 
     # Check if the link sent is a valid dofusbook link
     if not re.match(r"https?://(d-bk\.net|touch\.dofusbook\.net)/fr/(tl/\w+|membre/\d+-\w+/equipements)", lien_biblio):
@@ -1238,7 +1230,16 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
 
 
     try:
-        biblio_id=req.get(lien_biblio).url.split("/")[-2][:-3]
+        biblio_url=req.get(lien_biblio).url
+        biblio_id=biblio_url.split("/")[-2][:-3]
+        biblio_jeu=biblio_url.split(".")[0][-3:]
+        if biblio_jeu=="uch":
+            jeu="Dofus Touch"
+        elif biblio_jeu=="tro":
+            jeu="Dofus Retro"
+        else:
+            jeu='Dofus 3'
+            
     except:
         print(f"Error getting biblio_id from link: {lien_biblio}")
         #return embed with an error message
@@ -1272,7 +1273,7 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
 
     dossierpastrouve=False
     if dossier!="tout":
-        folder_id=folder_id_finder(folder_name=dossier,user=biblio_id)
+        folder_id=folder_id_finder(folder_name=dossier,user=biblio_id,jeu=jeu)
         if folder_id=="-1": #dossier pas trouvé
             dossierpastrouve=True
     else:
@@ -1304,24 +1305,27 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
         #                             ,"alias":[nom_biblio]}
         
         CUSTOM_BIBLIO[biblio_id] = {}
-        CUSTOM_BIBLIO[biblio_id][folder_id]= {"dossier" : dossier
+        CUSTOM_BIBLIO[biblio_id][folder_id]= {
+                                            "jeu" : jeu
+                                            ,"dossier" : dossier
                                             ,"imported": False
                                             ,"alias":[nom_biblio]}
     else: # si la biblio est connue
-        # if nom_biblio not in CUSTOM_BIBLIO[biblio_id]["alias"]:
-        #     CUSTOM_BIBLIO[biblio_id]["alias"].append(nom_biblio)
-        # already_imported=CUSTOM_BIBLIO[biblio_id]["imported"]
-
+        
         if folder_id in CUSTOM_BIBLIO[biblio_id]: #si le user et le folder sont connus
             if nom_biblio not in CUSTOM_BIBLIO[biblio_id][folder_id]["alias"]:
                 CUSTOM_BIBLIO[biblio_id][folder_id]["alias"].append(nom_biblio)
         else:#si la biblio est connue mais pas le folder
-            if "-1" in CUSTOM_BIBLIO[biblio_id]: #si la biblio entière a été déjà ajoutée
-                CUSTOM_BIBLIO[biblio_id][folder_id]={"dossier" : dossier
+            if "-1" in CUSTOM_BIBLIO[biblio_id] and CUSTOM_BIBLIO[biblio_id]["-1"]["jeu"]==jeu: #si la biblio entière a été déjà ajoutée et que le jeu correspond
+                CUSTOM_BIBLIO[biblio_id][folder_id]={
+                                            "jeu" : jeu
+                                            ,"dossier" : dossier
                                             ,"imported": CUSTOM_BIBLIO[biblio_id]["-1"]["imported"]
                                             ,"alias":[nom_biblio]}
             else:
-                CUSTOM_BIBLIO[biblio_id][folder_id]={"dossier" : dossier
+                CUSTOM_BIBLIO[biblio_id][folder_id]={
+                                            "jeu" : jeu
+                                            ,"dossier" : dossier
                                             ,"imported": False
                                             ,"alias":[nom_biblio]}
                 
@@ -1389,7 +1393,15 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
 
 
     try:
-        biblio_id=req.get(lien_biblio).url.split("/")[-2][:-3]
+        biblio_url=req.get(lien_biblio).url
+        biblio_id=biblio_url.split("/")[-2][:-3]
+        biblio_jeu=biblio_url.split(".")[0][-3:]
+        if biblio_jeu=="uch":
+            jeu="touch"
+        elif biblio_jeu=="tro":
+            jeu="retro"
+        else:
+            jeu='pc'
     except:
         print(f"Error getting biblio_id from link: {lien_biblio}")
         #return embed with an error message
@@ -1409,7 +1421,7 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
 
     dossierpastrouve=False
     if dossier!="tout":
-        folder_id=folder_id_finder(folder_name=dossier,user=biblio_id)
+        folder_id=folder_id_finder(folder_name=dossier,user=biblio_id,jeu=jeu)
         if folder_id=="-1": #dossier pas trouvé
             dossierpastrouve=True
     else:
@@ -1438,7 +1450,9 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
     already_imported=False
     if not biblio_id in CUSTOM_BIBLIO: #si la biblio est inconnue (donc folder idem)
         CUSTOM_BIBLIO[biblio_id] = {}
-        CUSTOM_BIBLIO[biblio_id][folder_id]= {"dossier" : dossier
+        CUSTOM_BIBLIO[biblio_id][folder_id]= {
+                                            "jeu" : jeu
+                                            ,"dossier" : dossier
                                             ,"imported": False
                                             ,"alias":[nom_biblio]}
     else: # si la biblio est connue
@@ -1448,12 +1462,16 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
             if nom_biblio not in CUSTOM_BIBLIO[biblio_id][folder_id]["alias"]:
                 CUSTOM_BIBLIO[biblio_id][folder_id]["alias"].append(nom_biblio)
         else:#si la biblio est connue mais pas le folder
-            if "-1" in CUSTOM_BIBLIO[biblio_id]: #si la biblio entière a été déjà ajoutée
-                CUSTOM_BIBLIO[biblio_id][folder_id]={"dossier" : dossier
+            if "-1" in CUSTOM_BIBLIO[biblio_id] and CUSTOM_BIBLIO[biblio_id]["-1"]["jeu"]==jeu: #si la biblio entière a été déjà ajoutée et qe c'est le meme jeu
+                CUSTOM_BIBLIO[biblio_id][folder_id]={
+                                            "jeu" : jeu
+                                            ,"dossier" : dossier
                                             ,"imported": CUSTOM_BIBLIO[biblio_id]["-1"]["imported"]
                                             ,"alias":[nom_biblio]}
             else:
-                CUSTOM_BIBLIO[biblio_id][folder_id]={"dossier" : dossier
+                CUSTOM_BIBLIO[biblio_id][folder_id]={
+                                            "jeu" : jeu
+                                            ,"dossier" : dossier
                                             ,"imported": False
                                             ,"alias":[nom_biblio]}
                 
@@ -1504,21 +1522,22 @@ async def bibliotheques(interaction: Interaction): #affiche un embed avec la bib
         bibli_default=f"[MetaPano]({'https://touch.dofusbook.net/fr/membre/996244-db/equipements'})" #par défaut metapano
         bibli_canal=""
         for channel in CUSTOM_BIBLIO[guild]:
-            biblio_id= CUSTOM_BIBLIO[guild][channel]["biblio_id"]
-            nom_biblio= CUSTOM_BIBLIO[guild][channel]["nom_biblio"]
-            dossier_nom= CUSTOM_BIBLIO[guild][channel]["dossier"]
-            dossier_id= CUSTOM_BIBLIO[guild][channel]["dossier_id"]
+            biblio_id=      CUSTOM_BIBLIO[guild][channel]["biblio_id"]
+            nom_biblio=     CUSTOM_BIBLIO[guild][channel]["nom_biblio"]
+            dossier_nom=    CUSTOM_BIBLIO[guild][channel]["dossier"]
+            dossier_id=     CUSTOM_BIBLIO[guild][channel]["dossier_id"]
+            jeu=            CUSTOM_BIBLIO[biblio_id][dossier_id]["jeu"]
             if channel == "default":
                 if dossier_nom != "tout":
-                    bibli_default=f"[{nom_biblio}]({'https://touch.dofusbook.net/fr/membre/'+biblio_id+f'-db/equipements?folder={dossier_id}'}) | Importée : {CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild][channel]["biblio_id"]][CUSTOM_BIBLIO[guild][channel]["dossier_id"]]['imported']} | Dossier : {dossier_nom}"
+                    bibli_default=f"[{nom_biblio}]({DOFUSBOOK_URL[jeu]+"/fr/membre/"+biblio_id+f'-db/equipements?folder={dossier_id}'}) | Importée : {CUSTOM_BIBLIO[biblio_id][dossier_id]['imported']} | Dossier : {dossier_nom} | Jeu : {jeu}"
                 else:
-                    bibli_default=f"[{nom_biblio}]({'https://touch.dofusbook.net/fr/membre/'+biblio_id+'-db/equipements'}) | Importée : {CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild][channel]["biblio_id"]][CUSTOM_BIBLIO[guild][channel]["dossier_id"]]['imported']}"
+                    bibli_default=f"[{nom_biblio}]({DOFUSBOOK_URL[jeu]+"/fr/membre/"+biblio_id+'-db/equipements'}) | Importée : {CUSTOM_BIBLIO[biblio_id][dossier_id]['imported']} | Jeu : {jeu}"
 
             else:
                 if dossier_nom != "tout":
-                    bibli_canal+=f"- {channel} : [{nom_biblio}]({'https://touch.dofusbook.net/fr/membre/'+biblio_id+f'-db/equipements?folder={dossier_id}'}) | Importée : {CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild][channel]["biblio_id"]][CUSTOM_BIBLIO[guild][channel]["dossier_id"]]['imported']} | Dossier : {dossier_nom}"
+                    bibli_canal+=f"- {channel} : [{nom_biblio}]({DOFUSBOOK_URL[jeu]+"/fr/membre/"+biblio_id+f'-db/equipements?folder={dossier_id}'}) | Importée : {CUSTOM_BIBLIO[biblio_id][dossier_id]['imported']} | Dossier : {dossier_nom} | Jeu : {jeu}"
                 else:
-                    bibli_canal+=f"- {channel} : [{nom_biblio}]({'https://touch.dofusbook.net/fr/membre/'+biblio_id+'-db/equipements'})  | Importée : {CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild][channel]["biblio_id"]][CUSTOM_BIBLIO[guild][channel]["dossier_id"]]['imported']}"
+                    bibli_canal+=f"- {channel} : [{nom_biblio}]({DOFUSBOOK_URL[jeu]+"/fr/membre/"+biblio_id+'-db/equipements'})  | Importée : {CUSTOM_BIBLIO[biblio_id][dossier_id]['imported']} | Jeu : {jeu}"
                 bibli_canal+="\n"
                 
         if bibli_canal=="":
@@ -1675,11 +1694,6 @@ async def supprime_bibliotheque_serveur(interaction: Interaction):
     embed.set_footer(text=footer_message)
     await interaction.response.send_message(embed=embed)
     return 0
-
-# # STEP 4: MAIN ENTRY POINT
-# def main() -> None:
-#     bot.run(TOKEN)
-
 
 if __name__ == '__main__':
     bot.run(TOKEN)

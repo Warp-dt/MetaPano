@@ -16,6 +16,13 @@ from PanoDB_link import engine
 ################################################################
 # SCRAPING
 ################################################################
+
+DOFUSBOOK_URL={
+    "Dofus Touch"   : "https://touch.dofusbook.net"
+    ,"Dofus 3"      : "https://www.dofusbook.net"
+    ,"Dofus Retro"  : "https://retro.dofusbook.net"
+}
+
 FR_KEYS=['Lvl','PA', 'PM', 'PO', 'Initiative', 'Critique', 'Invocation', 'Soin', 'Vitalité', 'Sagesse', 'Force', 'Intelligence', 'Chance', 'Agilité', 'Puissance', 'Fuite', 'Esq. PA', 'Esq. PM', 'Pods', 'Tacle', 'Ret. PA', 'Ret. PM',  'Do Critique', '% Ré Air', '% Ré Feu', 'Do Eau', 'Do Terre', 'Do Neutre', '% Ré Terre', 'Prospection', 'Do Feu', 'Do Air', 'Do Poussée', 'Ré Neutre', '% Ré Neutre', 'Ré Terre', 'Ré Feu', 'Ré Eau', '% Ré Eau', 'Ré Air', 'Ré Critique', 'Ré Poussée', "Do"]
 EN_KEYS=['Lvl','AP', 'MP', 'Range', 'Initiative', 'Critical', 'Summon', 'Heal', 'Vitality', 'Wisdom', 'Strength', 'Intelligence', 'Chance', 'Agility', 'Power', 'Dodge', 'AP Res.', 'MP Res.', 'Pods', 'Lock', 'AP Red', 'MP Red',  'Da Critical', '% Re Air', '% Re Fire', 'Da Water', 'Da Earth', 'Da Neutral', '% Re Earth', 'Prospecting', 'Da Fire', 'Da Air', 'Da Pushback', 'Re Neutral', '% Re Neutral', 'Re Earth', 'Re Fire', 'Re Water', '% Re Water', 'Re Air', 'Re Critical', 'Re Pushback', "Da"]
 ES_KEYS=['Lvl','PA', 'PM', 'AL', 'Iniciativa', 'Crítico', 'Invocación', 'Cura', 'Vitalidad', 'Sabiduría', 'Fuerza', 'Inteligencia', 'Suerte', 'Agilidad', 'Potencia', 'Huida', 'Esq. PA', 'Esq. PM', 'Pods', 'Placaje', 'Ret. PA', 'Ret. PM',  'Da Crítico', '% Re Aire', '% Re Fuego', 'Da Agua', 'Da Tierra', 'Da Neutro', '% Re Tierra', 'Prospección', 'Da Fuego', 'Da Aire', 'Da Empuje', 'Re Neutro', '% Re Neutro', 'Re Tierra', 'Re Fuego', 'Re Agua', '% Re Agua', 'Re Aire', 'Re Crítico', 'Re Empuje', "Da"]
@@ -162,8 +169,8 @@ classes_filtre={
     ,"steamer" : "15"
 }
 
-def folder_id_finder(folder_name,user):
-    base="https://touch.dofusbook.net/stuffs/touch/public/"
+def folder_id_finder(folder_name,user,jeu='Dofus Touch'):
+    base=DOFUSBOOK_URL[jeu]+"/api/stuffs/touch/public/"
     membre="?user="+user+"&sort=update-desc"
 
     # Crée un dossier temporaire unique pour le profil
@@ -198,9 +205,9 @@ def folder_id_finder(folder_name,user):
     print(f"folder {folder_name} not found in user {user}")
     return "-1"
 
-def url_builder(element="rien",classes="rien",page="1",user="996244-MetaPano",folder="-1"):
+def url_builder(element="rien",classes="rien",page="1",user="996244-MetaPano",folder="-1",jeu='Dofus Touch'):
     #user="244671-warp"
-    base="https://touch.dofusbook.net/stuffs/touch/public/"
+    base=DOFUSBOOK_URL[jeu]+"/api/stuffs/touch/public/"
     membre="&user="+user+"&sort=update-desc"
     page_base="?page="
     filtre=""
@@ -230,9 +237,9 @@ def url_builder(element="rien",classes="rien",page="1",user="996244-MetaPano",fo
     return base+page_base+str(page)+membre+filtre
 
 
-def get_stats(id,driver):
+def get_stats(id,driver,jeu='Dofus Touch'):
     
-    url="https://touch.dofusbook.net/stuffs/touch/public/"+str(id)
+    url=DOFUSBOOK_URL[jeu]+"/api/stuffs/touch/public/"+str(id)
     driver.get(url)
     try:
         pre_text = driver.find_element("tag name", "pre").text
@@ -309,8 +316,8 @@ def get_stats(id,driver):
 
     return perso
 
-def get_stuff_base_info(id,driver):
-    resp=get_stats(id,driver)
+def get_stuff_base_info(id,driver,jeu="Dofus Touch"):
+    resp=get_stats(id,driver,jeu)
     ans={
         "DB_surl": resp["DB_surl"],
         "PA": resp["PA"],
@@ -555,8 +562,8 @@ if __name__ == "__main__":
     for blibli_id, value in custom_biblio.items():
         first_val=value[list(value.keys())[0]]
         if "imported" in first_val and "alias" in first_val: #test pour savoir si on est dans une clé de biblio ou de guild, on teste si dans le premier élément de value, il y a les clés "imported" et "alias"
-            for dossier_id in value:
-                biblio_to_scrape.append((blibli_id,str(dossier_id),value[dossier_id]["dossier"]))# l'idée c'est de récupérer les ("bibli_id","dossier_id","dossier_name") de toutes les bibli à scraper
+            for dossier_id in value :
+                biblio_to_scrape.append((blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"]))# l'idée c'est de récupérer les ("bibli_id","dossier_id","dossier_name") de toutes les bibli à scraper
     # print(f"biblio à scrape : {biblio_to_scrape})
     page_maxsize=20
     stuff_liste=[]
@@ -575,7 +582,7 @@ if __name__ == "__main__":
     service = Service("/usr/bin/chromedriver")  # ou /usr/local/bin/chromedriver
     driver = webdriver.Chrome(service=service, options=options)
     
-    for biblio_id,dossier_id,dossier_name in biblio_to_scrape:
+    for biblio_id,dossier_id,dossier_name,jeu in biblio_to_scrape:
         taille=page_maxsize
         i=1
         temp_stuff_liste=[]
@@ -583,7 +590,7 @@ if __name__ == "__main__":
         # print(biblio)
         while taille==page_maxsize:
             # print('page :',i,"taille :",taille)
-            url=url_builder(page=i,user=biblio_id+'-db',folder=dossier_id)
+            url=url_builder(page=i,user=biblio_id+'-db',folder=dossier_id,jeu=jeu)
             try:
                 #requests
                 # resp=req.get(url).json()["rows"]
@@ -619,7 +626,7 @@ if __name__ == "__main__":
                     else:
                         bibli_name=custom_biblio[biblio_id][list(custom_biblio[biblio_id].keys())[0]]["alias"][0]
 
-                    stuff_base_info=get_stuff_base_info(stuff['id'],driver)
+                    stuff_base_info=get_stuff_base_info(stuff['id'],driver,jeu)
                     temp_dict={
                         "DB_id": stuff['id'],
                         "DB_surl": stuff_base_info["DB_surl"],

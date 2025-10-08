@@ -14,6 +14,7 @@ BIBLI_DEFAULT={
     ,"nom_biblio" : "MetaPano"
     ,"dossier" : "tout"
     ,"dossier_id": "-1"
+    ,"jeu" : "Dofus Touch"
 }
 
 ################################################################
