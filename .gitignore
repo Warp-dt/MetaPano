@@ -2,7 +2,6 @@
 .venv
 warpbot_maj.bat - Raccourci
 custom_biblio.json
-tests.ipynb
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

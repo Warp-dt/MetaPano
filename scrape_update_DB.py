@@ -26,7 +26,6 @@ DB_JEU_SHORT={
     "Dofus Touch"   : "touch"
     ,"Dofus 3"      : "dofus"
     ,"Dofus Retro"  : "retro"
-
 }
 
 FR_KEYS=['Lvl','PA', 'PM', 'PO', 'Initiative', 'Critique', 'Invocation', 'Soin', 'Vitalité', 'Sagesse', 'Force', 'Intelligence', 'Chance', 'Agilité', 'Puissance', 'Fuite', 'Esq. PA', 'Esq. PM', 'Pods', 'Tacle', 'Ret. PA', 'Ret. PM',  'Do Critique', '% Ré Air', '% Ré Feu', 'Do Eau', 'Do Terre', 'Do Neutre', '% Ré Terre', 'Prospection', 'Do Feu', 'Do Air', 'Do Poussée', 'Ré Neutre', '% Ré Neutre', 'Ré Terre', 'Ré Feu', 'Ré Eau', '% Ré Eau', 'Ré Air', 'Ré Critique', 'Ré Poussée', "Do"]
@@ -244,8 +243,10 @@ def url_builder(element="rien",classes="rien",page="1",user="996244-MetaPano",fo
 
 
 def get_stats(id,driver,jeu='Dofus Touch'):
-    
+    # TODO : fix les stats, des fois probablement à cause des fm ou autres, les carac vont être trop élevées, des choses doivent être comptées en double genre fm sur un item
+    # Je ne les utilise pas pour le moment donc flemme de le faire, mais si on a besoin plus tard y'a ce bug
     url=f"{DOFUSBOOK_URL[jeu]}/api/stuffs/{DB_JEU_SHORT[jeu]}/public/{id}"
+    print(url)
     driver.get(url)
     try:
         pre_text = driver.find_element("tag name", "pre").text
@@ -254,17 +255,17 @@ def get_stats(id,driver,jeu='Dofus Touch'):
     except:
         print("Erreur lors de la transformation en json dans get_stats")
         print(f"URL = {url}")
-        perso={key: -1 for key in FR_KEYS}
-        perso["DB_surl"]=-1
-        perso["Lvl"]=-1
-        perso["db_name"]=-1
-        perso["PA"]=-1
-        perso["PM"]=-1
-        perso["Invocation"]=-1
-        perso["Vitalité"]=-1
+        perso={key: 0 for key in FR_KEYS}
+        perso["DB_surl"]=0
+        perso["Lvl"]=0
+        perso["db_name"]=0
+        perso["PA"]=0
+        perso["PM"]=0
+        perso["Invocation"]=0
+        perso["Vitalité"]=0
         return perso
     
-    perso={key: -1 for key in FR_KEYS}
+    perso={key: 0 for key in FR_KEYS}
     perso_stats=data["stuffStats"] # 1 element = 1 stat
     fmitems=data["fmItems"] # chaque element est un item sous forme dict, chaque element d'un item est un fm qui lui est rajouté
     fmglobal=data["fmGlobal"] #  1 element = 1 stat
@@ -300,27 +301,36 @@ def get_stats(id,driver,jeu='Dofus Touch'):
     for item in items:
         for stat in item["effects"]:
             if stat["type"]=='E':
-                if stat["min"]>=0:
-                    perso[TRAD_DB_STATS[stat["name"]]]+=stat["max"]
-                else:
-                    perso[TRAD_DB_STATS[stat["name"]]]+=stat["min"]
-
+                try:
+                    if stat["min"]>=0:
+                        perso[TRAD_DB_STATS[stat["name"]]]+=stat["max"]
+                    else:
+                        perso[TRAD_DB_STATS[stat["name"]]]+=stat["min"]
+                except : # cas genre dommages pièges (pi) ou puissance pièges (pip) j'ignore
+                    pass
     for pano in panos:
         for stat in pano["effects"]:
             if stat["type"]=='E':
-                perso[TRAD_DB_STATS[stat["name"]]]+=stat["value"]
-
+                try:
+                    perso[TRAD_DB_STATS[stat["name"]]]+=stat["value"]
+                except:
+                    pass #on ignore les stats inconnues
     #bonus dérivés de stats
     # perso["Soin"]+=max(0,perso["Intelligence"]/10//1)
-    perso["Fuite"]+=max(0,perso["Chance"]/10//1)
-    perso["Tacle"]+=max(0,perso["Agilité"]/10//1)
-    perso["Esq. PA"]+=max(0,perso["Sagesse"]/10//1)
-    perso["Esq. PM"]+=max(0,perso["Sagesse"]/10//1)
-    perso["Ret. PA"]+=max(0,perso["Sagesse"]/10//1)
-    perso["Ret. PM"]+=max(0,perso["Sagesse"]/10//1)
-    perso["Initiative"]+=max(0,perso["Intelligence"])+max(0,perso["Chance"])+max(0,perso["Agilité"])+max(0,perso["Force"])
+    if jeu=="Dofus Touch":
+        perso["Fuite"]+=int(max(0,perso["Chance"]/10//1))
+        perso["Tacle"]+=int(max(0,perso["Agilité"]/10//1))
+    else :
+        perso["Fuite"]+=int(max(0,perso["Agilité"]/10//1))
+        perso["Tacle"]+=int(max(0,perso["Agilité"]/10//1))
+    perso["Esq. PA"]+=int(max(0,perso["Sagesse"]/10//1))
+    perso["Esq. PM"]+=int(max(0,perso["Sagesse"]/10//1))
+    perso["Ret. PA"]+=int(max(0,perso["Sagesse"]/10//1))
+    perso["Ret. PM"]+=int(max(0,perso["Sagesse"]/10//1))
+    perso["Initiative"]+=int(max(0,perso["Intelligence"]))+int(max(0,perso["Chance"]))+int(max(0,perso["Agilité"]))+int(max(0,perso["Force"]))
 
     return perso
+
 
 def get_stuff_base_info(id,driver,jeu="Dofus Touch"):
     resp=get_stats(id,driver,jeu)
