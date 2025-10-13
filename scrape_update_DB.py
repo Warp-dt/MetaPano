@@ -608,6 +608,7 @@ if __name__ == "__main__":
         while taille==page_maxsize:
             # print('page :',i,"taille :",taille)
             url=url_builder(page=i,user=biblio_id+'-db',folder=dossier_id,jeu=jeu)
+
             try:
                 #requests
                 # resp=req.get(url).json()["rows"]
@@ -619,6 +620,7 @@ if __name__ == "__main__":
                     resp = json.loads(pre_text)["rows"]
                     # print(resp)
                 except Exception as e:
+                    err_flag=True
                     print("/!\\/!\\/!\\/!\\/!\\/!\\/!\\/!\\/!\\/!\\/!\\/!\\/!\\")
                     print("On n'a pas réussi à trouver les données, url :")
                     print(url)
@@ -675,6 +677,7 @@ if __name__ == "__main__":
                 print("page "+str(i)+" finie")
                 i+=1
             except Exception as e:
+                err_flag=True
                 print("Erreur lors de la recupération des infos sur les stuffs")
                 print(f"URL : {url}")
                 print(f"Exception : {e}")
