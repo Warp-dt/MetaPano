@@ -246,7 +246,7 @@ def get_stats(id,driver,jeu='Dofus Touch'):
     # TODO : fix les stats, des fois probablement à cause des fm ou autres, les carac vont être trop élevées, des choses doivent être comptées en double genre fm sur un item
     # Je ne les utilise pas pour le moment donc flemme de le faire, mais si on a besoin plus tard y'a ce bug
     url=f"{DOFUSBOOK_URL[jeu]}/api/stuffs/{DB_JEU_SHORT[jeu]}/public/{id}"
-    print(url)
+    # print(url)
     driver.get(url)
     try:
         pre_text = driver.find_element("tag name", "pre").text
@@ -619,8 +619,13 @@ if __name__ == "__main__":
                     resp = json.loads(pre_text)["rows"]
                     # print(resp)
                 except Exception as e:
-                    print("on n'a pas réussi à trouver les données, erreur :",e)
+                    print("/!\\/!\\/!\\/!\\/!\\/!\\/!\\/!\\/!\\/!\\/!\\/!\\/!\\")
+                    print("On n'a pas réussi à trouver les données, url :")
+                    print(url)
+                    print("Erreur :",e)
+                    print("Code Page :")
                     print(driver.page_source)
+                    print("/!\\/!\\/!\\/!\\/!\\/!\\/!\\/!\\/!\\/!\\/!\\/!\\/!\\")
 
 
                 taille=len(resp)
@@ -662,6 +667,7 @@ if __name__ == "__main__":
                         "dossier_id" : temp_dossier_id,
                         "dossier_name" : temp_dossier_name
                     }
+                    print(url,temp_dict["Nom"],temp_dict["elements"],temp_dict["classes"])
                     if temp_dict!=-1:
                         temp_stuff_liste.append(temp_dict)
                     else:
