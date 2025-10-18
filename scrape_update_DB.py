@@ -670,7 +670,7 @@ if __name__ == "__main__":
                         "dossier_id" : temp_dossier_id,
                         "dossier_name" : temp_dossier_name
                     }
-                    # print(url,"ID",temp_dict["DB_id"],"ELEMENT",temp_dict["elements"],"CLASSES",temp_dict["classes"])
+                    print(url_test,"ID",temp_dict["DB_id"],"ELEMENT",temp_dict["elements"],"CLASSES",temp_dict["classes"])
                     if temp_dict!=-1:
                         temp_stuff_liste.append(temp_dict)
                     else:
