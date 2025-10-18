@@ -600,6 +600,7 @@ if __name__ == "__main__":
     driver = webdriver.Chrome(service=service, options=options)
     
     for biblio_id,dossier_id,dossier_name,jeu in biblio_to_scrape:
+        print(f"Scraping bibli : {custom_biblio[biblio_id]["-1"]["alias"][0]} | dossier : {dossier_name} | jeu : {jeu}")
         taille=page_maxsize
         i=1
         temp_stuff_liste=[]
@@ -631,7 +632,7 @@ if __name__ == "__main__":
 
 
                 taille=len(resp)
-                print(f"biblio_id : {biblio_id},dossier_id : {dossier_id},page : {i}, taille : {taille}, url : {url}")
+                # print(f"biblio_id : {biblio_id},dossier_id : {dossier_id},page : {i}, taille : {taille}, url : {url}")
                 for stuff in resp:
                     url_test=f"{DOFUSBOOK_URL[jeu]}/api/stuffs/{DB_JEU_SHORT[jeu]}/public/{stuff['id']}" #pour tests
 
@@ -685,8 +686,15 @@ if __name__ == "__main__":
                 taille=0 #pour sortir de la boucle
                 err_flag=True #on ignore ce dossier quand y'a une erreur
 
-        if len(temp_stuff_liste)<501 and not err_flag: #do not add to the DB biblio that are bigger than 500 stuff
+        nbstuffstrouvés=len(temp_stuff_liste)
+        if nbstuffstrouvés<1001 and not err_flag: #do not add to the DB biblio that are bigger than 1000 stuff
             stuff_liste=stuff_liste+temp_stuff_liste
+            print(f"Scraping ok, {nbstuffstrouvés} stuffs trouvés")
+        elif nbstuffstrouvés>=1001:
+            print(f"Erreur scraping, trop de stuffs dans la biblio : {nbstuffstrouvés} trouvés")
+        elif err_flag:
+            print(f"Erreur scraping, quelque chose a foiré")
+
     
     driver.quit()
     print("Scraping Terminé")
