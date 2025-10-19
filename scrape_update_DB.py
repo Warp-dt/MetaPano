@@ -172,6 +172,10 @@ classes_filtre={
     ,"roublard" : "13"
     ,"zobal" : "14"
     ,"steamer" : "15"
+    ,"eliotrope" : "17"
+    ,"huppermage" : "18"
+    ,"ouginak" : "19"
+    ,"forgelance" : "20"
 }
 
 def folder_id_finder(folder_name,user,jeu='Dofus Touch'):

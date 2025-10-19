@@ -29,7 +29,7 @@ ELEMENTS=['terre', 'feu', 'eau', 'air', 'dopou', 'feu+terre', 'eau+terre',
           'dopou+feu+terre', 'air+dopou+feu', 'dopou+eau+feu', 'dopou+eau+terre', 
           'multi',"vide"]
 CLASSES=['cra', 'ecaflip', 'eniripsa', 'enutrof', 'feca', 'iop', 'osamodas', 'pandawa',
-         'roublard','sacrieur', 'sadida', 'sram', 'steamer', 'xelor','zobal','vide']
+         'roublard','sacrieur', 'sadida', 'sram', 'steamer', 'xelor','zobal',"eliotrope","huppermage","ouginak","forgelance",'vide']
 #dans elements et classes je rajoute vide et faux pour prendre en compte les cas où on ne remplis pas l'argument de l'un des deux, ça peut être normal
 
 STUFFS=dict()
