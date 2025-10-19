@@ -600,7 +600,7 @@ if __name__ == "__main__":
     driver = webdriver.Chrome(service=service, options=options)
     
     for biblio_id,dossier_id,dossier_name,jeu in biblio_to_scrape:
-        print(f"Scraping bibli : {custom_biblio[biblio_id]["-1"]["alias"][0]} | dossier : {dossier_name} | jeu : {jeu}")
+        print(f"Scraping bibli : {custom_biblio[biblio_id]["-1"]["alias"][-1]} | dossier : {dossier_name} | jeu : {jeu}")
         taille=page_maxsize
         i=1
         temp_stuff_liste=[]
@@ -670,7 +670,7 @@ if __name__ == "__main__":
                         "dossier_id" : temp_dossier_id,
                         "dossier_name" : temp_dossier_name
                     }
-                    print(url_test,"ID",temp_dict["DB_id"],"ELEMENT",temp_dict["elements"],"CLASSES",temp_dict["classes"])
+                    # print(url_test,"ID",temp_dict["DB_id"],"ELEMENT",temp_dict["elements"],"CLASSES",temp_dict["classes"])
                     if temp_dict!=-1:
                         temp_stuff_liste.append(temp_dict)
                     else:
@@ -689,7 +689,7 @@ if __name__ == "__main__":
         nbstuffstrouvés=len(temp_stuff_liste)
         if nbstuffstrouvés<1001 and not err_flag: #do not add to the DB biblio that are bigger than 1000 stuff
             stuff_liste=stuff_liste+temp_stuff_liste
-            print(f"Scraping ok, {nbstuffstrouvés} stuffs trouvés")
+            print(f"Scraping {custom_biblio[biblio_id]["-1"]["alias"][-1]} ok, {nbstuffstrouvés} stuffs trouvés")
         elif nbstuffstrouvés>=1001:
             print(f"Erreur scraping, trop de stuffs dans la biblio : {nbstuffstrouvés} trouvés")
         elif err_flag:
