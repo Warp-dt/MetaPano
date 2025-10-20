@@ -848,8 +848,7 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
         assouplissement = []
 
     stuff_list=find_stuff(criteres,biblio=biblio)
-    print(biblio)
-    jeu=biblio["jeu"]
+    jeu=CUSTOM_BIBLIO[biblio["biblio_id"]][biblio["dossier_id"]]["jeu"]
     if len(stuff_list)>0:
         # lors du renvoi de tous les stuff d'une classe, séparer par éléments primordiaux et mettre indication des éléments secondaires
         if "Élément" in criteres.keys():

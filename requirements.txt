@@ -5,3 +5,5 @@ twitchio
 sqlalchemy
 pymysql
 requests
+selenium
+webdriver_manager
