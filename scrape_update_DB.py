@@ -177,9 +177,9 @@ classes_filtre={
     ,"roublard" : "13"
     ,"zobal" : "14"
     ,"steamer" : "15"
-    ,"eliotrope" : "17"
-    ,"huppermage" : "18"
-    ,"ouginak" : "19"
+    ,"eliotrope" : "16"
+    ,"huppermage" : "17"
+    ,"ouginak" : "18"
     ,"forgelance" : "20"
 }
 
@@ -646,7 +646,7 @@ if __name__ == "__main__":
                     url_test=f"{DOFUSBOOK_URL[jeu]}/api/stuffs/{DB_JEU_SHORT[jeu]}/public/{stuff['id']}" #pour tests
 
                     if len(stuff["allowed_classes"])==0:
-                        stuff["allowed_classes"].append(16)
+                        stuff["allowed_classes"].append(0)
 
                     ## pas nécessaire car on a déjà dossier_id et dossier_name
                     if stuff["folder_id"] is None:
