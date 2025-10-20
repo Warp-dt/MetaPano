@@ -27,6 +27,11 @@ DB_JEU_SHORT={
     ,"Dofus 3"      : "dofus"
     ,"Dofus Retro"  : "retro"
 }
+DB_JEU_LETTRE={
+    "Dofus Touch"   : "t"
+    ,"Dofus 3"      : "d"
+    ,"Dofus Retro"  : "r"
+}
 
 FR_KEYS=['Lvl','PA', 'PM', 'PO', 'Initiative', 'Critique', 'Invocation', 'Soin', 'Vitalité', 'Sagesse', 'Force', 'Intelligence', 'Chance', 'Agilité', 'Puissance', 'Fuite', 'Esq. PA', 'Esq. PM', 'Pods', 'Tacle', 'Ret. PA', 'Ret. PM',  'Do Critique', '% Ré Air', '% Ré Feu', 'Do Eau', 'Do Terre', 'Do Neutre', '% Ré Terre', 'Prospection', 'Do Feu', 'Do Air', 'Do Poussée', 'Ré Neutre', '% Ré Neutre', 'Ré Terre', 'Ré Feu', 'Ré Eau', '% Ré Eau', 'Ré Air', 'Ré Critique', 'Ré Poussée', "Do"]
 EN_KEYS=['Lvl','AP', 'MP', 'Range', 'Initiative', 'Critical', 'Summon', 'Heal', 'Vitality', 'Wisdom', 'Strength', 'Intelligence', 'Chance', 'Agility', 'Power', 'Dodge', 'AP Res.', 'MP Res.', 'Pods', 'Lock', 'AP Red', 'MP Red',  'Da Critical', '% Re Air', '% Re Fire', 'Da Water', 'Da Earth', 'Da Neutral', '% Re Earth', 'Prospecting', 'Da Fire', 'Da Air', 'Da Pushback', 'Re Neutral', '% Re Neutral', 'Re Earth', 'Re Fire', 'Re Water', '% Re Water', 'Re Air', 'Re Critical', 'Re Pushback', "Da"]

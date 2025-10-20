@@ -14,7 +14,7 @@ import sys
 import aiohttp
 
 from responses import help_response,color_mix,IMAGES_LINK,image_response,CLASSES, filter_sort_main_elts,ELEMENTS_PRINCIPAUX, no_secondary_elt,no_main_elt
-from scrape_update_DB import folder_id_finder, DOFUSBOOK_URL
+from scrape_update_DB import folder_id_finder, DOFUSBOOK_URL,DB_JEU_LETTRE
 from PanoDB_link import find_stuff, BIBLI_DEFAULT, command_log
 
 import json
@@ -848,7 +848,7 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
         assouplissement = []
 
     stuff_list=find_stuff(criteres,biblio=biblio)
-
+    jeu=biblio["jeu"]
     if len(stuff_list)>0:
         # lors du renvoi de tous les stuff d'une classe, séparer par éléments primordiaux et mettre indication des éléments secondaires
         if "Élément" in criteres.keys():
@@ -930,9 +930,9 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
                 elt=" ".join(filter_sort_main_elts(stuff['Elements'].split(",")))
                 # print("stuff['Elements']",stuff['Elements'],"elt",elt)
                 if elt in content_dict.keys():
-                    content_dict[elt]+=f"- [**{stuff['Nom']}**](https://d-bk.net/fr/t/{stuff['DB_surl']})\n"
+                    content_dict[elt]+=f"- [**{stuff['Nom']}**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']})\n" 
                 else:
-                    content_dict[elt]=f"- [**{stuff['Nom']}**](https://d-bk.net/fr/t/{stuff['DB_surl']})\n"
+                    content_dict[elt]=f"- [**{stuff['Nom']}**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']})\n"
 
             for elt_princi in content_dict:
                 # print("elt_princi",elt_princi)
@@ -945,7 +945,7 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
         else:
             content_dblink=''
             for stuff in stuff_list:
-                content_dblink+=f"- [**{stuff['Nom']}**](https://d-bk.net/fr/t/{stuff['DB_surl']})\n"
+                content_dblink+=f"- [**{stuff['Nom']}**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']})\n"
                 if len(content_dblink)>800:
                     content_dblink+="D'autres stuffs existent mais je n'ai pas assez de place ici pour tous les lister, précise ta recherche."
                     break
