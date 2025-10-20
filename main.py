@@ -848,6 +848,7 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
         assouplissement = []
 
     stuff_list=find_stuff(criteres,biblio=biblio)
+    print(biblio)
     jeu=CUSTOM_BIBLIO[biblio["biblio_id"]][biblio["dossier_id"]]["jeu"]
     if len(stuff_list)>0:
         # lors du renvoi de tous les stuff d'une classe, séparer par éléments primordiaux et mettre indication des éléments secondaires
@@ -1041,7 +1042,6 @@ def next_critere_embed(criteres_restants : list):
     return embed
 
 def custom_bibli(channel,guild): #returns the custom biblio for the channel or guild or the default one if not found and checks if the biblio is already imported in the db
-        
     if guild in CUSTOM_BIBLIO:
         if channel in CUSTOM_BIBLIO[guild]:
             if CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild][channel]["biblio_id"]][CUSTOM_BIBLIO[guild][channel]["dossier_id"]]["imported"]: #if the biblio is already imported in the db it will be true, if not it will be false
@@ -1050,7 +1050,8 @@ def custom_bibli(channel,guild): #returns the custom biblio for the channel or g
             if "default" in CUSTOM_BIBLIO[guild]:
                 if CUSTOM_BIBLIO[CUSTOM_BIBLIO[guild]["default"]["biblio_id"]][CUSTOM_BIBLIO[guild]["default"]["dossier_id"]]["imported"]:
                     return CUSTOM_BIBLIO[guild]["default"]
-        return BIBLI_DEFAULT #si on n'a pas de bibliothèque qui est custom, on renvoie le défaut
+                
+    return BIBLI_DEFAULT #si on n'a pas de bibliothèque qui est custom, on renvoie le défaut
 
 
 #choix proposés 
