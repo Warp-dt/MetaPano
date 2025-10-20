@@ -31,6 +31,8 @@ ELEMENTS=['terre', 'feu', 'eau', 'air', 'dopou', 'feu+terre', 'eau+terre',
 CLASSES=['cra', 'ecaflip', 'eniripsa', 'enutrof', 'feca', 'iop', 'osamodas', 'pandawa',
          'roublard','sacrieur', 'sadida', 'sram', 'steamer', 'xelor','zobal',
          "eliotrope","huppermage","ouginak","forgelance",'vide']
+FILTRES=['air','dopou','eau', 'feu','terre'
+        ,"cc","soin","retrait_pa","retrait_pm","ini","pp","sagesse","tank","pvp","pvm","repou","recri","esquive_pa","esquive_pm","invo","pods"]
 #dans elements et classes je rajoute vide et faux pour prendre en compte les cas où on ne remplis pas l'argument de l'un des deux, ça peut être normal
 
 IMAGES_LINK=dict()
@@ -110,6 +112,8 @@ def no_main_elt(elt_list): #renvoie true si la liste est composée uniquement d'
 
 def filter_sort_main_elts(elt_list):
     filt_sort=[e for e in ELEMENTS_PRINCIPAUX if e in elt_list]
+    if len(filt_sort)==0:
+        return [e for e in FILTRES if e in elt_list]
     return filt_sort
 
 #prend une liste d'éléments et la met sous la forme elt1+elt2+elt3...

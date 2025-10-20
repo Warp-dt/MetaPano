@@ -927,8 +927,15 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
         #field(s) stuffs    
         if (not "Élément" in criteres.keys()) and "Classe" in criteres.keys():
             content_dict=dict()
+            print("stuff_list :",stuff_list)
             for stuff in stuff_list:
-                elt=" ".join(filter_sort_main_elts(stuff['Elements'].split(",")))
+                print("stuff :",stuff)
+                if stuff['Elements'] is not None:
+                    elt=" ".join(filter_sort_main_elts(stuff['Elements'].split(",")))
+                else :
+                    elt="sans_element" #si il n'y a aucun élément attribué au stuff
+                print("stuff['Elements'] :",stuff['Elements'])
+                print("elt :",elt)
                 # print("stuff['Elements']",stuff['Elements'],"elt",elt)
                 if elt in content_dict.keys():
                     content_dict[elt]+=f"- [**{stuff['Nom']}**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']})\n" 
@@ -940,7 +947,11 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
                 if ' ' in elt_princi:
                     emoji_elt=''.join([f'<:{e.replace(" ","")}:{bot.application_emojis[e.replace(" ","").lower()]}>' for e in elt_princi.split(' ')])
                 else:
-                    emoji_elt=f'<:{elt_princi.replace(" ","")}:{bot.application_emojis[elt_princi.replace(" ","").lower()]}>'
+                    try:
+                        emoji_elt=f'<:{elt_princi.replace(" ","")}:{bot.application_emojis[elt_princi.replace(" ","").lower()]}>'
+                    except Exception as e:
+                        print("elt :",elt_princi)
+                        print("erreur :",e)
                 embed.add_field(name=f"{elt_princi}{emoji_elt}", value=content_dict[elt_princi], inline=True)
 
         else:
