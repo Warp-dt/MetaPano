@@ -684,7 +684,7 @@ if __name__ == "__main__":
                         temp_stuff_liste.append(temp_dict)
                     else:
                         print(f"Erreur dans la récupération des stats du stuff {stuff['id']}")
-                print("page "+str(i)+" finie")
+                # print("page "+str(i)+" finie")    
                 i+=1
             except Exception as e:
                 err_flag=True
