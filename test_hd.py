@@ -18,7 +18,7 @@ load_dotenv()
 HEADER_NAME = os.getenv('HEADER_NAME')
 HEADER_VALUE = os.getenv('HEADER_VALUE')
 
-user_data_dir = tempfile.mkdtemp(prefix="selenium_chrome_")
+user_data_dir = tempfile.mkdtemp(prefix="selenium_chrome_2")
 options = Options()
 options.add_argument(f"--user-data-dir={user_data_dir}")
 options.add_argument("--no-sandbox")
