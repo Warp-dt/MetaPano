@@ -13,6 +13,11 @@ import tempfile
 
 from PanoDB_link import engine
 
+load_dotenv()
+HEADER_NAME = os.getenv('HEADER_NAME')
+HEADER_VALUE = os.getenv('HEADER_VALUE')
+
+
 ################################################################
 # SCRAPING
 ################################################################
@@ -198,7 +203,12 @@ def folder_id_finder(folder_name,user,jeu='Dofus Touch'):
     # options.add_argument("--headless=new")
     service = Service("/usr/bin/chromedriver")  # ou /usr/local/bin/chromedriver
     driver = webdriver.Chrome(service=service, options=options)
-
+    
+    # Intercepteur : ajoute le header à **toutes** les requêtes
+    def interceptor_hd_id_DB(request):
+        request.headers[HEADER_NAME] = HEADER_VALUE
+    driver.request_interceptor = interceptor_hd_id_DB
+    
     driver.get(base+membre)
 
     try:
@@ -608,6 +618,11 @@ if __name__ == "__main__":
     service = Service("/usr/bin/chromedriver")  # ou /usr/local/bin/chromedriver
     driver = webdriver.Chrome(service=service, options=options)
     
+    # Intercepteur : ajoute le header à **toutes** les requêtes
+    def interceptor_hd_id_DB(request):
+        request.headers[HEADER_NAME] = HEADER_VALUE
+    driver.request_interceptor = interceptor_hd_id_DB
+
     for biblio_id,dossier_id,dossier_name,jeu in biblio_to_scrape:
         print(f"Scraping bibli : {custom_biblio[biblio_id]["-1"]["alias"][-1]} | dossier : {dossier_name} | jeu : {jeu}")
         taille=page_maxsize
