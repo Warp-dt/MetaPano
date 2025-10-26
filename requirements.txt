@@ -6,5 +6,5 @@ sqlalchemy
 pymysql
 requests
 selenium
-selenium-wire==4.6.4
+selenium-wire
 webdriver_manager

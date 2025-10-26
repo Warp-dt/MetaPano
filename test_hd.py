@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 import requests as req
 import json
 
-from seleniumwire import webdriver
+from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
@@ -29,13 +29,21 @@ options.add_argument("--disable-gpu")
 service = Service("/usr/bin/chromedriver")  # ou /usr/local/bin/chromedriver
 driver = webdriver.Chrome(service=service, options=options)
 
+# activer le réseau et définir le header AVANT la navigation
+driver.execute_cdp_cmd("Network.enable", {})
+driver.execute_cdp_cmd("Network.setExtraHTTPHeaders", {
+    "headers": {
+        "x-dbk": "sses-5z5d5qzd5-qzd5155ds-q4z45z5d"
+    }
+})
+
 url="https://www.dofusbook.net/api/stuffs/dofus/public/9797636"
 
-# Intercepteur : ajoute le header uniquement pour les URLs de l’API
-def interceptor_hd_id_DB(request):
-    request.headers[HEADER_NAME] = HEADER_VALUE
+# # Intercepteur : ajoute le header uniquement pour les URLs de l’API
+# def interceptor_hd_id_DB(request):
+#     request.headers[HEADER_NAME] = HEADER_VALUE
 
-driver.request_interceptor = interceptor_hd_id_DB
+# driver.request_interceptor = interceptor_hd_id_DB
 
 if __name__ == "__main__":
     # print(f"HEADER NAME : {HEADER_NAME}")
