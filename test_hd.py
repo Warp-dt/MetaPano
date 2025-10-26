@@ -33,7 +33,7 @@ driver = webdriver.Chrome(service=service, options=options)
 driver.execute_cdp_cmd("Network.enable", {})
 driver.execute_cdp_cmd("Network.setExtraHTTPHeaders", {
     "headers": {
-        "x-dbk": "sses-5z5d5qzd5-qzd5155ds-q4z45z5d"
+        HEADER_NAME: HEADER_VALUE
     }
 })
 
