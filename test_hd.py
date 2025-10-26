@@ -59,7 +59,14 @@ if __name__ == "__main__":
         print(e)
         print(driver.page_source)
 
-    for request in driver.requests:
-        if request.response and "api" in request.url:
-            print(request.url)
-            print(request.headers)
+    # for request in driver.requests:
+    #     if request.response and "api" in request.url:
+    #         print(request.url)
+    #         print(request.headers)
+
+    status = driver.execute_script("""
+    return fetch(arguments[0], { method: 'GET' })
+        .then(r => r.status)
+        .catch(e => String(e));
+    """, "https://www.dofusbook.net/api/stuffs/dofus/public/9797636")
+    print("status:", status)
