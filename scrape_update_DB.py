@@ -204,10 +204,13 @@ def folder_id_finder(folder_name,user,jeu='Dofus Touch'):
     service = Service("/usr/bin/chromedriver")  # ou /usr/local/bin/chromedriver
     driver = webdriver.Chrome(service=service, options=options)
     
-    # Intercepteur : ajoute le header à **toutes** les requêtes
-    def interceptor_hd_id_DB(request):
-        request.headers[HEADER_NAME] = HEADER_VALUE
-    driver.request_interceptor = interceptor_hd_id_DB
+    #HEADER CONNEXION DB activer le réseau et définir le header AVANT la navigation
+    driver.execute_cdp_cmd("Network.enable", {})
+    driver.execute_cdp_cmd("Network.setExtraHTTPHeaders", {
+        "headers": {
+            HEADER_NAME: HEADER_VALUE
+        }
+    })
     
     driver.get(base+membre)
 
@@ -618,10 +621,14 @@ if __name__ == "__main__":
     service = Service("/usr/bin/chromedriver")  # ou /usr/local/bin/chromedriver
     driver = webdriver.Chrome(service=service, options=options)
     
-    # Intercepteur : ajoute le header à **toutes** les requêtes
-    def interceptor_hd_id_DB(request):
-        request.headers[HEADER_NAME] = HEADER_VALUE
-    driver.request_interceptor = interceptor_hd_id_DB
+    #HEADER CONNEXION DB activer le réseau et définir le header AVANT la navigation
+    driver.execute_cdp_cmd("Network.enable", {})
+    driver.execute_cdp_cmd("Network.setExtraHTTPHeaders", {
+        "headers": {
+            HEADER_NAME: HEADER_VALUE
+        }
+    })
+
 
     for biblio_id,dossier_id,dossier_name,jeu in biblio_to_scrape:
         print(f"Scraping bibli : {custom_biblio[biblio_id]["-1"]["alias"][-1]} | dossier : {dossier_name} | jeu : {jeu}")

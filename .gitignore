@@ -1,7 +1,7 @@
 .env
 .venv
-# test_hd.py
-# test_nohd.py
+test_hd.py
+test_nohd.py
 warpbot_maj.bat - Raccourci
 custom_biblio.json
 

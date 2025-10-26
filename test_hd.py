@@ -39,17 +39,8 @@ driver.execute_cdp_cmd("Network.setExtraHTTPHeaders", {
 
 url="https://www.dofusbook.net/api/stuffs/dofus/public/9797636"
 
-# # Intercepteur : ajoute le header uniquement pour les URLs de l’API
-# def interceptor_hd_id_DB(request):
-#     request.headers[HEADER_NAME] = HEADER_VALUE
-
-# driver.request_interceptor = interceptor_hd_id_DB
 
 if __name__ == "__main__":
-    # print(f"HEADER NAME : {HEADER_NAME}")
-    # print(f"HEADER VALUE : {HEADER_VALUE}")
-    # driver.get("https://ifconfig.me")
-    # print(driver.page_source)
     driver.get(url)
     try:
         pre_text = driver.find_element("tag name", "pre").text
@@ -58,15 +49,3 @@ if __name__ == "__main__":
     except Exception as e:
         print(e)
         print(driver.page_source)
-
-    # for request in driver.requests:
-    #     if request.response and "api" in request.url:
-    #         print(request.url)
-    #         print(request.headers)
-
-    status = driver.execute_script("""
-    return fetch(arguments[0], { method: 'GET' })
-        .then(r => r.status)
-        .catch(e => String(e));
-    """, "https://www.dofusbook.net/api/stuffs/dofus/public/9797636")
-    print("status:", status)
