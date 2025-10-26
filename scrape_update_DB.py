@@ -640,6 +640,7 @@ if __name__ == "__main__":
 
                 #selenium
                 driver.get(url)
+                print(url)
                 try:
                     pre_text = driver.find_element("tag name", "pre").text
                     resp = json.loads(pre_text)["rows"]
