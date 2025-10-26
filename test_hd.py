@@ -39,7 +39,8 @@ def interceptor_hd_id_DB(request):
 driver.request_interceptor = interceptor_hd_id_DB
 
 if __name__ == "__main__":
-
+    driver.get("https://ifconfig.me")
+    print(driver.page_source)
     driver.get(url)
     try:
         pre_text = driver.find_element("tag name", "pre").text
