@@ -33,8 +33,8 @@ url="https://www.dofusbook.net/api/stuffs/dofus/public/9797636"
 
 
 if __name__ == "__main__":
-    driver.get("https://ifconfig.me")
-    print(driver.page_source)
+    # driver.get("https://ifconfig.me")
+    # print(driver.page_source)
     driver.get(url)
     try:
         pre_text = driver.find_element("tag name", "pre").text
