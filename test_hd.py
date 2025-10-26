@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 import requests as req
 import json
 
-from selenium import webdriver
+from seleniumwire import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
@@ -38,10 +38,10 @@ def interceptor_hd_id_DB(request):
 driver.request_interceptor = interceptor_hd_id_DB
 
 if __name__ == "__main__":
-    print(f"HEADER NAME : {HEADER_NAME}")
-    print(f"HEADER VALUE : {HEADER_VALUE}")
-    driver.get("https://ifconfig.me")
-    print(driver.page_source)
+    # print(f"HEADER NAME : {HEADER_NAME}")
+    # print(f"HEADER VALUE : {HEADER_VALUE}")
+    # driver.get("https://ifconfig.me")
+    # print(driver.page_source)
     driver.get(url)
     try:
         pre_text = driver.find_element("tag name", "pre").text
@@ -50,3 +50,8 @@ if __name__ == "__main__":
     except Exception as e:
         print(e)
         print(driver.page_source)
+
+    for request in driver.requests:
+        if request.response and "api" in request.url:
+            print(request.url)
+            print(request.headers)

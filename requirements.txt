@@ -6,4 +6,5 @@ sqlalchemy
 pymysql
 requests
 selenium
+selenium-wire
 webdriver_manager
