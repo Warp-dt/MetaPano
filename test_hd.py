@@ -33,8 +33,7 @@ url="https://www.dofusbook.net/api/stuffs/dofus/public/9797636"
 
 # Intercepteur : ajoute le header uniquement pour les URLs de l’API
 def interceptor_hd_id_DB(request):
-    if request.url.startswith("https://touch.dofusbook.net/api/"):
-        request.headers[HEADER_NAME] = HEADER_VALUE
+    request.headers[HEADER_NAME] = HEADER_VALUE
 
 driver.request_interceptor = interceptor_hd_id_DB
 
