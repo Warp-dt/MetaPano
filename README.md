@@ -9,6 +9,20 @@ If you want to talk about this bot, test it, or follow its news you can join my 
 
 You can also invite the bot on your server to test it :
 [Metapano Invite Link](https://discord.com/oauth2/authorize?client_id=1288167324586872842)
+
+<!-- UPDATE_DATE -->
+> **Last update : 05 November 2025**
+<!-- UPDATE_DATE -->
+
+### Utilisateurs mensuels
+![Utilisateurs mensuels](images/dashboard/monthly_users.png)
+
+### Serveurs mensuels
+![Serveurs mensuels](images/dashboard/monthly_servers.png)
+
+### Commandes mensuelles
+![Commandes mensuelles](images/dashboard/monthly_commands.png)
+
 <!-- 
 ```mermaid
 erDiagram
