@@ -16,14 +16,14 @@ You can also invite the bot on your server to test it :
 > **Last update : 05 November 2025**
 <!-- UPDATE_DATE -->
 
-### Utilisateurs mensuels
-![Utilisateurs mensuels](images/dashboard/monthly_users.png)
+### Number of Monthly Users
+![Number of Monthly Users](images/dashboard/monthly_users.png)
 
-### Serveurs mensuels
-![Serveurs mensuels](images/dashboard/monthly_servers.png)
+### Number of Servers where the Bot is Active
+![Number of Servers](images/dashboard/monthly_servers.png)
 
-### Commandes mensuelles
-![Commandes mensuelles](images/dashboard/monthly_commands.png)
+### Number of Commands per Month
+![Number of Commands per Month](images/dashboard/monthly_commands.png)
 
 <!-- 
 ```mermaid
