@@ -195,8 +195,19 @@ def folder_id_finder(folder_name,user,jeu='Dofus Touch'):
     # Crée un dossier temporaire unique pour le profil
     user_data_dir = tempfile.mkdtemp(prefix="selenium_chrome_folder")
     options = Options()
-    # options.add_argument(f"--user-data-dir={user_data_dir}")
+    options.add_argument(f"--user-data-dir={user_data_dir}")
+    options.add_argument("--profile-directory=Profile1")
+    #TEST
+    options.add_argument("--remote-debugging-port=0")
     options.add_argument("--no-sandbox")
+    
+    options.add_argument("--no-default-browser-check")
+    options.add_argument("--no-first-run")
+    options.add_argument("--disable-single-process")
+    options.add_argument("--disable-extensions")
+    options.add_argument("--disable-session-crashed-bubble")
+    options.add_argument("--disable-infobars")
+    #TESTEND
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-blink-features=AutomationControlled")
     options.add_argument("--disable-gpu")
