@@ -132,6 +132,10 @@ async def on_ready() -> None:
     except Exception as e:
         print(f"Failed to sync commands: {e}")
 
+@bot.event
+async def on_guild_join(guild):
+    await bot.tree.sync(guild=guild)
+
 # N'oubliez pas de fermer la session HTTP lors de la fermeture du bot
 @bot.event
 async def on_shutdown():
