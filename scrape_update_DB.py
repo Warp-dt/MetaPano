@@ -192,17 +192,30 @@ def folder_id_finder(folder_name,user,jeu='Dofus Touch'):
     base=f"{DOFUSBOOK_URL[jeu]}/api/stuffs/{DB_JEU_SHORT[jeu]}/public/"
     membre="?user="+user+"&sort=update-desc"
 
-    # Crée un dossier temporaire unique pour le profil
-    user_data_dir = tempfile.mkdtemp(prefix="selenium_chrome_")
-    options = Options()
-    options.add_argument(f"--user-data-dir={user_data_dir}")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-blink-features=AutomationControlled")
-    options.add_argument("--disable-gpu")
-    # options.add_argument("--headless=new")
-    service = Service("/usr/bin/chromedriver")  # ou /usr/local/bin/chromedriver
-    driver = webdriver.Chrome(service=service, options=options)
+    try :
+        # Crée un dossier temporaire unique pour le profil
+        user_data_dir = tempfile.mkdtemp(prefix="selenium_chrome_")
+        options = Options()
+        options.add_argument(f"--user-data-dir={user_data_dir}")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-blink-features=AutomationControlled")
+        options.add_argument("--disable-gpu")
+        # options.add_argument("--headless=new")
+        service = Service("/usr/bin/chromedriver")  # ou /usr/local/bin/chromedriver
+        driver = webdriver.Chrome(service=service, options=options)
+
+    except Exception as e:
+        print(f"Erreur webdriver : {e}")
+        # driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+        options = Options()
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-blink-features=AutomationControlled")
+        options.add_argument("--disable-gpu")
+        # options.add_argument("--headless=new")
+        service = Service("/usr/bin/chromedriver")  # ou /usr/local/bin/chromedriver
+        driver = webdriver.Chrome(service=service, options=options)
     
     #HEADER CONNEXION DB activer le réseau et définir le header AVANT la navigation
     driver.execute_cdp_cmd("Network.enable", {})
