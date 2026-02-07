@@ -30,7 +30,7 @@ environment = os.getenv("ENVIRONMENT", "windows")  # Par défaut, considérer qu
 if environment == "windows":
     db_user = "pc_wind"
     db_password = os.getenv("DB_PASSWORD")
-    db_host = "192.168.1.193"  # IP du serveur MySQL
+    db_host = "192.168.1.42"  # IP du serveur MySQL
     db_name = "PanoDB"
 elif environment == "server":
     db_user = "localuser"  # Utilisateur sur le serveur
