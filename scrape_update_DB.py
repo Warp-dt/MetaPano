@@ -212,9 +212,10 @@ def folder_id_finder(folder_name,user,jeu='Dofus Touch'):
     options.add_argument("--disable-blink-features=AutomationControlled")
     options.add_argument("--disable-gpu")
     # options.add_argument("--headless=new")
-    service = Service("/usr/bin/chromedriver")  # ou /usr/local/bin/chromedriver
-    driver = webdriver.Chrome(service=service, options=options)
-    
+
+    # service = Service("/usr/bin/chromedriver")  # ou /usr/local/bin/chromedriver
+    # driver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Chrome(options=options)
     #HEADER CONNEXION DB activer le réseau et définir le header AVANT la navigation
     driver.execute_cdp_cmd("Network.enable", {})
     driver.execute_cdp_cmd("Network.setExtraHTTPHeaders", {
@@ -629,9 +630,11 @@ if __name__ == "__main__":
     options.add_argument("--disable-blink-features=AutomationControlled")
     options.add_argument("--disable-gpu")
     # options.add_argument("--headless=new")
-    service = Service("/usr/bin/chromedriver")  # ou /usr/local/bin/chromedriver
-    driver = webdriver.Chrome(service=service, options=options)
+    # service = Service("/usr/bin/chromedriver")  # ou /usr/local/bin/chromedriver
+    # driver = webdriver.Chrome(service=service, options=options)
     
+    driver = webdriver.Chrome(options=options)
+
     #HEADER CONNEXION DB activer le réseau et définir le header AVANT la navigation
     driver.execute_cdp_cmd("Network.enable", {})
     driver.execute_cdp_cmd("Network.setExtraHTTPHeaders", {

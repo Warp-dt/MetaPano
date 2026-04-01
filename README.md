@@ -13,7 +13,7 @@ You can also invite the bot on your server to test it :
 
 ## Usage Analytics
 <!-- UPDATE_DATE -->
-> **Last update : 23 March 2026**
+> **Last update : 01 April 2026**
 <!-- UPDATE_DATE -->
 
 ### Number of Commands per Month
