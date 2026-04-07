@@ -38,7 +38,7 @@ TOKEN: Final[str] = os.getenv('DISCORD_TOKEN')
 intents: Intents = Intents.default()
 bot = commands.Bot(command_prefix='!metapano', intents=intents, help_command=None)
 
-footer_message="Si tu as une question n'hésite pas à la poser à <@357960636509978637> ou sur le discord Dofus Touls (lien en bio)."
+footer_message="Si tu as une question n'hésite pas à la poser à Warp ou sur le discord Dofus Touls (lien en bio)."
 
 def parse_log(log_message):
     pattern = r"(?P<user>[\w.]+) used /(?P<command>\w+)(?: with args: (?P<args>.*?))? in server (?P<server>.*?) channel (?P<channel>.*?)$"
