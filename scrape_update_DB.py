@@ -610,11 +610,14 @@ if __name__ == "__main__":
        
     biblio_to_scrape=[]#filled with ("bibli_id","dossier_id","dossier_name")
     for blibli_id, value in custom_biblio.items():
-        first_val=value[list(value.keys())[0]]
-        if "imported" in first_val and "alias" in first_val: #test pour savoir si on est dans une clé de biblio ou de guild, on teste si dans le premier élément de value, il y a les clés "imported" et "alias"
-            for dossier_id in value :
-                print(blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"])
-                biblio_to_scrape.append((blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"]))# l'idée c'est de récupérer les ("bibli_id","dossier_id","dossier_name") de toutes les bibli à scraper
+        try:
+            first_val=value[list(value.keys())[0]]
+            if "imported" in first_val and "alias" in first_val: #test pour savoir si on est dans une clé de biblio ou de guild, on teste si dans le premier élément de value, il y a les clés "imported" et "alias"
+                for dossier_id in value :
+                    print(blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"])
+                    biblio_to_scrape.append((blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"]))# l'idée c'est de récupérer les ("bibli_id","dossier_id","dossier_name") de toutes les bibli à scraper
+        except:
+            print(f"erreur dans la récupération des biblio à scrape | blibli_id : {blibli_id} | value : {value}")
     # print(f"biblio à scrape : {biblio_to_scrape})
     page_maxsize=20
     stuff_liste=[]
