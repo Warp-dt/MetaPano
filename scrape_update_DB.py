@@ -617,7 +617,7 @@ if __name__ == "__main__":
                     print(blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"])
                     biblio_to_scrape.append((blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"]))# l'idée c'est de récupérer les ("bibli_id","dossier_id","dossier_name") de toutes les bibli à scraper
         except:
-            print(f"erreur dans la récupération des biblio à scrape | blibli_id : {blibli_id} | value : {value}")
+            print(f"/!\ erreur dans la récupération des biblio à scrape | blibli_id : {blibli_id} | value : {value}")
     # print(f"biblio à scrape : {biblio_to_scrape})
     page_maxsize=20
     stuff_liste=[]

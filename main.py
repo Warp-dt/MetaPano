@@ -1254,11 +1254,11 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
         biblio_id=biblio_url.split("/")[-2][:-3]
         biblio_jeu=biblio_url.split(".")[0][-3:]
         if biblio_jeu=="uch":
-            jeu="touch"
+            jeu="Dofus Touch"
         elif biblio_jeu=="tro":
-            jeu="retro"
+            jeu="Dofus Retro"
         else:
-            jeu='pc'
+            jeu='Dofus 3'
     except:
         print(f"Error getting biblio_id from link: {lien_biblio}")
         #return embed with an error message
