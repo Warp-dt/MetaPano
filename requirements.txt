@@ -8,3 +8,6 @@ requests
 selenium
 selenium-wire
 webdriver_manager
+pandas
+pytz
+matplotlib
