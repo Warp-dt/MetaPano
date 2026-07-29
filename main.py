@@ -1413,12 +1413,11 @@ async def bibliotheques(interaction: Interaction): #affiche un embed avec la bib
         embed = Embed(
             title=f"Bibliothèques de stuff pour le serveur {guild}",
             color=0x1b3a57 # Couleur bleu db
-            ,description="TEST DESCRIPTION"
         )
         embed.set_author(
-            name="Mon Bot",
-            icon_url=bot.user.display_avatar.url
-        )
+            name=interaction.user.display_name,
+            icon_url=interaction.user.display_avatar.url
+        )        
         embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
         embed.add_field(name="Bibliothèque du serveur :", value=bibli_default, inline=False)
         if embed_field_active==0:
