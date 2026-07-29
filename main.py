@@ -1377,7 +1377,8 @@ async def bibliotheques(interaction: Interaction): #affiche un embed avec la bib
     guild = interaction.guild.name if interaction.guild else "DM"
     if guild in CUSTOM_BIBLIO:
         bibli_default=f"[MetaPano]({'https://touch.dofusbook.net/fr/membre/996244-db/equipements'})" #par défaut metapano
-        bibli_canal=""
+        bibli_canal=[""]
+        embed_field_active=0
         for channel in CUSTOM_BIBLIO[guild]:
             biblio_id=      CUSTOM_BIBLIO[guild][channel]["biblio_id"]
             nom_biblio=     CUSTOM_BIBLIO[guild][channel]["nom_biblio"]
@@ -1392,20 +1393,46 @@ async def bibliotheques(interaction: Interaction): #affiche un embed avec la bib
 
             else:
                 if dossier_nom != "tout":
-                    bibli_canal+=f"- {channel} : [{nom_biblio}]({DOFUSBOOK_URL[jeu]+"/fr/membre/"+biblio_id+f'-db/equipements?folder={dossier_id}'}) | Importée : {CUSTOM_BIBLIO[biblio_id][dossier_id]['imported']} | Dossier : {dossier_nom} | Jeu : {jeu}"
+                    temp_str=f"- {channel} : [{nom_biblio}]({DOFUSBOOK_URL[jeu]+"/fr/membre/"+biblio_id+f'-db/equipements?folder={dossier_id}'}) | Importée : {CUSTOM_BIBLIO[biblio_id][dossier_id]['imported']} | Dossier : {dossier_nom} | Jeu : {jeu}\n"
+                    if len(bibli_canal[embed_field_active])+len(temp_str)<1024:
+                        bibli_canal[embed_field_active]+=temp_str
+                    else:
+                        bibli_canal.append(temp_str)
+                        embed_field_active+=1
                 else:
-                    bibli_canal+=f"- {channel} : [{nom_biblio}]({DOFUSBOOK_URL[jeu]+"/fr/membre/"+biblio_id+'-db/equipements'})  | Importée : {CUSTOM_BIBLIO[biblio_id][dossier_id]['imported']} | Jeu : {jeu}"
-                bibli_canal+="\n"
+                    temp_str=f"- {channel} : [{nom_biblio}]({DOFUSBOOK_URL[jeu]+"/fr/membre/"+biblio_id+'-db/equipements'})  | Importée : {CUSTOM_BIBLIO[biblio_id][dossier_id]['imported']} | Jeu : {jeu}\n"
+                    if len(bibli_canal[embed_field_active])+len(temp_str)<1024:
+                        bibli_canal[embed_field_active]+=temp_str
+                    else:
+                        bibli_canal.append(temp_str)
+                        embed_field_active+=1
+                # bibli_canal[embed_field_active]+="\n"
                 
-        if bibli_canal=="":
-            bibli_canal="Aucun canal n'utilise de bibliothèque différente de celle par défaut."
+        if bibli_canal[embed_field_active]=="":
+            bibli_canal[embed_field_active]="Aucun canal n'utilise de bibliothèque différente de celle par défaut."
         embed = Embed(
             title=f"Bibliothèques de stuff pour le serveur {guild}",
             color=0x1b3a57 # Couleur bleu db
+            ,description="TEST DESCRIPTION"
+        )
+        embed.set_author(
+            name="Mon Bot",
+            icon_url=bot.user.display_avatar.url
         )
         embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
         embed.add_field(name="Bibliothèque du serveur :", value=bibli_default, inline=False)
-        embed.add_field(name="Bibliothèques par canal :", value=bibli_canal, inline=False)
+        if embed_field_active==0:
+            embed.add_field(name="Bibliothèques par canal :", value=bibli_canal[embed_field_active], inline=False)
+        elif embed_field_active<23:
+            embed.add_field(name="Bibliothèques par canal :", value=bibli_canal[0], inline=False)
+            for bibli_list_value in range(1,embed_field_active+1):
+                embed.add_field(name="", value=bibli_canal[bibli_list_value], inline=False)
+        else:            
+            embed.add_field(name="Bibliothèques par canal :", value=bibli_canal[0], inline=False)
+            for bibli_list_value in range(1,23):
+                embed.add_field(name="", value=bibli_canal[bibli_list_value], inline=False)
+            embed.add_field(name="Nombre max de bibliothèques atteint", value="GG je sais pas combien de bibliothèques de stuff tu as rajouté sur ton serveur mais si tu as ce message c'est que tu en a mis beaucoup, envoie un message à Warp sur le discord Dofus Touls pour recevoir un cadeau de félicitations !")
+            
         embed.set_footer(text=footer_message)
 
         await interaction.response.send_message(embed=embed)
