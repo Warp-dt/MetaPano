@@ -930,6 +930,10 @@ async def stuff(interaction: Interaction,
             title=f"Conseils de stuff",
             color=0x773d02#607d83
         )
+        embed.set_author(
+            name=interaction.user.display_name,
+            icon_url=interaction.user.display_avatar.url
+        )        
         embed.set_thumbnail(url=IMAGES_LINK["harry"])  # URL d'une image pour l'illustration
         
         content="""
@@ -989,6 +993,10 @@ async def stuff(interaction: Interaction,
                 title=f"Erreur dans les éléménts",
                 color=0x000000#607d83
             )
+            embed.set_author(
+                name=interaction.user.display_name,
+                icon_url=interaction.user.display_avatar.url
+            )        
             embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL d'une image pour l'illustration
             err_resp=""
             for err in elt_error:
@@ -1010,6 +1018,10 @@ async def help(interaction: Interaction, commande: str ='vide'):
         title=f"Aide",
         color=0xff0000  
     )
+    embed.set_author(
+        name=interaction.user.display_name,
+        icon_url=interaction.user.display_avatar.url
+    )        
 
     embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL d'une image pour l'illustration
     embed.add_field(name="Comment utiliser MetaPano?", value=(resp), inline=False)
@@ -1054,6 +1066,10 @@ async def twitch(interaction: Interaction):
         title=f"Dofusbook",
         color=0x1b3a57 # Couleur bleu db
     )
+    embed.set_author(
+        name=interaction.user.display_name,
+        icon_url=interaction.user.display_avatar.url
+    )        
     embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
     embed.add_field(name="Bibliothèque de stuffs :",value=("[**MetaPano**](https://d-bk.net/fr/tl/4BAS)"), inline=False)
     embed.add_field(name="Contenu :", value=(f"""
@@ -1077,6 +1093,10 @@ async def change_bibliotheque_canal(interaction: Interaction, lien_biblio: str, 
             title=f"Changement de la bibliothèque de stuff pour le canal {interaction.channel.name}",
             color=0xFF0000  # Red color
         )
+        embed.set_author(
+            name=interaction.user.display_name,
+            icon_url=interaction.user.display_avatar.url
+        )        
         embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL of an error image for illustration
         embed.add_field(name="Erreur :", value="""Le lien que tu as donné n'est pas valide, vérifie qu'il s'agit bien d'un lien de bibliothèque dofusbook.
 
@@ -1104,6 +1124,10 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
             title=f"Changement de la bibliothèque de stuff pour le canal {interaction.channel.name}",
             color=0xFF0000 # Couleur rouge
         )
+        embed.set_author(
+            name=interaction.user.display_name,
+            icon_url=interaction.user.display_avatar.url
+        )        
         embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL d'une image pour l'illustration
         embed.add_field(name="Erreur :",value=(f"""Le lien que tu as donné n'est pas valide, vérifie qu'il s'agit bien d'un lien de bibliothèque dofusbook.
 
@@ -1122,6 +1146,10 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
             title=f"Changement de la bibliothèque de stuff pour le canal {interaction.channel.name}",
             color=0xFF0000 # Couleur rouge
         )
+        embed.set_author(
+            name=interaction.user.display_name,
+            icon_url=interaction.user.display_avatar.url
+        )        
         embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL d'une image pour l'illustration
         embed.add_field(name="Erreur :",value=(f"""Le nom de canal {channel} est réservé et ne peut pas être utilisé."""), inline=False)
         embed.set_footer(text=footer_message)
@@ -1200,6 +1228,10 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
         title=f"Changement de la bibliothèque de stuff pour le canal {interaction.channel.name}",
         color=0x1b3a57 # Couleur bleu db
     )
+    embed.set_author(
+        name=interaction.user.display_name,
+        icon_url=interaction.user.display_avatar.url
+    )        
     embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
 
     if dossier=="tout":
@@ -1240,6 +1272,10 @@ async def change_bibliotheque_serveur(interaction: Interaction, lien_biblio: str
             title=f"Changement de la bibliothèque de stuff par défaut pour le serveur {interaction.guild.name}",
             color=0xFF0000  # Red color
         )
+        embed.set_author(
+            name=interaction.user.display_name,
+            icon_url=interaction.user.display_avatar.url
+        )        
         embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL of an error image for illustration
         embed.add_field(name="Erreur :", value="""Le lien que tu as donné n'est pas valide, vérifie qu'il s'agit bien d'un lien de bibliothèque dofusbook.
 
@@ -1266,6 +1302,10 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
             title=f"Changement de la bibliothèque de stuff par défaut pour le serveur {interaction.guild.name}",
             color=0xFF0000 # Couleur rouge
         )
+        embed.set_author(
+            name=interaction.user.display_name,
+            icon_url=interaction.user.display_avatar.url
+        )        
         embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL d'une image pour l'illustration
         embed.add_field(name="Erreur :",value=(f"""Le lien que tu as donné n'est pas valide, vérifie qu'il s'agit bien d'un lien de bibliothèque dofusbook.
 
@@ -1346,6 +1386,10 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
         title=f"Changement de la bibliothèque de stuff par défaut pour le serveur {interaction.guild.name}",
         color=0x1b3a57 # Couleur bleu db
     )
+    embed.set_author(
+        name=interaction.user.display_name,
+        icon_url=interaction.user.display_avatar.url
+    )        
     embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
 
     if dossier=="tout":
@@ -1440,6 +1484,10 @@ async def bibliotheques(interaction: Interaction): #affiche un embed avec la bib
             title=f"Bibliothèques de stuff pour le serveur {guild}",
             color=0x1b3a57 # Couleur bleu db
         )
+        embed.set_author(
+            name=interaction.user.display_name,
+            icon_url=interaction.user.display_avatar.url
+        )        
         embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
         bibli_default=f"[MetaPano]({'https://touch.dofusbook.net/fr/membre/996244-db/equipements'})" #par défaut metapano
         embed.add_field(name="Bibliothèque du serveur :", value=bibli_default, inline=False)
@@ -1462,6 +1510,10 @@ async def supprime_bibliotheque_canal(interaction: Interaction):
             title=f"Suppression de la bibliothèque de stuff pour le canal {interaction.channel.name}",
             color=0xFF0000 # Couleur rouge
         )
+        embed.set_author(
+            name=interaction.user.display_name,
+            icon_url=interaction.user.display_avatar.url
+        )        
         embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL d'une image pour l'illustration
         embed.add_field(name="Erreur :",value=(f"""Le nom de canal {channel} est réservé et ne peut pas être utilisé."""), inline=False)
         embed.set_footer(text=footer_message)
@@ -1479,6 +1531,10 @@ async def supprime_bibliotheque_canal(interaction: Interaction):
                 title=f"Suppression de la bibliothèque de stuff pour le canal {interaction.channel.name}",
                 color=0xFF0000 # Couleur rouge
             )
+            embed.set_author(
+                name=interaction.user.display_name,
+                icon_url=interaction.user.display_avatar.url
+            )        
             embed.set_thumbnail(url=IMAGES_LINK["error"])
             embed.add_field(name="Erreur :",value=(f"""Le canal {channel} n'a pas de bibliothèque custom qui lui est attribué, il n'y a rien à supprimer."""), inline=False)
             embed.set_footer(text=footer_message)
@@ -1492,6 +1548,10 @@ async def supprime_bibliotheque_canal(interaction: Interaction):
             title=f"Suppression de la bibliothèque de stuff pour le canal {interaction.channel.name}",
             color=0xFF0000 # Couleur rouge
         )
+        embed.set_author(
+            name=interaction.user.display_name,
+            icon_url=interaction.user.display_avatar.url
+        )        
         embed.set_thumbnail(url=IMAGES_LINK["error"])
         embed.add_field(name="Erreur :",value=(f"""Ni le canal {channel} ni le serveur {guild} n'ont pas de bibliothèque custom qui leur sont attribués, il n'y a rien à supprimer."""), inline=False)
         embed.set_footer(text=footer_message)
@@ -1511,6 +1571,10 @@ async def supprime_bibliotheque_canal(interaction: Interaction):
         title=f"Suppression de la bibliothèque de stuff pour le canal {interaction.channel.name}",
         color=0x1b3a57 # Couleur bleu db
     )
+    embed.set_author(
+        name=interaction.user.display_name,
+        icon_url=interaction.user.display_avatar.url
+    )        
     embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
 
     embed.add_field(name="Bibliothèque :",value=(f"La bibliothèque a été retirée avec succès de ce canal, désormais la bibliothèque par défaut du serveur sera utilisée."), inline=False)
@@ -1538,6 +1602,10 @@ async def supprime_bibliotheque_serveur(interaction: Interaction):
                 title=f"Suppression de la bibliothèque de stuff pour le serveur {guild}",
                 color=0xFF0000 # Couleur rouge
             )
+            embed.set_author(
+                name=interaction.user.display_name,
+                icon_url=interaction.user.display_avatar.url
+            )        
             embed.set_thumbnail(url=IMAGES_LINK["error"])
             embed.add_field(name="Erreur :",value=(f"""Le serveur {guild} n'a pas de bibliothèque custom par défaut qui lui est attribué, il n'y a rien à supprimer."""), inline=False)
             embed.set_footer(text=footer_message)
@@ -1551,6 +1619,10 @@ async def supprime_bibliotheque_serveur(interaction: Interaction):
             title=f"Suppression de la bibliothèque de stuff pour le serveur {guild}",
             color=0xFF0000 # Couleur rouge
         )
+        embed.set_author(
+            name=interaction.user.display_name,
+            icon_url=interaction.user.display_avatar.url
+        )        
         embed.set_thumbnail(url=IMAGES_LINK["error"])
         embed.add_field(name="Erreur :",value=(f"""Le serveur {guild} n'a pas de bibliothèque custom par défaut qui lui est attribué, il n'y a rien à supprimer."""), inline=False)
         embed.set_footer(text=footer_message)
@@ -1570,6 +1642,10 @@ async def supprime_bibliotheque_serveur(interaction: Interaction):
         title=f"Suppression de la bibliothèque de stuff pour le serveur {guild}",
         color=0x1b3a57 # Couleur bleu db
     )
+    embed.set_author(
+        name=interaction.user.display_name,
+        icon_url=interaction.user.display_avatar.url
+    )        
     embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
 
     embed.add_field(name="Bibliothèque :",value=(f"La bibliothèque a été retirée avec succès de ce serveur, désormais la bibliothèque par défaut du serveur sera celle de MetaPano par défaut."), inline=False)
