@@ -925,7 +925,10 @@ async def stuff(interaction: Interaction,
                 invo_min: app_commands.Range[int, -10, 6]=0,
                 lvl_max: app_commands.Range[int, 0, 200] = 0):
     if element=="vide" and classe=="vide" and lvl_max==0 and pa_min==0 and pm_min==0 and po_min==0 and invo_min==0: #sans arg
-    
+        
+        #on acknowledge la commande mais on va prendre un peu de temps à répondre
+        await interaction.response.defer(ephemeral=False,thinking=True)
+        
         embed = Embed(
             title=f"Conseils de stuff",
             color=0x773d02#607d83
@@ -945,12 +948,16 @@ async def stuff(interaction: Interaction,
         embed.add_field(name="Critères de sélection disponibles : ", value=content, inline=False)
         view = discord.ui.View(timeout=600.0)
         view.add_item(CriteresSelect())
-        await interaction.response.send_message(
+        # await interaction.response.send_message(
+        await interaction.followup.send(
             embed=embed,
             view=view,
             ephemeral=True)
             
     else : #avec au moins un arg
+
+        #on acknowledge la commande mais on va prendre un peu de temps à répondre
+        await interaction.response.defer(ephemeral=False,thinking=True)
 
         criteres=dict()
         elt_error=[]
@@ -985,7 +992,8 @@ async def stuff(interaction: Interaction,
             channel = interaction.channel.name if interaction.channel else "DM"
             guild = interaction.guild.name if interaction.guild else "DM"
             resp=resultat_embed(criteres,biblio=custom_bibli(channel,guild))
-            await interaction.response.send_message(
+            # await interaction.response.send_message(
+            await interaction.followup.send(
                 embed=resp, 
                 ephemeral=False)
         else: #erreur dans les éléménts
@@ -1006,7 +1014,8 @@ async def stuff(interaction: Interaction,
 Et toute combinaison de ces éléments."""
             # print("err_resp",err_resp)
             embed.add_field(name='Liste des erreurs :', value=err_resp)
-            await interaction.response.send_message(
+            # await interaction.response.send_message(
+            await interaction.followup.send(
                 embed=embed, 
                 ephemeral=True)
 
