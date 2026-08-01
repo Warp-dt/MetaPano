@@ -147,9 +147,9 @@ async def on_shutdown():
 async def on_interaction(interaction : Interaction):
         # Vérifie si l'interaction est une commande
     if interaction.type == InteractionType.application_command and not interaction.response.is_done():
-        t2 = time.perf_counter()
+        # t2 = time.perf_counter()
 
-        channel = bot.get_channel(1335368709157421056)#canal commands dans le serveur control
+        # channel = bot.get_channel(1335368709157421056)#canal commands dans le serveur control
         
         server_name = interaction.guild.name
         server_id = interaction.guild.id
@@ -174,20 +174,20 @@ async def on_interaction(interaction : Interaction):
         command_log(user_name,user_id,server_name,server_id,channel_name,channel_id,command_name,arguments)
         print(f"command_log = {time.perf_counter()-t:.3f}s")
 
-        t3 = time.perf_counter()
+        # t3 = time.perf_counter()
 
-        # Création du message avec les arguments si présents
-        if options:
-            args_str = ' | '.join(options)
-            log_message = f'{user_name} used /{command_name} with args: {args_str} in server {server_name} channel {channel_name}'
-        else:
-            log_message = f'{user_name} used /{command_name} in server {server_name} channel {channel_name}'
+        # # Création du message avec les arguments si présents
+        # if options:
+        #     args_str = ' | '.join(options)
+        #     log_message = f'{user_name} used /{command_name} with args: {args_str} in server {server_name} channel {channel_name}'
+        # else:
+        #     log_message = f'{user_name} used /{command_name} in server {server_name} channel {channel_name}'
         
-        # print(log_message)
-        await channel.send(log_message)
-        print(f"partie apres command_log, avec le channel.send = {time.perf_counter()-t3:.3f}s")
+        # # print(log_message)
+        # await channel.send(log_message)
+        # print(f"partie apres command_log, avec le channel.send = {time.perf_counter()-t3:.3f}s")
 
-        print(f"on_interaction général = {time.perf_counter()-t2:.3f}s")
+        # print(f"on_interaction général = {time.perf_counter()-t2:.3f}s")
 
 
 # Flag global pour suivre si le message a été envoyé
