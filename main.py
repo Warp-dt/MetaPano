@@ -19,7 +19,7 @@ from PanoDB_link import find_stuff, BIBLI_DEFAULT, command_log
 
 import json
 
-
+import time # pour mesurer les perf des commandes
 
 # Load the JSON file into memory
 CUSTOM_BIBLIO = {}
@@ -147,6 +147,8 @@ async def on_shutdown():
 async def on_interaction(interaction : Interaction):
         # Vérifie si l'interaction est une commande
     if interaction.type == InteractionType.application_command and not interaction.response.is_done():
+        t2 = time.perf_counter()
+
         channel = bot.get_channel(1335368709157421056)#canal commands dans le serveur control
         
         server_name = interaction.guild.name
@@ -167,8 +169,13 @@ async def on_interaction(interaction : Interaction):
             for option in interaction.data['options']:
                 options.append(f"{option['name']}: {option['value']}")
                 arguments[option['name']] = option['value']
-        
+
+        t = time.perf_counter()
         command_log(user_name,user_id,server_name,server_id,channel_name,channel_id,command_name,arguments)
+        print(f"command_log = {time.perf_counter()-t:.3f}s")
+
+        t3 = time.perf_counter()
+
         # Création du message avec les arguments si présents
         if options:
             args_str = ' | '.join(options)
@@ -178,6 +185,10 @@ async def on_interaction(interaction : Interaction):
         
         # print(log_message)
         await channel.send(log_message)
+        print(f"partie apres command_log, avec le channel.send = {time.perf_counter()-t3:.3f}s")
+
+        print(f"on_interaction général = {time.perf_counter()-t2:.3f}s")
+
 
 # Flag global pour suivre si le message a été envoyé
 shutdown_message_sent = False
