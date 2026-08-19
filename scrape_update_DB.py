@@ -4,6 +4,8 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.exc import IntegrityError
 import requests as req
 import json
+from pathlib import Path
+import re
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -560,6 +562,66 @@ def upsert_stuff_data(stuff_list):
         "errors": error_count
     }
 
+
+def update_dts_surl(link_file_path):
+    """
+    Met à jour la colonne Stuff.DTS_surl à partir du fichier JSON
+    généré par dtstuff.
+    """
+
+    # Lecture du fichier JSON
+    file_path = Path(link_file_path)
+
+    with file_path.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    update_query = text("""
+        UPDATE Stuff
+        SET DTS_surl = :dts_surl
+        WHERE DB_id = :db_id
+    """)
+
+    updated = 0
+    not_found = 0
+    invalid = 0
+
+    with engine.begin() as connection:
+        for item in data:
+            db_url = item.get("dbUrl")
+            short_id = item.get("shortId")
+
+            if not db_url or not short_id:
+                invalid += 1
+                continue
+
+            # Extrait l'ID après /equipements/
+            match = re.search(r"/equipements/(\d+)", db_url)
+
+            if not match:
+                print(f"URL invalide : {db_url}")
+                invalid += 1
+                continue
+
+            db_id = int(match.group(1))
+
+            result = connection.execute(
+                update_query,
+                {
+                    "db_id": db_id,
+                    "dts_surl": short_id,
+                }
+            )
+
+            if result.rowcount > 0:
+                updated += 1
+            else:
+                not_found += 1
+
+    print(f"Mise à jour terminée :")
+    print(f"  - {updated} ligne(s) mise(s) à jour")
+    print(f"  - {not_found} DB_id introuvable(s)")
+    print(f"  - {invalid} donnée(s) invalide(s)")
+
 ######################
 # A MAJ AVEC NOUVEAU SYSTEME CUSTOM_BIBLIO FOLDER
 ######################
@@ -765,3 +827,7 @@ if __name__ == "__main__":
         print(f"Error writing to custom_biblio.json: {e}")
     
     print(f"Résultat: {result['inserted']} insérés, {result['updated']} mis à jour, {result['deleted']} supprimés, {result['errors']} erreurs")
+
+    # récupération des id DTS
+    DTS_LINK_FILE_PATH="../dtstuff-metapano/output/metapano-links.json"
+    update_dts_surl(DTS_LINK_FILE_PATH)
