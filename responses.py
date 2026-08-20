@@ -110,8 +110,11 @@ def no_main_elt(elt_list): #renvoie true si la liste est composée uniquement d'
             return False
     return True
 
-def filter_sort_main_elts(elt_list):
-    filt_sort=[e for e in FILTRES if e in elt_list] #ici on a remplacé ELEMENTS_PRINCIPAUX par FILTRES pour avoir plus de détail sur les elem des stuffs dans les réponses de classe
+def filter_sort_main_elts(elt_list,keepall=False):
+    if keepall:
+        filt_sort=[e for e in FILTRES if e in elt_list]
+    else:
+        filt_sort=[e for e in ELEMENTS_PRINCIPAUX if e in elt_list] 
     # if len(filt_sort)==0:
     #     return [e for e in FILTRES if e in elt_list]
     return filt_sort

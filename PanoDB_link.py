@@ -80,6 +80,7 @@ def stuff_query(criteres : dict,biblio=BIBLI_DEFAULT):
     select=f"""SELECT 
     s.DB_id
     ,max(s.DB_surl) as DB_surl
+    ,max(s.DTS_surl) as DTS_surl
     ,max(s.Nom) as Nom
     ,max(s.PA) as PA
     ,max(s.PM) as PM

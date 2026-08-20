@@ -704,7 +704,8 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
         assouplissement = []
 
     stuff_list=find_stuff(criteres,biblio=biblio)
-    print(biblio)
+    # print(stuff_list)
+    # print(biblio)
     jeu=CUSTOM_BIBLIO[biblio["biblio_id"]][biblio["dossier_id"]]["jeu"]
     if len(stuff_list)>0:
         # lors du renvoi de tous les stuff d'une classe, séparer par éléments primordiaux et mettre indication des éléments secondaires
@@ -725,7 +726,7 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
         )
         try :
             if "Élément" in criteres:
-                illustration=IMAGES_LINK['+'.join(filter_sort_main_elts(criteres["Élément"]))]
+                illustration=IMAGES_LINK['+'.join(filter_sort_main_elts(criteres["Élément"],keepall=True))]
             elif "Classe" in criteres:
                 illustration=IMAGES_LINK[criteres["Classe"]]
             else:
@@ -783,20 +784,26 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
         #field(s) stuffs    
         if (not "Élément" in criteres.keys()) and "Classe" in criteres.keys():
             content_dict=dict()
-            print("stuff_list :",stuff_list)
+            # print("stuff_list :",stuff_list)
             for stuff in stuff_list:
-                print("stuff :",stuff)
+                # print("stuff :",stuff)
                 if stuff['Elements'] is not None:
-                    elt=" ".join(filter_sort_main_elts(stuff['Elements'].split(",")))
+                    elt=" ".join(filter_sort_main_elts(stuff['Elements'].split(","),keepall=True))
                 else :
                     elt="sans_element" #si il n'y a aucun élément attribué au stuff
-                print("stuff['Elements'] :",stuff['Elements'])
-                print("elt :",elt)
+                # print("stuff['Elements'] :",stuff['Elements'])
+                # print("elt :",elt)
                 # print("stuff['Elements']",stuff['Elements'],"elt",elt)
                 if elt in content_dict.keys():
-                    content_dict[elt]+=f"- [**{stuff['Nom']}**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']})\n" 
+                    if stuff["DTS_surl"] is None:
+                        content_dict[elt]+=f"- [**{stuff['Nom']}**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']})\n"
+                    else:
+                        content_dict[elt]+=f"- {stuff['Nom']} <:DB:1539952523169759294>[**DB**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']}) / <:DTS:1539955708957687848>[**DTS**](https://dtstuff.app/s/{stuff['DTS_surl']})\n"
                 else:
-                    content_dict[elt]=f"- [**{stuff['Nom']}**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']})\n"
+                    if stuff["DTS_surl"] is None:
+                        content_dict[elt]=f"- [**{stuff['Nom']}**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']})\n"
+                    else:
+                        content_dict[elt]=f"- {stuff['Nom']} <:DB:1539952523169759294>[**DB**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']}) / <:DTS:1539955708957687848>[**DTS**](https://dtstuff.app/s/{stuff['DTS_surl']})\n"
 
             for elt_princi in content_dict:
                 # print("elt_princi",elt_princi)
@@ -813,12 +820,17 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
         else:
             content_dblink=''
             for stuff in stuff_list:
-                content_dblink+=f"- [**{stuff['Nom']}**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']})\n"
+                if stuff["DTS_surl"] is None:
+                    content_dblink+=f"- [**{stuff['Nom']}**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']})\n"
+                else:
+                    content_dblink+=f"- {stuff['Nom']} <:DB:1539952523169759294>[**DB**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']}) / <:DTS:1539955708957687848>[**DTS**](https://dtstuff.app/s/{stuff['DTS_surl']})\n"
                 if len(content_dblink)>800:
                     content_dblink+="D'autres stuffs existent mais je n'ai pas assez de place ici pour tous les lister, précise ta recherche."
                     break
-            embed.add_field(name="Liens dofusbook", value=content_dblink, inline=True)
-
+            if stuff_list[0]["DTS_surl"] is None:
+                embed.add_field(name="Liens dofusbook", value=content_dblink, inline=True)
+            else:
+                embed.add_field(name="Liens DofusBook / DTStuff", value=content_dblink, inline=True)
         if add_message:
             embed.add_field(name=titre_message, value=message_reponse, inline=False)
         embed.set_footer(text=footer_message)
@@ -834,6 +846,7 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
             # print("Invo")
             criteres_altérés.pop('Invo')
             assouplissement.insert(0,('Invo',criteres["Invo"]))
+        #si il y a au moins 1 element secondaire et 1 element principal dans les criteres -> on enleve l'element secondaire
         elif "Élément" in criteres and not no_secondary_elt(criteres["Élément"]) and not no_main_elt(criteres["Élément"]): #si on a filtré sur les éléments et si il y a un élément non principal dans la liste, j'avoue la formulation est bizarre mais ça marche tkt
             criteres_altérés["Élément"]=filter_sort_main_elts(criteres_altérés["Élément"])
             assouplissement.insert(0,("Élément",criteres["Élément"]))
@@ -866,7 +879,7 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
             )
             try :
                 if "Élément" in criteres:
-                    illustration=IMAGES_LINK['+'.join(filter_sort_main_elts(criteres["Élément"]))]
+                    illustration=IMAGES_LINK['+'.join(filter_sort_main_elts(criteres["Élément"],keepall=True))]
                 else:
                     illustration=IMAGES_LINK["error"]
             except :
@@ -883,6 +896,9 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
             return embed
         
         # print(criteres_altérés,assouplissement)
+        # print("CRITERES AVANT : ",criteres)
+        # print("CRITERES ALTERES : ",criteres_altérés)
+        # print("################################")
         return resultat_embed(criteres_altérés,assouplissement,biblio=biblio)
 
 def next_critere_embed(criteres_restants : list):
@@ -1004,6 +1020,7 @@ async def stuff(interaction: Interaction,
             guild = interaction.guild.name if interaction.guild else "DM"
             resp=resultat_embed(criteres,biblio=custom_bibli(channel,guild))
             # await interaction.response.send_message(
+            # print("RESP :")
             await interaction.followup.send(
                 embed=resp, 
                 ephemeral=False)
