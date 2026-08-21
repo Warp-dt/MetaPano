@@ -1127,20 +1127,22 @@ Tous les stuffs que le bot va recommander sont présents dans ce compte dofusboo
 async def change_bibliotheque_canal(interaction: Interaction, nom_biblio: str, DB_lien_biblio: Optional[str] = "DB", DTS_nom_compte: Optional[str] = "DTS",  dossier: Optional[str] = "tout"):
 
     if DB_lien_biblio!= "DB" and DTS_nom_compte!="DTS":
-            print(f"Lien Dofusbook ET nom DTS fournis, comment ça tu met les deux?")
-            # Return embed with an error message
-            embed = Embed(
-                title=f"Changement de la bibliothèque de stuff par défaut pour le serveur {interaction.guild.name}",
-                color=0xFF0000  # Red color
-            )
-            embed.set_author(
-                name=interaction.user.display_name,
-                icon_url=interaction.user.display_avatar.url
-            )        
-            embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL of an error image for illustration
-            embed.add_field(name="Erreur :", value="""Pour changer la bibliothèque de stuff il faut fournir __soit__ un lien de bibliothèque DofusBook, __soit__ un nom de compte DTStuff.
-            __Pas les deux.__""")
-    
+        print(f"Lien Dofusbook ET nom DTS fournis, comment ça tu met les deux?")
+        # Return embed with an error message
+        embed = Embed(
+            title=f"Changement de la bibliothèque de stuff par défaut pour le serveur {interaction.guild.name}",
+            color=0xFF0000  # Red color
+        )
+        embed.set_author(
+            name=interaction.user.display_name,
+            icon_url=interaction.user.display_avatar.url
+        )        
+        embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL of an error image for illustration
+        embed.add_field(name="Erreur :", value="""Pour changer la bibliothèque de stuff il faut fournir __soit__ un lien de bibliothèque DofusBook, __soit__ un nom de compte DTStuff.
+        __Pas les deux.__""")
+        await interaction.response.send_message(embed=embed)
+        return
+
     elif DB_lien_biblio!= "DB":
         # Check if the link sent is a valid dofusbook link
         if not re.match(r"https?://(d-bk\.net|(touch|retro|www)\.dofusbook\.net)/fr/((t|d|r)l/\w+|membre/\d+-\w+/equipements)", DB_lien_biblio):
@@ -1178,6 +1180,8 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
         )        
         embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL of an error image for illustration
         embed.add_field(name="Erreur :", value="""Pour changer la bibliothèque de stuff il faut fournir soit un lien de bibliothèque DofusBook, soit un nom de compte DTStuff.""")
+        await interaction.response.send_message(embed=embed)
+        return
 
     #détection du jeu pour DB
     if DB_lien_biblio!= "DB":
