@@ -1124,11 +1124,49 @@ Tous les stuffs que le bot va recommander sont présents dans ce compte dofusboo
 @app_commands.default_permissions(administrator=True) #only admin can use this command
 @app_commands.checks.has_permissions(administrator=True) #and the admin can not give the permission to use this command
 @app_commands.guild_only() #only in guilds, not in DMs
-async def change_bibliotheque_canal(interaction: Interaction, lien_biblio: str, nom_biblio: str, dossier: Optional[str] = "tout"):
+async def change_bibliotheque_canal(interaction: Interaction, nom_biblio: str, DB_lien_biblio: Optional[str] = "DB", DTS_nom_compte: Optional[str] = "DTS",  dossier: Optional[str] = "tout"):
 
-    # Check if the link sent is a valid dofusbook link
-    if not re.match(r"https?://(d-bk\.net|(touch|retro|www)\.dofusbook\.net)/fr/((t|d|r)l/\w+|membre/\d+-\w+/equipements)", lien_biblio):
-        print(f"Invalid dofusbook link: {lien_biblio}")
+    if DB_lien_biblio!= "DB" and DTS_nom_compte!="DTS":
+            print(f"Lien Dofusbook ET nom DTS fournis, comment ça tu met les deux?")
+            # Return embed with an error message
+            embed = Embed(
+                title=f"Changement de la bibliothèque de stuff par défaut pour le serveur {interaction.guild.name}",
+                color=0xFF0000  # Red color
+            )
+            embed.set_author(
+                name=interaction.user.display_name,
+                icon_url=interaction.user.display_avatar.url
+            )        
+            embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL of an error image for illustration
+            embed.add_field(name="Erreur :", value="""Pour changer la bibliothèque de stuff il faut fournir __soit__ un lien de bibliothèque DofusBook, __soit__ un nom de compte DTStuff.
+            __Pas les deux.__""")
+    
+    elif DB_lien_biblio!= "DB":
+        # Check if the link sent is a valid dofusbook link
+        if not re.match(r"https?://(d-bk\.net|(touch|retro|www)\.dofusbook\.net)/fr/((t|d|r)l/\w+|membre/\d+-\w+/equipements)", DB_lien_biblio):
+            print(f"Invalid dofusbook link: {DB_lien_biblio}")
+            # Return embed with an error message
+            embed = Embed(
+                title=f"Changement de la bibliothèque de stuff pour le canal {interaction.channel.name}",
+                color=0xFF0000  # Red color
+            )
+            embed.set_author(
+                name=interaction.user.display_name,
+                icon_url=interaction.user.display_avatar.url
+            )        
+            embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL of an error image for illustration
+            embed.add_field(name="Erreur :", value="""Le lien que tu as donné n'est pas valide, vérifie qu'il s'agit bien d'un lien de bibliothèque dofusbook.
+
+Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/996244-db/equipements""", inline=False)
+            embed.set_footer(text=footer_message)
+            await interaction.response.send_message(embed=embed)
+            return
+        plateforme="DB"
+    
+    elif DTS_nom_compte!="DTS":
+        plateforme="DTS"
+    else:
+        print(f"Pas de lien Dofusbook ni de nom DTS fournis.")
         # Return embed with an error message
         embed = Embed(
             title=f"Changement de la bibliothèque de stuff pour le canal {interaction.channel.name}",
@@ -1139,43 +1177,42 @@ async def change_bibliotheque_canal(interaction: Interaction, lien_biblio: str, 
             icon_url=interaction.user.display_avatar.url
         )        
         embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL of an error image for illustration
-        embed.add_field(name="Erreur :", value="""Le lien que tu as donné n'est pas valide, vérifie qu'il s'agit bien d'un lien de bibliothèque dofusbook.
+        embed.add_field(name="Erreur :", value="""Pour changer la bibliothèque de stuff il faut fournir soit un lien de bibliothèque DofusBook, soit un nom de compte DTStuff.""")
 
-Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/996244-db/equipements""", inline=False)
-        embed.set_footer(text=footer_message)
-        await interaction.response.send_message(embed=embed)
-        return
-
-
-    try:
-        biblio_url=req.get(lien_biblio).url
-        biblio_id=biblio_url.split("/")[-2][:-3]
-        biblio_jeu=biblio_url.split(".")[0][-3:]
-        if biblio_jeu=="uch":
-            jeu="Dofus Touch"
-        elif biblio_jeu=="tro":
-            jeu="Dofus Retro"
-        else:
-            jeu='Dofus 3'
+    #détection du jeu pour DB
+    if DB_lien_biblio!= "DB":
+        try:
+            biblio_url=req.get(DB_lien_biblio).url
+            biblio_id=biblio_url.split("/")[-2][:-3]
+            biblio_jeu=biblio_url.split(".")[0][-3:]
+            if biblio_jeu=="uch":
+                jeu="Dofus Touch"
+            elif biblio_jeu=="tro":
+                jeu="Dofus Retro"
+            else:
+                jeu='Dofus 3'
             
-    except:
-        print(f"Error getting biblio_id from link: {lien_biblio}")
-        #return embed with an error message
-        embed = Embed(
-            title=f"Changement de la bibliothèque de stuff pour le canal {interaction.channel.name}",
-            color=0xFF0000 # Couleur rouge
-        )
-        embed.set_author(
-            name=interaction.user.display_name,
-            icon_url=interaction.user.display_avatar.url
-        )        
-        embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL d'une image pour l'illustration
-        embed.add_field(name="Erreur :",value=(f"""Le lien que tu as donné n'est pas valide, vérifie qu'il s'agit bien d'un lien de bibliothèque dofusbook.
+        except:
+            print(f"Error getting biblio_id from link: {DB_lien_biblio}")
+            #return embed with an error message
+            embed = Embed(
+                title=f"Changement de la bibliothèque de stuff pour le canal {interaction.channel.name}",
+                color=0xFF0000 # Couleur rouge
+            )
+            embed.set_author(
+                name=interaction.user.display_name,
+                icon_url=interaction.user.display_avatar.url
+            )        
+            embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL d'une image pour l'illustration
+            embed.add_field(name="Erreur :",value=(f"""Le lien que tu as donné n'est pas valide, vérifie qu'il s'agit bien d'un lien de bibliothèque dofusbook.
 
-Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/996244-db/equipements"""), inline=False)
-        embed.set_footer(text=footer_message)
-        await interaction.response.send_message(embed=embed)
-        return 0
+    Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/996244-db/equipements"""), inline=False)
+            embed.set_footer(text=footer_message)
+            await interaction.response.send_message(embed=embed)
+            return 0
+    elif DTS_nom_compte!="DTS":
+        jeu="Dofus Touch"
+        biblio_id=DTS_nom_compte
 
     channel = interaction.channel.name if interaction.channel else "DM"
     guild = interaction.guild.name if interaction.guild else "DM"
@@ -1215,6 +1252,7 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
                                          ,"nom_biblio" : nom_biblio
                                          ,"dossier" : dossier
                                          ,"dossier_id": folder_id
+                                         ,"plateforme": plateforme
                                          } #update the channel with the new biblio_id and alias
     else: #if the guild doesn't exist
         CUSTOM_BIBLIO[guild] = {} #create the guild
@@ -1222,6 +1260,7 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
                                          ,"nom_biblio" : nom_biblio
                                          ,"dossier" : dossier
                                          ,"dossier_id": folder_id
+                                         ,"plateforme": plateforme
                                          } #add the channel with the new biblio_id and alias   
     
     #ajout/modif de la clé de la biblio
@@ -1235,7 +1274,8 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
                                             "jeu" : jeu
                                             ,"dossier" : dossier
                                             ,"imported": False
-                                            ,"alias":[nom_biblio]}
+                                            ,"alias":[nom_biblio]
+                                            ,"plateforme": plateforme}
     else: # si la biblio est connue
         
         if folder_id in CUSTOM_BIBLIO[biblio_id]: #si le user et le folder sont connus
@@ -1247,13 +1287,15 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
                                             "jeu" : jeu
                                             ,"dossier" : dossier
                                             ,"imported": CUSTOM_BIBLIO[biblio_id]["-1"]["imported"]
-                                            ,"alias":[nom_biblio]}
+                                            ,"alias":[nom_biblio]
+                                            ,"plateforme": plateforme}
             else:
                 CUSTOM_BIBLIO[biblio_id][folder_id]={
                                             "jeu" : jeu
                                             ,"dossier" : dossier
                                             ,"imported": False
-                                            ,"alias":[nom_biblio]}
+                                            ,"alias":[nom_biblio]
+                                            ,"plateforme": plateforme}
                 
         already_imported=CUSTOM_BIBLIO[biblio_id][folder_id]["imported"]
     # Write the updated dictionary to the JSON file
@@ -1275,13 +1317,18 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
     )        
     embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
 
-    if dossier=="tout":
-        embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({lien_biblio})"), inline=False)
-    else:
-        embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({lien_biblio}) | dossier : {dossier}"), inline=False)
+    if DB_lien_biblio!= "DB":
+        if dossier=="tout":
+            embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({DB_lien_biblio})"), inline=False)
+        else:
+            embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({DB_lien_biblio}) | dossier : {dossier}"), inline=False)
+    elif DTS_nom_compte!="DTS":
+        if dossier=="tout":
+            embed.add_field(name="Nouvelle bibliothèque :",value=(f"**{DTS_nom_compte}**"), inline=False)
+        else:
+            embed.add_field(name="Nouvelle bibliothèque :",value=(f"**{DTS_nom_compte}** | dossier : {dossier}"), inline=False)
 
-
-    infos_update=f"""Désormais tous les stuffs que le bot va recommander dans ce canal proviendront de ce compte dofusbook, c'est en quelques sorte la base de connaissance du bot.\n\n"""
+    infos_update=f"""Désormais tous les stuffs que le bot va recommander dans ce canal proviendront de ce compte, c'est en quelques sorte la base de connaissance du bot.\n\n"""
     if already_imported:
         infos_update+=f"""Cette bibliothèque est déjà importée dans la base de données du bot, donc tu peux dès à présent l'utiliser.
 
@@ -1289,7 +1336,7 @@ La mise à jour de la base de données du bot se fait automatiquement tous les j
     else:  
         infos_update+=f"""Cette bibliothèque n'est **pas encore importée** dans la base de données du bot, donc tu ne peux pas encore l'utiliser.
 
-Pour que le bot fonctionne il faut que j'importe les données du compte dofusbook dans la base de données du bot. Ça se fait automatiquement tous les jours à 4h du matin, et tous les jours les nouveaux stuffs sont ajoutés à ce moment là.
+Pour que le bot fonctionne il faut que j'importe les données du compte dans la base de données du bot. Ça se fait automatiquement tous les jours à 4h du matin, et tous les jours les nouveaux stuffs sont ajoutés à ce moment là.
 Il faudra donc attendre demain pour pouvoir profiter de cette nouvelle bibliothèque, en attendant la bibliothèque précédente ou par défaut est toujours accessible."""
 
     if dossierpastrouve:
@@ -1303,11 +1350,10 @@ Il faudra donc attendre demain pour pouvoir profiter de cette nouvelle biblioth�
 @app_commands.default_permissions(administrator=True) #only admin can use this command
 @app_commands.checks.has_permissions(administrator=True) #and the admin can not give the permission to use this command
 @app_commands.guild_only() #only in guilds, not in DMs
-async def change_bibliotheque_serveur(interaction: Interaction, lien_biblio: str, nom_biblio: str, dossier: Optional[str] = "tout"  ):
+async def change_bibliotheque_serveur(interaction: Interaction, nom_biblio: str, DB_lien_biblio: Optional[str] = "DB", DTS_nom_compte: Optional[str] = "DTS", dossier: Optional[str] = "tout"  ):
 
-    # Check if the link sent is a valid dofusbook link
-    if not re.match(r"https?://(d-bk\.net|(touch|retro|www)\.dofusbook\.net)/fr/((t|d|r)l/\w+|membre/\d+-\w+/equipements)", lien_biblio):
-        print(f"Invalid dofusbook link: {lien_biblio}")
+    if DB_lien_biblio!= "DB" and DTS_nom_compte!="DTS":
+        print(f"Lien Dofusbook ET nom DTS fournis, comment ça tu met les deux?")
         # Return embed with an error message
         embed = Embed(
             title=f"Changement de la bibliothèque de stuff par défaut pour le serveur {interaction.guild.name}",
@@ -1318,42 +1364,83 @@ async def change_bibliotheque_serveur(interaction: Interaction, lien_biblio: str
             icon_url=interaction.user.display_avatar.url
         )        
         embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL of an error image for illustration
-        embed.add_field(name="Erreur :", value="""Le lien que tu as donné n'est pas valide, vérifie qu'il s'agit bien d'un lien de bibliothèque dofusbook.
+        embed.add_field(name="Erreur :", value="""Pour changer la bibliothèque de stuff il faut fournir __soit__ un lien de bibliothèque DofusBook, __soit__ un nom de compte DTStuff.
+        __Pas les deux.__""")
+
+    elif DB_lien_biblio!= "DB":
+        # Check if the link sent is a valid dofusbook link
+        if not re.match(r"https?://(d-bk\.net|(touch|retro|www)\.dofusbook\.net)/fr/((t|d|r)l/\w+|membre/\d+-\w+/equipements)", DB_lien_biblio):
+            print(f"Invalid dofusbook link: {DB_lien_biblio}")
+            # Return embed with an error message
+            embed = Embed(
+                title=f"Changement de la bibliothèque de stuff par défaut pour le serveur {interaction.guild.name}",
+                color=0xFF0000  # Red color
+            )
+            embed.set_author(
+                name=interaction.user.display_name,
+                icon_url=interaction.user.display_avatar.url
+            )        
+            embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL of an error image for illustration
+            embed.add_field(name="Erreur :", value="""Le lien que tu as donné n'est pas valide, vérifie qu'il s'agit bien d'un lien de bibliothèque dofusbook.
 
 Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/996244-db/equipements""", inline=False)
-        embed.set_footer(text=footer_message)
-        await interaction.response.send_message(embed=embed)
-        return
-
-
-    try:
-        biblio_url=req.get(lien_biblio).url
-        biblio_id=biblio_url.split("/")[-2][:-3]
-        biblio_jeu=biblio_url.split(".")[0][-3:]
-        if biblio_jeu=="uch":
-            jeu="Dofus Touch"
-        elif biblio_jeu=="tro":
-            jeu="Dofus Retro"
-        else:
-            jeu='Dofus 3'
-    except:
-        print(f"Error getting biblio_id from link: {lien_biblio}")
-        #return embed with an error message
+            embed.set_footer(text=footer_message)
+            await interaction.response.send_message(embed=embed)
+            return
+        plateforme="DB"
+    
+    elif DTS_nom_compte!="DTS":
+        plateforme="DTS"
+    else:
+        print(f"Pas de lien Dofusbook ni de nom DTS fournis.")
+        # Return embed with an error message
         embed = Embed(
             title=f"Changement de la bibliothèque de stuff par défaut pour le serveur {interaction.guild.name}",
-            color=0xFF0000 # Couleur rouge
+            color=0xFF0000  # Red color
         )
         embed.set_author(
             name=interaction.user.display_name,
             icon_url=interaction.user.display_avatar.url
         )        
-        embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL d'une image pour l'illustration
-        embed.add_field(name="Erreur :",value=(f"""Le lien que tu as donné n'est pas valide, vérifie qu'il s'agit bien d'un lien de bibliothèque dofusbook.
+        embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL of an error image for illustration
+        embed.add_field(name="Erreur :", value="""Pour changer la bibliothèque de stuff il faut fournir soit un lien de bibliothèque DofusBook, soit un nom de compte DTStuff.""")
 
-Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/996244-db/equipements"""), inline=False)
-        embed.set_footer(text=footer_message)
-        await interaction.response.send_message(embed=embed)
-        return 0
+
+
+
+    #détection du jeu pour DB
+    if DB_lien_biblio!= "DB":
+        try:
+            biblio_url=req.get(DB_lien_biblio).url
+            biblio_id=biblio_url.split("/")[-2][:-3]
+            biblio_jeu=biblio_url.split(".")[0][-3:]
+            if biblio_jeu=="uch":
+                jeu="Dofus Touch"
+            elif biblio_jeu=="tro":
+                jeu="Dofus Retro"
+            else:
+                jeu='Dofus 3'
+        except:
+            print(f"Error getting biblio_id from link: {DB_lien_biblio}")
+            #return embed with an error message
+            embed = Embed(
+                title=f"Changement de la bibliothèque de stuff par défaut pour le serveur {interaction.guild.name}",
+                color=0xFF0000 # Couleur rouge
+            )
+            embed.set_author(
+                name=interaction.user.display_name,
+                icon_url=interaction.user.display_avatar.url
+            )        
+            embed.set_thumbnail(url=IMAGES_LINK["error"])  # URL d'une image pour l'illustration
+            embed.add_field(name="Erreur :",value=(f"""Le lien que tu as donné n'est pas valide, vérifie qu'il s'agit bien d'un lien de bibliothèque dofusbook.
+
+    Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/996244-db/equipements"""), inline=False)
+            embed.set_footer(text=footer_message)
+            await interaction.response.send_message(embed=embed)
+            return 0
+    elif DTS_nom_compte!="DTS":
+        jeu="Dofus Touch"
+        biblio_id=DTS_nom_compte
 
     guild = interaction.guild.name if interaction.guild else "DM"
 
@@ -1376,12 +1463,14 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
                                          ,"nom_biblio" : nom_biblio
                                          ,"dossier" : dossier
                                          ,"dossier_id": folder_id
+                                         ,"plateforme": plateforme
                                          } #update the channel with the new biblio_id and alias
     else: #if the guild doesn't exist in the dictionary
         CUSTOM_BIBLIO[guild] = {"default": {"biblio_id" : biblio_id
                                          ,"nom_biblio" : nom_biblio
                                          ,"dossier" : dossier
-                                         ,"dossier_id": folder_id}
+                                         ,"dossier_id": folder_id
+                                         ,"plateforme": plateforme}
                                 }#create the guild with the default biblio
 
     #ajout/modif de la clé de la biblio
@@ -1392,7 +1481,8 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
                                             "jeu" : jeu
                                             ,"dossier" : dossier
                                             ,"imported": False
-                                            ,"alias":[nom_biblio]}
+                                            ,"alias":[nom_biblio]
+                                            ,"plateforme": plateforme}
     else: # si la biblio est connue
         # CUSTOM_BIBLIO[biblio_id]["alias"].append(nom_biblio)
         # already_imported=True
@@ -1405,13 +1495,15 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
                                             "jeu" : jeu
                                             ,"dossier" : dossier
                                             ,"imported": CUSTOM_BIBLIO[biblio_id]["-1"]["imported"]
-                                            ,"alias":[nom_biblio]}
+                                            ,"alias":[nom_biblio]
+                                            ,"plateforme": plateforme}
             else:
                 CUSTOM_BIBLIO[biblio_id][folder_id]={
                                             "jeu" : jeu
                                             ,"dossier" : dossier
                                             ,"imported": False
-                                            ,"alias":[nom_biblio]}
+                                            ,"alias":[nom_biblio]
+                                            ,"plateforme": plateforme}
                 
         already_imported=CUSTOM_BIBLIO[biblio_id][folder_id]["imported"]
     # Write the updated dictionary to the JSON file
@@ -1433,12 +1525,18 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
     )        
     embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
 
-    if dossier=="tout":
-        embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({lien_biblio})"), inline=False)
-    else:
-        embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({lien_biblio}) | dossier : {dossier}"), inline=False)
+    if DB_lien_biblio!= "DB":
+        if dossier=="tout":
+            embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({DB_lien_biblio})"), inline=False)
+        else:
+            embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({DB_lien_biblio}) | dossier : {dossier}"), inline=False)
+    elif DTS_nom_compte!="DTS":
+        if dossier=="tout":
+            embed.add_field(name="Nouvelle bibliothèque :",value=(f"**{DTS_nom_compte}**"), inline=False)
+        else:
+            embed.add_field(name="Nouvelle bibliothèque :",value=(f"**{DTS_nom_compte}** | dossier : {dossier}"), inline=False)
 
-    infos_update=f"""Désormais tous les stuffs que le bot va recommander dans ce canal proviendront de ce compte dofusbook, c'est en quelques sorte la base de connaissance du bot.\n\n"""
+    infos_update=f"""Désormais tous les stuffs que le bot va recommander dans ce canal proviendront de ce compte, c'est en quelques sorte la base de connaissance du bot.\n\n"""
     if already_imported:
         infos_update+=f"""Cette bibliothèque est déjà importée dans la base de données du bot, donc tu peux dès à présent l'utiliser.
 
@@ -1446,7 +1544,7 @@ La mise à jour de la base de données du bot se fait automatiquement tous les j
     else:  
         infos_update+=f"""Cette bibliothèque n'est pas encore importée dans la base de données du bot, donc tu ne peux pas encore l'utiliser.
 
-Pour que le bot fonctionne il faut que j'importe les données du compte dofusbook dans la base de données du bot. Ça se fait automatiquement tous les jours à 4h du matin, et tous les jours les nouveaux stuffs sont ajoutés à ce moment là.
+Pour que le bot fonctionne il faut que j'importe les données du compte dans la base de données du bot. Ça se fait automatiquement tous les jours à 4h du matin, et tous les jours les nouveaux stuffs sont ajoutés à ce moment là.
 Il faudra donc attendre demain pour pouvoir profiter de cette nouvelle bibliothèque, en attendant la bibliothèque précédente ou par défaut est toujours accessible."""
 
     if dossierpastrouve:
