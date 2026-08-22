@@ -685,8 +685,8 @@ if __name__ == "__main__":
                     elif value["plateforme"]!="DTS": #on ignore les biblio purement DTS à cette étape, on s'intéresse qu'à DB
                         print(blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"])
                         biblio_to_scrape.append((blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"]))# l'idée c'est de récupérer les ("bibli_id","dossier_id","dossier_name") de toutes les bibli à scraper                        
-        except:
-            print(f"/!\\ erreur dans la récupération des biblio à scrape | blibli_id : {blibli_id} | value : {value}")
+        except Exception as e:
+            print(f"/!\\ SCRAPING DB : erreur dans la récupération des biblio à scrape | blibli_id : {blibli_id} | value : {value} | Erreur {e}")
     # print(f"biblio à scrape : {biblio_to_scrape})
     page_maxsize=20
     stuff_liste=[]
@@ -850,8 +850,8 @@ if __name__ == "__main__":
                         if value["plateforme"]=="DTS": #ici on ne s'intéresse qu'aux bibli DTS
                             print(blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"])
                             DTS_biblio_to_scrape.append((blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"]))# l'idée c'est de récupérer les ("bibli_id","dossier_id","dossier_name") de toutes les bibli à scraper
-        except:
-            print(f"/!\\ erreur dans la récupération des biblio à scrape | blibli_id : {blibli_id} | value : {value}")
+        except Exception as e:
+            print(f"/!\\ SCRAPING DTS : erreur dans la récupération des biblio à scrape | blibli_id : {blibli_id} | value : {value} | Erreur {e}")
 
     #il faut executer "npm run export -- --player=Pseudo --out=Pseudo_liens_DTS.json" pour chaque bibli DTS
     for bibli in DTS_biblio_to_scrape:
