@@ -1,4 +1,5 @@
 import os
+import subprocess
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import IntegrityError
@@ -678,8 +679,9 @@ if __name__ == "__main__":
             first_val=value[list(value.keys())[0]]
             if "imported" in first_val and "alias" in first_val: #test pour savoir si on est dans une clé de biblio ou de guild, on teste si dans le premier élément de value, il y a les clés "imported" et "alias"
                 for dossier_id in value :
-                    print(blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"])
-                    biblio_to_scrape.append((blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"]))# l'idée c'est de récupérer les ("bibli_id","dossier_id","dossier_name") de toutes les bibli à scraper
+                    if value["plateforme"]!="DTS": #on ignore les biblio purement DTS à cette étape, on s'intéresse qu'à DB
+                        print(blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"])
+                        biblio_to_scrape.append((blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"]))# l'idée c'est de récupérer les ("bibli_id","dossier_id","dossier_name") de toutes les bibli à scraper
         except:
             print(f"/!\\ erreur dans la récupération des biblio à scrape | blibli_id : {blibli_id} | value : {value}")
     # print(f"biblio à scrape : {biblio_to_scrape})
@@ -828,6 +830,37 @@ if __name__ == "__main__":
     
     print(f"Résultat: {result['inserted']} insérés, {result['updated']} mis à jour, {result['deleted']} supprimés, {result['errors']} erreurs")
 
-    # récupération des id DTS
+    # récupération des id DTS pour la bibli MetaPano
     DTS_LINK_FILE_PATH="../dtstuff-metapano/output/metapano-links.json"
     update_dts_surl(DTS_LINK_FILE_PATH)
+
+    # Scraping des bibli DTS
+    DTS_METAPANO_FOLDER_PATH="../dtstuff-metapano/"
+
+    DTS_biblio_to_scrape=[]
+    for blibli_id, value in custom_biblio.items():
+        try:
+            first_val=value[list(value.keys())[0]]
+            if "imported" in first_val and "alias" in first_val: #test pour savoir si on est dans une clé de biblio ou de guild, on teste si dans le premier élément de value, il y a les clés "imported" et "alias"
+                for dossier_id in value :
+                    if value["plateforme"]=="DTS": # ici on ne s'intéresse qu'aux bibli DTS
+                        print(blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"])
+                        biblio_to_scrape.append((blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"]))# l'idée c'est de récupérer les ("bibli_id","dossier_id","dossier_name") de toutes les bibli à scraper
+        except:
+            print(f"/!\\ erreur dans la récupération des biblio à scrape | blibli_id : {blibli_id} | value : {value}")
+
+    #il faut executer "npm run export -- --player=Pseudo --out=Pseudo_liens_DTS.json" pour chaque bibli DTS
+    for bibli in DTS_biblio_to_scrape:
+        resultat = subprocess.run(
+            ["npm", "run", "export", "--", f"--player={bibli}", f"--out={bibli}_liens_DTS.json"],
+            cwd=DTS_METAPANO_FOLDER_PATH,
+            capture_output=True,
+            text=True
+        )
+        # Afficher la sortie et les erreurs
+        print("Sortie standard :", resultat.stdout)
+        print("Erreurs :", resultat.stderr)
+        print("Code de retour :", resultat.returncode)
+
+    #TODO: lecture de tous les fichiers Pseudo_liens_DTS.json et remplissage de la base de données (l'affichage dans le cas où il n'y a que des liens DTS est fait)
+    # modification sur la base car qui dit pas de lien DB dit pas d'id DB (relou)

@@ -807,13 +807,17 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
                 # print("elt :",elt)
                 # print("stuff['Elements']",stuff['Elements'],"elt",elt)
                 if elt in content_dict.keys():
-                    if stuff["DTS_surl"] is None:
+                    if (stuff["DTS_surl"] is None) and (not stuff["DB_surl"] is None):
                         content_dict[elt]+=f"- [**{stuff['Nom']}**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']})\n"
+                    elif (not stuff["DTS_surl"] is None) and (stuff["DB_surl"] is None):
+                        content_dict[elt]+=f"- {stuff['Nom']} [<:DTS:1539955708957687848>**DTS**](https://dtstuff.app/s/{stuff['DTS_surl']})\n"
                     else:
                         content_dict[elt]+=f"- {stuff['Nom']} [<:DB:1539952523169759294>**DB**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']}) / [<:DTS:1539955708957687848>**DTS**](https://dtstuff.app/s/{stuff['DTS_surl']})\n"
                 else:
-                    if stuff["DTS_surl"] is None:
+                    if (stuff["DTS_surl"] is None) and (not stuff["DB_surl"] is None):
                         content_dict[elt]=f"- [**{stuff['Nom']}**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']})\n"
+                    elif (not stuff["DTS_surl"] is None) and (stuff["DB_surl"] is None):
+                        content_dict[elt]=f"- {stuff['Nom']} [<:DTS:1539955708957687848>**DTS**](https://dtstuff.app/s/{stuff['DTS_surl']})\n"
                     else:
                         content_dict[elt]=f"- {stuff['Nom']} [<:DB:1539952523169759294>**DB**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']}) / [<:DTS:1539955708957687848>**DTS**](https://dtstuff.app/s/{stuff['DTS_surl']})\n"
 
@@ -832,8 +836,10 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
         else:
             content_dblink=''
             for stuff in stuff_list:
-                if stuff["DTS_surl"] is None:
+                if (stuff["DTS_surl"] is None) and (not stuff["DB_surl"] is None):
                     temp_ajout=f"- [**{stuff['Nom']}**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']})\n"
+                elif (not stuff["DTS_surl"] is None) and (stuff["DB_surl"] is None):
+                    temp_ajout=f"- {stuff['Nom']} [<:DTS:1539955708957687848>**DTS**](https://dtstuff.app/s/{stuff['DTS_surl']})\n"
                 else:
                     temp_ajout=f"- {stuff['Nom']} [<:DB:1539952523169759294>**DB**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']}) / [<:DTS:1539955708957687848>**DTS**](https://dtstuff.app/s/{stuff['DTS_surl']})\n"
 
@@ -843,8 +849,10 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
                     content_dblink+="D'autres stuffs existent mais je n'ai pas assez de place ici pour tous les lister, précise ta recherche."
                     break
                 
-            if stuff_list[0]["DTS_surl"] is None:
-                embed.add_field(name="Liens dofusbook", value=content_dblink, inline=True)
+            if (stuff_list[0]["DTS_surl"] is None) and (not stuff_list[0]["DB_surl"] is None):
+                embed.add_field(name="Liens DofusBook", value=content_dblink, inline=True)
+            elif (not stuff_list[0]["DTS_surl"] is None) and (stuff_list[0]["DB_surl"] is None):
+                embed.add_field(name="Liens DTStuff", value=content_dblink, inline=True)
             else:
                 embed.add_field(name="Liens DofusBook / DTStuff", value=content_dblink, inline=True)
         if add_message:
