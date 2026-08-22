@@ -798,12 +798,12 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
                     if stuff["DTS_surl"] is None:
                         content_dict[elt]+=f"- [**{stuff['Nom']}**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']})\n"
                     else:
-                        content_dict[elt]+=f"- {stuff['Nom']} <:DB:1539952523169759294>[**DB**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']}) / <:DTS:1539955708957687848>[**DTS**](https://dtstuff.app/s/{stuff['DTS_surl']})\n"
+                        content_dict[elt]+=f"- {stuff['Nom']} [<:DB:1539952523169759294> **DB**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']}) / <:DTS:1539955708957687848>[**DTS**](https://dtstuff.app/s/{stuff['DTS_surl']})\n"
                 else:
                     if stuff["DTS_surl"] is None:
                         content_dict[elt]=f"- [**{stuff['Nom']}**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']})\n"
                     else:
-                        content_dict[elt]=f"- {stuff['Nom']} <:DB:1539952523169759294>[**DB**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']}) / <:DTS:1539955708957687848>[**DTS**](https://dtstuff.app/s/{stuff['DTS_surl']})\n"
+                        content_dict[elt]=f"- {stuff['Nom']} [<:DB:1539952523169759294> **DB**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']}) / <:DTS:1539955708957687848>[**DTS**](https://dtstuff.app/s/{stuff['DTS_surl']})\n"
 
             for elt_princi in content_dict:
                 # print("elt_princi",elt_princi)
@@ -823,7 +823,7 @@ def resultat_embed(criteres : dict,assouplissement=None,biblio=BIBLI_DEFAULT):
                 if stuff["DTS_surl"] is None:
                     temp_ajout=f"- [**{stuff['Nom']}**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']})\n"
                 else:
-                    temp_ajout=f"- {stuff['Nom']} <:DB:1539952523169759294>[**DB**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']}) / <:DTS:1539955708957687848>[**DTS**](https://dtstuff.app/s/{stuff['DTS_surl']})\n"
+                    temp_ajout=f"- {stuff['Nom']} [<:DB:1539952523169759294> **DB**](https://d-bk.net/fr/{DB_JEU_LETTRE[jeu]}/{stuff['DB_surl']}) / <:DTS:1539955708957687848>[**DTS**](https://dtstuff.app/s/{stuff['DTS_surl']})\n"
 
                 if len(content_dblink)+len(temp_ajout)<910:
                     content_dblink+=temp_ajout
