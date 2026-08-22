@@ -682,11 +682,12 @@ if __name__ == "__main__":
                     if not "plateforme" in dossier_id.keys():
                         print(blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"])
                         biblio_to_scrape.append((blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"]))# l'idée c'est de récupérer les ("bibli_id","dossier_id","dossier_name") de toutes les bibli à scraper
-                    elif value["plateforme"]!="DTS": #on ignore les biblio purement DTS à cette étape, on s'intéresse qu'à DB
-                        print(blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"])
-                        biblio_to_scrape.append((blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"]))# l'idée c'est de récupérer les ("bibli_id","dossier_id","dossier_name") de toutes les bibli à scraper                        
+                    else:
+                        if value["plateforme"]!="DTS": #on ignore les biblio purement DTS à cette étape, on s'intéresse qu'à DB
+                            print(blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"])
+                            biblio_to_scrape.append((blibli_id,str(dossier_id),value[dossier_id]["dossier"],value[dossier_id]["jeu"]))# l'idée c'est de récupérer les ("bibli_id","dossier_id","dossier_name") de toutes les bibli à scraper                        
         except Exception as e:
-            print(f"/!\\ SCRAPING DB : erreur dans la récupération des biblio à scrape | blibli_id : {blibli_id} | value : {value} | Erreur {e}")
+            print(f"/!\\ SCRAPING DB : erreur dans la récupération des biblio à scrape | blibli_id : {blibli_id} | value : {value} | dossier_id : {dossier_id} | Erreur {e}")
     # print(f"biblio à scrape : {biblio_to_scrape})
     page_maxsize=20
     stuff_liste=[]
