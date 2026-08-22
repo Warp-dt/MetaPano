@@ -129,6 +129,18 @@ async def on_ready() -> None:
     try:
         await bot.tree.sync()
         print("Slash commands have been synced successfully!")
+        # cmd = bot.tree.get_command("change_bibliotheque_canal")
+
+        # print("COMMANDE LOCALE :", cmd)
+
+        # if cmd:
+        #     for param in cmd.parameters:
+        #         print(
+        #             param.name,
+        #             param.type,
+        #             param.required,
+        #             param.default
+        #         )
     except Exception as e:
         print(f"Failed to sync commands: {e}")
 
@@ -1124,9 +1136,9 @@ Tous les stuffs que le bot va recommander sont présents dans ce compte dofusboo
 @app_commands.default_permissions(administrator=True) #only admin can use this command
 @app_commands.checks.has_permissions(administrator=True) #and the admin can not give the permission to use this command
 @app_commands.guild_only() #only in guilds, not in DMs
-async def change_bibliotheque_canal(interaction: Interaction, nom_biblio: str, DB_lien_biblio: Optional[str] = "DB", DTS_nom_compte: Optional[str] = "DTS",  dossier: Optional[str] = "tout"):
+async def change_bibliotheque_canal(interaction:Interaction,nom_biblio:str,db_lien_biblio:Optional[str]="DB",dts_nom_compte: Optional[str]="DTS",dossier:Optional[str]="tout"):
 
-    if DB_lien_biblio!= "DB" and DTS_nom_compte!="DTS":
+    if db_lien_biblio!= "DB" and dts_nom_compte!="DTS":
         print(f"Lien Dofusbook ET nom DTS fournis, comment ça tu met les deux?")
         # Return embed with an error message
         embed = Embed(
@@ -1143,10 +1155,10 @@ async def change_bibliotheque_canal(interaction: Interaction, nom_biblio: str, D
         await interaction.response.send_message(embed=embed)
         return
 
-    elif DB_lien_biblio!= "DB":
+    elif db_lien_biblio!= "DB":
         # Check if the link sent is a valid dofusbook link
-        if not re.match(r"https?://(d-bk\.net|(touch|retro|www)\.dofusbook\.net)/fr/((t|d|r)l/\w+|membre/\d+-\w+/equipements)", DB_lien_biblio):
-            print(f"Invalid dofusbook link: {DB_lien_biblio}")
+        if not re.match(r"https?://(d-bk\.net|(touch|retro|www)\.dofusbook\.net)/fr/((t|d|r)l/\w+|membre/\d+-\w+/equipements)", db_lien_biblio):
+            print(f"Invalid dofusbook link: {db_lien_biblio}")
             # Return embed with an error message
             embed = Embed(
                 title=f"Changement de la bibliothèque de stuff pour le canal {interaction.channel.name}",
@@ -1165,7 +1177,7 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
             return
         plateforme="DB"
     
-    elif DTS_nom_compte!="DTS":
+    elif dts_nom_compte!="DTS":
         plateforme="DTS"
     else:
         print(f"Pas de lien Dofusbook ni de nom DTS fournis.")
@@ -1184,9 +1196,9 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
         return
 
     #détection du jeu pour DB
-    if DB_lien_biblio!= "DB":
+    if db_lien_biblio!= "DB":
         try:
-            biblio_url=req.get(DB_lien_biblio).url
+            biblio_url=req.get(db_lien_biblio).url
             biblio_id=biblio_url.split("/")[-2][:-3]
             biblio_jeu=biblio_url.split(".")[0][-3:]
             if biblio_jeu=="uch":
@@ -1197,7 +1209,7 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
                 jeu='Dofus 3'
             
         except:
-            print(f"Error getting biblio_id from link: {DB_lien_biblio}")
+            print(f"Error getting biblio_id from link: {db_lien_biblio}")
             #return embed with an error message
             embed = Embed(
                 title=f"Changement de la bibliothèque de stuff pour le canal {interaction.channel.name}",
@@ -1214,9 +1226,9 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
             embed.set_footer(text=footer_message)
             await interaction.response.send_message(embed=embed)
             return 0
-    elif DTS_nom_compte!="DTS":
+    elif dts_nom_compte!="DTS":
         jeu="Dofus Touch"
-        biblio_id=DTS_nom_compte
+        biblio_id=dts_nom_compte
 
     channel = interaction.channel.name if interaction.channel else "DM"
     guild = interaction.guild.name if interaction.guild else "DM"
@@ -1321,16 +1333,16 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
     )        
     embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
 
-    if DB_lien_biblio!= "DB":
+    if db_lien_biblio!= "DB":
         if dossier=="tout":
-            embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({DB_lien_biblio})"), inline=False)
+            embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({db_lien_biblio})"), inline=False)
         else:
-            embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({DB_lien_biblio}) | dossier : {dossier}"), inline=False)
-    elif DTS_nom_compte!="DTS":
+            embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({db_lien_biblio}) | dossier : {dossier}"), inline=False)
+    elif dts_nom_compte!="DTS":
         if dossier=="tout":
-            embed.add_field(name="Nouvelle bibliothèque :",value=(f"**{DTS_nom_compte}**"), inline=False)
+            embed.add_field(name="Nouvelle bibliothèque :",value=(f"**{dts_nom_compte}**"), inline=False)
         else:
-            embed.add_field(name="Nouvelle bibliothèque :",value=(f"**{DTS_nom_compte}** | dossier : {dossier}"), inline=False)
+            embed.add_field(name="Nouvelle bibliothèque :",value=(f"**{dts_nom_compte}** | dossier : {dossier}"), inline=False)
 
     infos_update=f"""Désormais tous les stuffs que le bot va recommander dans ce canal proviendront de ce compte, c'est en quelques sorte la base de connaissance du bot.\n\n"""
     if already_imported:
@@ -1354,9 +1366,9 @@ Il faudra donc attendre demain pour pouvoir profiter de cette nouvelle biblioth�
 @app_commands.default_permissions(administrator=True) #only admin can use this command
 @app_commands.checks.has_permissions(administrator=True) #and the admin can not give the permission to use this command
 @app_commands.guild_only() #only in guilds, not in DMs
-async def change_bibliotheque_serveur(interaction: Interaction, nom_biblio: str, DB_lien_biblio: Optional[str] = "DB", DTS_nom_compte: Optional[str] = "DTS", dossier: Optional[str] = "tout"  ):
+async def change_bibliotheque_serveur(interaction: Interaction, nom_biblio: str, db_lien_biblio: Optional[str] = "DB", dts_nom_compte: Optional[str] = "DTS", dossier: Optional[str] = "tout"  ):
 
-    if DB_lien_biblio!= "DB" and DTS_nom_compte!="DTS":
+    if db_lien_biblio!= "DB" and dts_nom_compte!="DTS":
         print(f"Lien Dofusbook ET nom DTS fournis, comment ça tu met les deux?")
         # Return embed with an error message
         embed = Embed(
@@ -1371,10 +1383,10 @@ async def change_bibliotheque_serveur(interaction: Interaction, nom_biblio: str,
         embed.add_field(name="Erreur :", value="""Pour changer la bibliothèque de stuff il faut fournir __soit__ un lien de bibliothèque DofusBook, __soit__ un nom de compte DTStuff.
         __Pas les deux.__""")
 
-    elif DB_lien_biblio!= "DB":
+    elif db_lien_biblio!= "DB":
         # Check if the link sent is a valid dofusbook link
-        if not re.match(r"https?://(d-bk\.net|(touch|retro|www)\.dofusbook\.net)/fr/((t|d|r)l/\w+|membre/\d+-\w+/equipements)", DB_lien_biblio):
-            print(f"Invalid dofusbook link: {DB_lien_biblio}")
+        if not re.match(r"https?://(d-bk\.net|(touch|retro|www)\.dofusbook\.net)/fr/((t|d|r)l/\w+|membre/\d+-\w+/equipements)", db_lien_biblio):
+            print(f"Invalid dofusbook link: {db_lien_biblio}")
             # Return embed with an error message
             embed = Embed(
                 title=f"Changement de la bibliothèque de stuff par défaut pour le serveur {interaction.guild.name}",
@@ -1393,7 +1405,7 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
             return
         plateforme="DB"
     
-    elif DTS_nom_compte!="DTS":
+    elif dts_nom_compte!="DTS":
         plateforme="DTS"
     else:
         print(f"Pas de lien Dofusbook ni de nom DTS fournis.")
@@ -1413,9 +1425,9 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
 
 
     #détection du jeu pour DB
-    if DB_lien_biblio!= "DB":
+    if db_lien_biblio!= "DB":
         try:
-            biblio_url=req.get(DB_lien_biblio).url
+            biblio_url=req.get(db_lien_biblio).url
             biblio_id=biblio_url.split("/")[-2][:-3]
             biblio_jeu=biblio_url.split(".")[0][-3:]
             if biblio_jeu=="uch":
@@ -1425,7 +1437,7 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
             else:
                 jeu='Dofus 3'
         except:
-            print(f"Error getting biblio_id from link: {DB_lien_biblio}")
+            print(f"Error getting biblio_id from link: {db_lien_biblio}")
             #return embed with an error message
             embed = Embed(
                 title=f"Changement de la bibliothèque de stuff par défaut pour le serveur {interaction.guild.name}",
@@ -1442,9 +1454,9 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
             embed.set_footer(text=footer_message)
             await interaction.response.send_message(embed=embed)
             return 0
-    elif DTS_nom_compte!="DTS":
+    elif dts_nom_compte!="DTS":
         jeu="Dofus Touch"
-        biblio_id=DTS_nom_compte
+        biblio_id=dts_nom_compte
 
     guild = interaction.guild.name if interaction.guild else "DM"
 
@@ -1529,16 +1541,16 @@ Exemple : https://d-bk.net/fr/tl/4BAS ou https://touch.dofusbook.net/fr/membre/9
     )        
     embed.set_thumbnail(url=IMAGES_LINK["dofusbook"])  # URL d'une image pour l'illustration
 
-    if DB_lien_biblio!= "DB":
+    if db_lien_biblio!= "DB":
         if dossier=="tout":
-            embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({DB_lien_biblio})"), inline=False)
+            embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({db_lien_biblio})"), inline=False)
         else:
-            embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({DB_lien_biblio}) | dossier : {dossier}"), inline=False)
-    elif DTS_nom_compte!="DTS":
+            embed.add_field(name="Nouvelle bibliothèque :",value=(f"[**{nom_biblio}**]({db_lien_biblio}) | dossier : {dossier}"), inline=False)
+    elif dts_nom_compte!="DTS":
         if dossier=="tout":
-            embed.add_field(name="Nouvelle bibliothèque :",value=(f"**{DTS_nom_compte}**"), inline=False)
+            embed.add_field(name="Nouvelle bibliothèque :",value=(f"**{dts_nom_compte}**"), inline=False)
         else:
-            embed.add_field(name="Nouvelle bibliothèque :",value=(f"**{DTS_nom_compte}** | dossier : {dossier}"), inline=False)
+            embed.add_field(name="Nouvelle bibliothèque :",value=(f"**{dts_nom_compte}** | dossier : {dossier}"), inline=False)
 
     infos_update=f"""Désormais tous les stuffs que le bot va recommander dans ce canal proviendront de ce compte, c'est en quelques sorte la base de connaissance du bot.\n\n"""
     if already_imported:
